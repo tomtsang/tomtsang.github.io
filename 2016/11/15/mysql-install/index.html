@@ -1,0 +1,285 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>mysql-install | 美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+    <meta name="description" content="主要参考：http://blog.csdn.net/renfufei/article/details/17616549
+过程说明: 首先必须能链接外网. 如果不能直接访问,那也可以设置代理,请参考: 在内网机器上设置yum代理使用 yum 的权限要求是 root 用户,如果你不是,那么可以需要 在 shell命令之前加上 sudo, 或者 su root  切换到 super 管理员进行操作. 并">
+  
+  <meta name="description" content="主要参考：http://blog.csdn.net/renfufei/article/details/17616549
+过程说明: 首先必须能链接外网. 如果不能直接访问,那也可以设置代理,请参考: 在内网机器上设置yum代理使用 yum 的权限要求是 root 用户,如果你不是,那么可以需要 在 shell命令之前加上 sudo, 或者 su root  切换到 super 管理员进行操作. 并">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql-install">
+<meta property="og:url" content="http://tomtsang.github.io/2016/11/15/mysql-install/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="主要参考：http://blog.csdn.net/renfufei/article/details/17616549
+过程说明: 首先必须能链接外网. 如果不能直接访问,那也可以设置代理,请参考: 在内网机器上设置yum代理使用 yum 的权限要求是 root 用户,如果你不是,那么可以需要 在 shell命令之前加上 sudo, 或者 su root  切换到 super 管理员进行操作. 并">
+<meta property="og:updated_time" content="2016-11-16T05:03:03.329Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mysql-install">
+<meta name="twitter:description" content="主要参考：http://blog.csdn.net/renfufei/article/details/17616549
+过程说明: 首先必须能链接外网. 如果不能直接访问,那也可以设置代理,请参考: 在内网机器上设置yum代理使用 yum 的权限要求是 root 用户,如果你不是,那么可以需要 在 shell命令之前加上 sudo, 或者 su root  切换到 super 管理员进行操作. 并">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/15/mysql-install/">
+  <time datetime="2016-11-15T06:03:52.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">mysql-install</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="主要参考："><a href="#主要参考：" class="headerlink" title="主要参考："></a>主要参考：</h2><p><a href="http://blog.csdn.net/renfufei/article/details/17616549" target="_blank" rel="external">http://blog.csdn.net/renfufei/article/details/17616549</a></p>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>说明: 首先必须能链接外网. 如果不能直接访问,那也可以设置代理,请参考: 在内网机器上设置yum代理<br>使用 yum 的权限要求是 root 用户,如果你不是,那么可以需要 在 shell命令之前加上 sudo, 或者 su root  切换到 super 管理员进行操作. 并可能需要输入密码.</p>
+<h3 id="1-添加-yum-数据源"><a href="#1-添加-yum-数据源" class="headerlink" title="1. 添加 yum 数据源"></a>1. 添加 yum 数据源</h3><blockquote>
+<h5 id="安装mariadb10-1"><a href="#安装mariadb10-1" class="headerlink" title="安装mariadb10.1"></a>安装mariadb10.1</h5><p>官方的<a href="https://mariadb.com/kb/zh-cn/installing-mariadb-with-yum/" target="_blank" rel="external">通过yum安装</a>教程</p>
+<p>根据不同的系统来下载repo吧，更多的<a href="https://downloads.mariadb.org/mariadb/repositories/#mirror=marty-anstey&amp;distro=CentOS&amp;distro_release=centos7-amd64--centos7&amp;version=10.1" target="_blank" rel="external">MariaDB.repo</a></p>
+</blockquote>
+<p>建议命名为 MariaDB.repo 类似的名字：</p>
+<pre><code>cd /etc/yum.repos.d/  
+vim /etc/yum.repos.d/MariaDB.repo  
+</code></pre><p>然后,写入文件内容:(建议使用 10.0)</p>
+<pre><code># MariaDB 10.0 CentOS repository list - created 2015-08-12 10:59 UTC  
+# http://mariadb.org/mariadb/repositories/  
+[mariadb]  
+name = MariaDB  
+baseurl = http://yum.mariadb.org/10.0/centos6-amd64  
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB  
+gpgcheck=1  
+</code></pre><p><em>这个baseurl可以通过浏览器打开，然后在 <a href="http://yum.mariadb.org/10.0/centos7-amd64/rpms/" target="_blank" rel="external">http://yum.mariadb.org/10.0/centos7-amd64/rpms/</a> 中<br>可以看到这里面有些什么 .rpm 文件。</em></p>
+<p>该文件的内容是参考官网,并从官网上生成的，设置安装源仓库的 具体的地址为:  <a href="https://downloads.mariadb.org/mariadb/repositories/" target="_blank" rel="external">https://downloads.mariadb.org/mariadb/repositories/</a><br>选择好操作系统版本之后既可以查看，其他操作系统的安装源也可以在此处查看并设置。<br>如果服务器不支持https协议，或者gpgkey 保错，确保没问题的话，可以将 gpgcheck=1 修改为 gpgcheck=0,则不进行校验.</p>
+<h3 id="2-安装数据库"><a href="#2-安装数据库" class="headerlink" title="2. 安装数据库"></a>2. 安装数据库</h3><pre><code>yum remove MariaDB-server MariaDB-client  
+yum -y install MariaDB-server MariaDB-client  
+</code></pre><p>如果要删除旧的数据库可以使用remove, 参数 -y 是确认，不用提示。此处，安装的是服务器和客户端，一般来说安装这两个就可以了。</p>
+<h3 id="3-启动数据库"><a href="#3-启动数据库" class="headerlink" title="3. 启动数据库"></a>3. 启动数据库</h3><p>如果不用进行其他的操作，则现在就可以直接启动数据库，并进行测试了。</p>
+<p>查看mysql状态;关闭数据库  </p>
+<pre><code># service mysql status  
+# service mysql stop  
+</code></pre><p>启动数据库  </p>
+<pre><code># service mysql start  
+</code></pre><h3 id="4-修改root密码"><a href="#4-修改root密码" class="headerlink" title="4. 修改root密码"></a>4. 修改root密码</h3><pre><code>#  修改root密码  
+mysqladmin -u root password &apos;root&apos;  
+</code></pre><p>因为安装好以后的root密码是空,所以需要设置; 如果是测试服务器,那么你可以直接使用root,不重要的密码很多时候可以设置为和用户名一致，以免忘记了又想不起来。<br>如果是重要的服务器，请使用复杂密码，例如邮箱，各种自由组合的规则的字符等。</p>
+<h3 id="5-登录数据库"><a href="#5-登录数据库" class="headerlink" title="5. 登录数据库"></a>5. 登录数据库</h3><pre><code>mysql -u root -p  
+</code></pre><p>如果是本机,那可以直接使用上面的命令登录，当然，需要输入密码. 如果是其他机器，那么可能需要如下的形式:</p>
+<pre><code>mysql -h 127.0.0.1 -P 3306 -u root -p  
+</code></pre><h3 id="6-简单SQL测试"><a href="#6-简单SQL测试" class="headerlink" title="6. 简单SQL测试"></a>6. 简单SQL测试</h3><pre><code>&gt;  
+-- 查看MySQL的状态
+status;  
+-- 显示支持的引擎
+show engines;  
+-- 显示所有数据库
+show databases;  
+-- 切换数据库上下文,即设置当前会话的默认数据库
+use test;  
+-- 显示本数据库所有的表
+show tables;  
+-- 创建一个表
+CREATETABLE t_test (  
+  id int(11) UNSIGNED NOTNULL AUTO_INCREMENT,  
+  userId char(36),  
+  lastLoginTime timestamp,  
+PRIMARYKEY (id)  
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
+-- 插入测试数据
+insertinto t_test(userId)  
+values
+(&apos;admin&apos;)  
+,(&apos;haha&apos;)  
+;  
+-- 简单查询
+select * from t_test;  
+select id,userId from t_test  where userId=&apos;admin&apos; ;  
+</code></pre><h3 id="7-修改数据存放目录"><a href="#7-修改数据存放目录" class="headerlink" title="7.  修改数据存放目录"></a>7.  修改数据存放目录</h3><p>mysql, MariaDB 的默认数据存放在 /var/lib/mysql/ 目录下,如果不想放到此处,或者是想要程序和数据分离，或者是磁盘原因,需要切换到其他路径,则可以通过修改 datadir系统变量来达成目的.</p>
+<pre><code># 停止数据库  
+service mysql stop
+# 创建目录,假设没有的话  
+mkdir /usr/local/ieternal/mysql_data  
+# 拷贝默认数据库到新的位置  
+# -a 命令是将文件属性一起拷贝,否则各种问题  
+cp -a /var/lib/mysql /usr/local/ieternal/mysql_data  
+# 备份原来的数据  
+cp -a /etc/my.cnf /etc/my.cnf_original  
+# 其实查看 /etc/my.cnf 文件可以发现  
+# MariaDB 的此文件之中只有一个包含语句  
+# 所以需要修改的配置文件为 /etc/my.cnf.d/server.cnf  
+cp /etc/my.cnf.d/server.cnf /etc/my.cnf.d/server.cnf_original  
+vim /etc/my.cnf.d/server.cnf    
+</code></pre><p>然后 按 i 进入编辑模式,可以插入相关内容.使用键盘的上下左右键可以移动光标, 编辑完成以后，按 ESC 退出编辑模式(进入命令模式), 然后输入命令:wq 保存并退出</p>
+<pre><code># 在文件的 mysqld 节下添加内容  
+[mysqld]  
+datadir=/usr/local/ieternal/mysql_data/mysql  
+socket=/var/lib/mysql/mysql.sock  
+#default-character-set=utf8  
+character_set_server=utf8  
+slow_query_log=on
+slow_query_log_file=/usr/local/ieternal/mysql_data/slow_query_log.log  
+long_query_time=2  
+</code></pre><p>其中,也只有 datadir 和 socket 比较重要; 而 default-character-set 是 mysql 自己认识的,而 mariadb5.5 就不认识,相当于变成了 character_set_server</p>
+<h5 id="7-1-创建慢查询日志文件"><a href="#7-1-创建慢查询日志文件" class="headerlink" title="7.1 创建慢查询日志文件"></a>7.1 创建慢查询日志文件</h5><p>既然上面指定了慢查询日志文件，我后来看了下MariaDB的err日志，发现MariaDB不会自己创建该文件，所以我们需要自己创建,并修改相应的文件权限(比如 MySQL 采用 mysql用户，可能我们使用 root用户创建的文件,此时要求慢查询日志文件对mysql用户可读可写就行。)</p>
+<pre><code>touch /usr/local/ieternal/mysql_data/slow_query_log.log  
+chmod 666 /usr/local/ieternal/mysql_data/slow_query_log.log  
+</code></pre><p>然后重新启动MySQL.</p>
+<pre><code>service mysql start  
+</code></pre><h2 id="综合命令"><a href="#综合命令" class="headerlink" title="综合命令"></a>综合命令</h2><p>方便大家ctrl+c, ctrl+v</p>
+<pre><code>sudo systemctl status mariadb.service
+sudo systemctl stop mariadb.service
+cd /data/
+ls
+sudo mkdir ./mariadb/mysql/ -p
+ls
+cd mariadb/mysql/
+ls
+sudo cp -a /var/lib/mysql /data/mariadb/
+ls
+cd ../
+ls
+cd mysql/
+ls
+sudo cp -a /etc/my.cnf /etc/my.cnf_original
+sudo cp /etc/my.cnf.d/server.cnf /etc/my.cnf.d/server.cnf_original
+sudo vim /etc/my.cnf.d/server.cnf
+sudo touch /data/mariadb/mysql/slow_query_log.log
+sudo chmod 666 /data/mariadb/mysql/slow_query_log.log
+sudo systemctl restart mariadb.service
+</code></pre><p>其中 vim /etc/my.cnf.d/server.cnf</p>
+<pre><code>#
+# These groups are read by MariaDB server.
+# Use it for options that only the server (but not clients) should see
+#
+# See the examples of server my.cnf files in /usr/share/mysql/
+#
+
+# this is read by the standalone daemon and embedded servers
+[server]
+
+# this is only for the mysqld standalone daemon
+[mysqld]
+datadir=/data/mariadb/mysql  
+socket=/var/lib/mysql/mysql.sock  
+#default-character-set=utf8  
+character_set_server=utf8  
+slow_query_log=on  
+slow_query_log_file=/data/mariadb/mysql/slow_query_log.log  
+long_query_time=2
+
+
+# this is only for embedded server
+[embedded]
+
+# This group is only read by MariaDB-5.5 servers.
+# If you use the same .cnf file for MariaDB of different versions,
+# use this group for options that older servers don&apos;t understand
+[mysqld-5.5]
+
+# These two groups are only read by MariaDB servers, not by MySQL.
+# If you use the same .cnf file for MySQL and MariaDB,
+# you can put MariaDB-only options here
+[mariadb]
+
+[mariadb-5.5]
+</code></pre><h2 id="卸载"><a href="#卸载" class="headerlink" title="卸载"></a>卸载</h2><pre><code>sudo yum remove MariaDB-server -y
+sudo yum remove MariaDB-client -y
+sudo yum remove MariaDB-common -y
+</code></pre><h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
+    
+  </div>
+  <footer>
+    
+      
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/mysql/">mysql</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

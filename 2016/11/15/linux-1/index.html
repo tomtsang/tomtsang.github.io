@@ -1,0 +1,243 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>linux系列之yum | 美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+    <meta name="description" content="yum安装的软件在哪? linux下如何查看某个软件 是否安装？安装路径在哪?linux下如何查看某个软件 是否安装？安装路径在哪
+使用sudo rpm -qa来查看通过 yum安装的软件
+[tom@kube-node-11 ~]$ sudo rpm -qa | grep Maria
+MariaDB-client-10.1.19-1.el7.centos.x86_64
+MariaDB-common">
+  
+  <meta name="description" content="yum安装的软件在哪? linux下如何查看某个软件 是否安装？安装路径在哪?linux下如何查看某个软件 是否安装？安装路径在哪
+使用sudo rpm -qa来查看通过 yum安装的软件
+[tom@kube-node-11 ~]$ sudo rpm -qa | grep Maria
+MariaDB-client-10.1.19-1.el7.centos.x86_64
+MariaDB-common">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux系列之yum">
+<meta property="og:url" content="http://tomtsang.github.io/2016/11/15/linux-1/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="yum安装的软件在哪? linux下如何查看某个软件 是否安装？安装路径在哪?linux下如何查看某个软件 是否安装？安装路径在哪
+使用sudo rpm -qa来查看通过 yum安装的软件
+[tom@kube-node-11 ~]$ sudo rpm -qa | grep Maria
+MariaDB-client-10.1.19-1.el7.centos.x86_64
+MariaDB-common">
+<meta property="og:updated_time" content="2016-11-19T05:13:32.135Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux系列之yum">
+<meta name="twitter:description" content="yum安装的软件在哪? linux下如何查看某个软件 是否安装？安装路径在哪?linux下如何查看某个软件 是否安装？安装路径在哪
+使用sudo rpm -qa来查看通过 yum安装的软件
+[tom@kube-node-11 ~]$ sudo rpm -qa | grep Maria
+MariaDB-client-10.1.19-1.el7.centos.x86_64
+MariaDB-common">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/15/linux-1/">
+  <time datetime="2016-11-15T04:53:44.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">linux系列之yum</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="yum安装的软件在哪-linux下如何查看某个软件-是否安装？安装路径在哪"><a href="#yum安装的软件在哪-linux下如何查看某个软件-是否安装？安装路径在哪" class="headerlink" title="yum安装的软件在哪? linux下如何查看某个软件 是否安装？安装路径在哪?"></a>yum安装的软件在哪? linux下如何查看某个软件 是否安装？安装路径在哪?</h2><p><a href="https://zhidao.baidu.com/question/752680403805026404.html" target="_blank" rel="external">linux下如何查看某个软件 是否安装？安装路径在哪</a></p>
+<p>使用<code>sudo rpm -qa</code>来查看通过 yum安装的软件</p>
+<pre><code>[tom@kube-node-11 ~]$ sudo rpm -qa | grep Maria
+MariaDB-client-10.1.19-1.el7.centos.x86_64
+MariaDB-common-10.1.19-1.el7.centos.x86_64
+MariaDB-Galera-server-10.0.28-1.el7.centos.x86_64
+MariaDB-shared-10.1.19-1.el7.centos.x86_64
+</code></pre><h2 id="linux-通过-yum-search-得到，在当前情况下，能安装哪些软件，哪些软件安装不了。"><a href="#linux-通过-yum-search-得到，在当前情况下，能安装哪些软件，哪些软件安装不了。" class="headerlink" title="linux 通过 yum search 得到，在当前情况下，能安装哪些软件，哪些软件安装不了。"></a>linux 通过 yum search 得到，在当前情况下，能安装哪些软件，哪些软件安装不了。</h2><p>如下面 这个地方，显示 MariaDB-Galera-server 找不到。</p>
+<pre><code>[cdn@test_240 ~]$ sudo yum install MariaDB-Galera-server MariaDB-client galera -y
+Loaded plugins: fastestmirror, langpacks
+Loading mirror speeds from cached hostfile
+ * base: mirrors.cn99.com
+ * extras: mirrors.cn99.com
+ * updates: mirrors.cn99.com
+No package MariaDB-Galera-server available.
+Package MariaDB-client-10.1.19-1.el7.centos.x86_64 already installed and latest version
+Package galera-25.3.18-1.rhel7.el7.centos.x86_64 already installed and latest version
+Nothing to do
+[cdn@test_240 ~]$
+</code></pre><p>那么，我们怎么办呢？<br>用<code>yum search</code>吧</p>
+<ol>
+<li><p>确保 MariaDB.repo 存在</p>
+<p> [cdn@test_240 ~]$ ll /etc/yum.repos.d/<br> [cdn@test_240 ~]$ cat /etc/yum.repos.d/MariaDB.repo</p>
+<h1 id="MariaDB-10-1-CentOS-repository-list-created-2016-11-15-02-38-UTC"><a href="#MariaDB-10-1-CentOS-repository-list-created-2016-11-15-02-38-UTC" class="headerlink" title="MariaDB 10.1 CentOS repository list - created 2016-11-15 02:38 UTC"></a>MariaDB 10.1 CentOS repository list - created 2016-11-15 02:38 UTC</h1><h1 id="http-downloads-mariadb-org-mariadb-repositories"><a href="#http-downloads-mariadb-org-mariadb-repositories" class="headerlink" title="http://downloads.mariadb.org/mariadb/repositories/"></a><a href="http://downloads.mariadb.org/mariadb/repositories/" target="_blank" rel="external">http://downloads.mariadb.org/mariadb/repositories/</a></h1><p> [mariadb]<br> name = MariaDB<br> baseurl = <a href="http://yum.mariadb.org/10.0/centos7-amd64" target="_blank" rel="external">http://yum.mariadb.org/10.0/centos7-amd64</a><br> gpgkey=<a href="https://yum.mariadb.org/RPM-GPG-KEY-MariaDB" target="_blank" rel="external">https://yum.mariadb.org/RPM-GPG-KEY-MariaDB</a><br> gpgcheck=1<br> [cdn@test_240 ~]$</p>
+</li>
+<li><p>确保 MariaDB.repo 生效</p>
+</li>
+</ol>
+<p>先查是否能ping到baseurl</p>
+<pre><code>[cdn@test_240 ~]$ cat /etc/yum.repos.d/MariaDB.repo
+# MariaDB 10.0 CentOS repository list - created 2016-11-16 02:27 UTC
+# http://downloads.mariadb.org/mariadb/repositories/
+[mariadb]
+name = MariaDB
+baseurl = http://yum.mariadb.org/10.0/centos7-amd64
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgcheck=1
+[cdn@test_240 ~]$ ping yum.mariabdb.org
+^C
+[cdn@test_240 ~]$ ping yum.mariadb.org
+PING yum.mariadb.org (142.4.217.28) 56(84) bytes of data.
+64 bytes from bb02.mariadb.net (142.4.217.28): icmp_seq=1 ttl=47 time=272 ms
+64 bytes from bb02.mariadb.net (142.4.217.28): icmp_seq=2 ttl=47 time=272 ms
+64 bytes from bb02.mariadb.net (142.4.217.28): icmp_seq=3 ttl=47 time=272 ms
+^C
+--- yum.mariadb.org ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2001ms
+rtt min/avg/max/mdev = 272.301/272.492/272.588/0.135 ms
+</code></pre><p>说明可以<code>ping yum.mariadb.org</code>。</p>
+<p>用 <code>yum search</code>查，有MariaDB.repo VS 没有MariaDB.repo情况下，得到的软件列表是否相同。</p>
+<p>先走一个 <code>sudo yum search MariaDB</code></p>
+<pre><code>[cdn@test_240 ~]$ sudo yum search MariaDB
+Loaded plugins: fastestmirror, langpacks
+Loading mirror speeds from cached hostfile
+ * base: mirrors.nwsuaf.edu.cn
+ * epel: ftp.cuhk.edu.hk
+ * extras: mirrors.cn99.com
+ * updates: mirrors.cn99.com
+=============================================================================================== N/S matched: MariaDB ===============================================================================================
+MariaDB-client.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-common.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-compat.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-connect-engine.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-cracklib-password-check.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-devel.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-gssapi-client.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-gssapi-server.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-oqgraph-engine.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-server.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-shared.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-test.x86_64 : MariaDB: a very fast and robust SQL database server
+mariadb-bench.x86_64 : MariaDB benchmark scripts and data
+mariadb-devel.i686 : Files for development of MariaDB/MySQL applications
+mariadb-devel.x86_64 : Files for development of MariaDB/MySQL applications
+mariadb-embedded.i686 : MariaDB as an embeddable library
+mariadb-embedded.x86_64 : MariaDB as an embeddable library
+mariadb-embedded-devel.i686 : Development files for MariaDB as an embeddable library
+mariadb-embedded-devel.x86_64 : Development files for MariaDB as an embeddable library
+mariadb-libs.i686 : The shared libraries required for MariaDB/MySQL clients
+mariadb-libs.x86_64 : The shared libraries required for MariaDB/MySQL clients
+mariadb-server.x86_64 : The MariaDB server and related files
+mariadb.x86_64 : A community developed branch of MySQL
+mariadb-test.x86_64 : The test suite distributed with MariaD
+percona-xtrabackup.x86_64 : Online backup for InnoDB/XtraDB in MySQL, Percona Server and MariaDB
+
+  Name and summary matches only, use &quot;search all&quot; for everything.
+[cdn@test_240 ~]$
+</code></pre><p>两2种方法（2种用其1就可以了）：</p>
+<ol>
+<li><p>方法1, 把<code>MariaDB.repo</code>移除。<br> 不<code>MariaDB.repo</code> 移除，再运行 <code>sudo yum search MariaDB</code>。<br> 把<code>MariaDB.repo</code> 移除，再运行 <code>sudo yum search MariaDB</code>。</p>
+</li>
+<li><p>方法2, 用<code>yum search --disablerepo=</code>。</p>
+<p> 先 <code>sudo yum search MariaDB</code>。<br> 再运行 <code>sudo yum search MariaDB --disablerepo=base,extras,updates,epel</code>。</p>
+</li>
+</ol>
+<p>对比结果。最后，可知，列表不同。说明本<code>MariaDB.repo</code> 已生效。</p>
+<p><em>所以，以后每次安装软件前，可以先用<code>yum search</code>一下，这样，确保我们想要安装的，就是实际安装的</em></p>
+<h2 id="yum-install-之前要做的事"><a href="#yum-install-之前要做的事" class="headerlink" title="yum install 之前要做的事"></a>yum install 之前要做的事</h2><ol>
+<li>sudo yum makecache</li>
+<li>sudo yum clean all</li>
+<li>sudo yum search XXX</li>
+</ol>
+<h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
+    
+  </div>
+  <footer>
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

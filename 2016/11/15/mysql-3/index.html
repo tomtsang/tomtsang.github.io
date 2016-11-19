@@ -1,0 +1,207 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>mysql系列之mysql使用规范 | 美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+    <meta name="description" content="级别说明所有级别：
+
+级别1, 必须做到
+级别2，优先做到
+
+级别：1
+
+库名，表名，字段名：使用小写
+表：不使用删除表（drop）, 而使用清空表（truncate，或者delete from）
+表：记录数超过10000的情况下，加索引
+
+级别：2
+
+库名，表名，字段名：使用下划线分割。如：day_stocka_wind
+表：加主键
+清空表：优先使用truncate（命令：truncate ta">
+  
+  <meta name="description" content="级别说明所有级别：
+
+级别1, 必须做到
+级别2，优先做到
+
+级别：1
+
+库名，表名，字段名：使用小写
+表：不使用删除表（drop）, 而使用清空表（truncate，或者delete from）
+表：记录数超过10000的情况下，加索引
+
+级别：2
+
+库名，表名，字段名：使用下划线分割。如：day_stocka_wind
+表：加主键
+清空表：优先使用truncate（命令：truncate ta">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql系列之mysql使用规范">
+<meta property="og:url" content="http://tomtsang.github.io/2016/11/15/mysql-3/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="级别说明所有级别：
+
+级别1, 必须做到
+级别2，优先做到
+
+级别：1
+
+库名，表名，字段名：使用小写
+表：不使用删除表（drop）, 而使用清空表（truncate，或者delete from）
+表：记录数超过10000的情况下，加索引
+
+级别：2
+
+库名，表名，字段名：使用下划线分割。如：day_stocka_wind
+表：加主键
+清空表：优先使用truncate（命令：truncate ta">
+<meta property="og:updated_time" content="2016-11-17T05:23:16.482Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mysql系列之mysql使用规范">
+<meta name="twitter:description" content="级别说明所有级别：
+
+级别1, 必须做到
+级别2，优先做到
+
+级别：1
+
+库名，表名，字段名：使用小写
+表：不使用删除表（drop）, 而使用清空表（truncate，或者delete from）
+表：记录数超过10000的情况下，加索引
+
+级别：2
+
+库名，表名，字段名：使用下划线分割。如：day_stocka_wind
+表：加主键
+清空表：优先使用truncate（命令：truncate ta">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/15/mysql-3/">
+  <time datetime="2016-11-15T10:29:52.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">mysql系列之mysql使用规范</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="级别说明"><a href="#级别说明" class="headerlink" title="级别说明"></a>级别说明</h2><p>所有级别：</p>
+<ul>
+<li>级别1, 必须做到</li>
+<li>级别2，优先做到</li>
+</ul>
+<p>级别：1</p>
+<ol>
+<li>库名，表名，字段名：使用小写</li>
+<li>表：不使用删除表（drop）, 而使用清空表（truncate，或者delete from）</li>
+<li>表：记录数超过10000的情况下，加索引</li>
+</ol>
+<p>级别：2</p>
+<ol>
+<li>库名，表名，字段名：使用下划线分割。如：day_stocka_wind</li>
+<li>表：加主键</li>
+<li>清空表：优先使用<code>truncate</code>（命令：<code>truncate table tbl_name;</code>），其次使用<code>delete from</code>(命令：<code>delete from tbl_name;</code>），</li>
+</ol>
+<h2 id="关于删除表"><a href="#关于删除表" class="headerlink" title="关于删除表"></a>关于删除表</h2><p>删除表：使用<code>DROP TABLE tbl_name;</code>， 或者<code>DROP TABLE IF EXISTS tbl_name;</code><br>有业务确实需要删除表的，请联系小鱼。</p>
+<h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
+    
+  </div>
+  <footer>
+    
+      
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/mysql/">mysql</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

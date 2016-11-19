@@ -1,0 +1,202 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>mysql系列之mysql_secure_installation | 美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+    <meta name="description" content="参考http://www.myexception.cn/mysql/1902013.html
+过程安装完mysql-server 会提示可以运行mysql_secure_installation。运行mysql_secure_installation会执行几个设置：  a)为root用户设置密码  b)删除匿名账号  c)取消root用户远程登录  d)删除test库和对test库的访问权限  e">
+  
+  <meta name="description" content="参考http://www.myexception.cn/mysql/1902013.html
+过程安装完mysql-server 会提示可以运行mysql_secure_installation。运行mysql_secure_installation会执行几个设置：  a)为root用户设置密码  b)删除匿名账号  c)取消root用户远程登录  d)删除test库和对test库的访问权限  e">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql系列之mysql_secure_installation">
+<meta property="og:url" content="http://tomtsang.github.io/2016/11/15/mysql-2/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="参考http://www.myexception.cn/mysql/1902013.html
+过程安装完mysql-server 会提示可以运行mysql_secure_installation。运行mysql_secure_installation会执行几个设置：  a)为root用户设置密码  b)删除匿名账号  c)取消root用户远程登录  d)删除test库和对test库的访问权限  e">
+<meta property="og:updated_time" content="2016-11-16T07:42:52.272Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mysql系列之mysql_secure_installation">
+<meta name="twitter:description" content="参考http://www.myexception.cn/mysql/1902013.html
+过程安装完mysql-server 会提示可以运行mysql_secure_installation。运行mysql_secure_installation会执行几个设置：  a)为root用户设置密码  b)删除匿名账号  c)取消root用户远程登录  d)删除test库和对test库的访问权限  e">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/15/mysql-2/">
+  <time datetime="2016-11-15T10:31:35.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">mysql系列之mysql_secure_installation</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.myexception.cn/mysql/1902013.html" target="_blank" rel="external">http://www.myexception.cn/mysql/1902013.html</a></p>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>安装完mysql-server 会提示可以运行mysql_secure_installation。<br>运行mysql_secure_installation会执行几个设置：<br>  a)为root用户设置密码<br>  b)删除匿名账号<br>  c)取消root用户远程登录<br>  d)删除test库和对test库的访问权限<br>  e)刷新授权表使修改生效<br>通过这几项的设置能够提高mysql库的安全。建议生产环境中mysql安装这完成后一定要运行一次mysql_secure_installation，详细步骤请参看下面的命令:</p>
+<pre><code>[root@dns ~]# mysql_secure_installation
+/usr/bin/mysql_secure_installation:行379: find_mysql_client: 未找到命令
+
+NOTE: RUNNING ALL PARTS OF THIS SCRIPT IS RECOMMENDED FOR ALL MariaDB
+      SERVERS IN PRODUCTION USE!  PLEASE READ EACH STEP CAREFULLY!
+
+In order to log into MariaDB to secure it, we&apos;ll need the current
+password for the root user.  If you&apos;ve just installed MariaDB, and
+you haven&apos;t set the root password yet, the password will be blank,
+so you should just press enter here.
+
+ERROR 1045 (28000): Access denied for user &apos;root&apos;@&apos;localhost&apos; (using password: YES)
+Enter current password for root (enter for none):   --&gt;初次运行直接enter
+OK, successfully used password, moving on...
+
+Setting the root password ensures that nobody can log into the MariaDB
+root user without the proper authorisation.
+
+Set root password? [Y/n] Y
+New password:
+Re-enter new password:
+Password updated successfully!
+Reloading privilege tables..
+ ... Success!
+
+
+By default, a MariaDB installation has an anonymous user, allowing anyone
+to log into MariaDB without having to have a user account created for
+them.  This is intended only for testing, and to make the installation
+go a bit smoother.  You should remove them before moving into a
+production environment.
+
+Remove anonymous users? [Y/n] y
+ ... Success!
+
+Normally, root should only be allowed to connect from &apos;localhost&apos;.  This
+ensures that someone cannot guess at the root password from the network.
+
+Disallow root login remotely? [Y/n]
+ ... Success!
+
+By default, MariaDB comes with a database named &apos;test&apos; that anyone can
+access.  This is also intended only for testing, and should be removed
+before moving into a production environment.
+
+Remove test database and access to it? [Y/n]
+ - Dropping test database...
+ ... Success!
+ - Removing privileges on test database...
+ ... Success!
+
+Reloading the privilege tables will ensure that all changes made so far
+will take effect immediately.
+
+Reload privilege tables now? [Y/n]
+ ... Success!
+
+Cleaning up...
+
+All done!  If you&apos;ve completed all of the above steps, your MariaDB
+installation should now be secure.
+
+Thanks for using MariaDB!
+</code></pre>
+    
+  </div>
+  <footer>
+    
+      
+  <div class="categories">
+    <a class="categories-link" href="/categories/mysql/">mysql</a>
+  </div>
+
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/mysql/">mysql</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

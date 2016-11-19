@@ -1,0 +1,334 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>mysql系列之集群 MariaDB Galera Cluster 部署 | 美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+    <meta name="description" content="参考How To Setup MariaDB Galera Cluster 10.0 On CentOShttp://www.unixmen.com/setup-mariadb-galera-cluster-10-0-centos/
+安装 过程MariaDB is a relational database management system (RDBMS) and  MariaDB Galera">
+  
+  <meta name="description" content="参考How To Setup MariaDB Galera Cluster 10.0 On CentOShttp://www.unixmen.com/setup-mariadb-galera-cluster-10-0-centos/
+安装 过程MariaDB is a relational database management system (RDBMS) and  MariaDB Galera">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql系列之集群 MariaDB Galera Cluster 部署">
+<meta property="og:url" content="http://tomtsang.github.io/2016/11/17/mysql-4mysql系列之集群 MariaDB Galera Cluster 部署/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="参考How To Setup MariaDB Galera Cluster 10.0 On CentOShttp://www.unixmen.com/setup-mariadb-galera-cluster-10-0-centos/
+安装 过程MariaDB is a relational database management system (RDBMS) and  MariaDB Galera">
+<meta property="og:updated_time" content="2016-11-19T07:55:14.175Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mysql系列之集群 MariaDB Galera Cluster 部署">
+<meta name="twitter:description" content="参考How To Setup MariaDB Galera Cluster 10.0 On CentOShttp://www.unixmen.com/setup-mariadb-galera-cluster-10-0-centos/
+安装 过程MariaDB is a relational database management system (RDBMS) and  MariaDB Galera">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/17/mysql-4mysql系列之集群 MariaDB Galera Cluster 部署/">
+  <time datetime="2016-11-17T10:29:59.000Z">
+    2016-11-17
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">mysql系列之集群 MariaDB Galera Cluster 部署</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.unixmen.com/setup-mariadb-galera-cluster-10-0-centos/" target="_blank" rel="external">How To Setup MariaDB Galera Cluster 10.0 On CentOS</a><br><a href="http://www.unixmen.com/setup-mariadb-galera-cluster-10-0-centos/" target="_blank" rel="external">http://www.unixmen.com/setup-mariadb-galera-cluster-10-0-centos/</a></p>
+<h2 id="安装-过程"><a href="#安装-过程" class="headerlink" title="安装 过程"></a>安装 过程</h2><p><em>MariaDB</em> is a relational database management system (RDBMS) and  <a href="https://mariadb.com/kb/en/mariadb/what-is-mariadb-galera-cluster/" target="_blank" rel="external">MariaDB Galera Cluster</a> is a synchronous multi-master cluster for MariaDB. It is available on Linux only, and only supports the <em>XtraDB/InnoDB</em> storage engines. This article explains how to setup MariaDB Galera Cluster 10.0 with 3 nodes running on CentOS 6.5(tom注：在CentOS 7.0上也成功) x86_64 resulting in a HA (high-availability) database cluster.</p>
+<h4 id="CLUSTER-DETAILS"><a href="#CLUSTER-DETAILS" class="headerlink" title="CLUSTER DETAILS"></a>CLUSTER DETAILS</h4><p>We using 3 freshly deployed VMs running a minimal install of CentOS 6.5 x86_64.</p>
+<pre><code>Cluster node 1 has hostname db1 and IP address 1.1.1.1
+Cluster node 2 has hostname db2 and IP address 1.1.1.2
+Cluster node 3 has hostname db3 and IP address 1.1.1.3
+</code></pre><h2 id="Step-1-Add-MariaDB-Repositories"><a href="#Step-1-Add-MariaDB-Repositories" class="headerlink" title="Step 1: Add MariaDB Repositories"></a>Step 1: Add MariaDB Repositories</h2><p>Create a mariadb repository <code>/etc/yum.repos.d/mariadb.repo</code> using following content in your system.</p>
+<p>For CentOS 7 – 64bit:</p>
+<pre><code>[mariadb]
+name = MariaDB
+baseurl = http://yum.mariadb.org/10.0/centos7-amd64
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgcheck=1
+</code></pre><p>For CentOS 7 – 32bit:</p>
+<pre><code>[mariadb]
+name = MariaDB
+baseurl = http://yum.mariadb.org/10.0/centos7-x86
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgcheck=1
+</code></pre><h2 id="Step-2-–-Set-SELinux-in-permissive-mode"><a href="#Step-2-–-Set-SELinux-in-permissive-mode" class="headerlink" title="Step 2 – Set SELinux in permissive mode"></a>Step 2 – Set SELinux in permissive mode</h2><p>Before starting the setup put SELinux into permissive mode on all nodes:</p>
+<pre><code>sudo setenforce 0
+</code></pre><h2 id="Step-3-–-Install-MariaDB-Galera-Cluster-10-0-software"><a href="#Step-3-–-Install-MariaDB-Galera-Cluster-10-0-software" class="headerlink" title="Step 3 – Install MariaDB Galera Cluster 10.0 software"></a>Step 3 – Install MariaDB Galera Cluster 10.0 software</h2><p>If you did a CentOS 6 minimal installation then make sure you install the socat package from the EPEL repository before proceeding with installing the MariaDB Galera Cluster 10.0 software.</p>
+<p>You can install socat package directly from EPEL with the following command (for x86_64):</p>
+<pre><code>sudo yum install http://dl.fedoraproject.org/pub/epel/6/x86_64/socat-1.7.2.3-1.el6.x86_64.rpm
+</code></pre><p>On CentOS 7 you can install socat package with following command.</p>
+<pre><code>sudo yum install socat -y
+</code></pre><p>Install the MariaDB Galera Cluster 10.0 software by executing the following command on all nodes:</p>
+<pre><code>sudo yum install MariaDB-Galera-server MariaDB-client rsync galera -y
+</code></pre><p>如果说，这一步没有安装成功，请参考之前的那一篇<a href="tomtsang.github.io/2016/11/15/mysql-1/">mysql系列之集群 MariaDB-Galera-server 安装</a></p>
+<h2 id="Step-4-Setup-MariaDB-security"><a href="#Step-4-Setup-MariaDB-security" class="headerlink" title="Step 4:  Setup MariaDB security"></a>Step 4:  Setup MariaDB security</h2><p>Start the mysql ( init script in MariaDB 10.0 is still called mysql)</p>
+<pre><code>sudo service mysql start
+</code></pre><p>Run the <code>mysql_secure_installation</code> script so we can improve the security. Run the following command on all nodes:</p>
+<pre><code>sudo /usr/bin/mysql_secure_installation
+</code></pre><p>I choose password as ‘<code>dbpass</code>’ and accepted all defaults (so answered <code>yes</code> to all questions).</p>
+<h2 id="Step-5-–-Create-MariaDB-Galera-Cluster-users"><a href="#Step-5-–-Create-MariaDB-Galera-Cluster-users" class="headerlink" title="Step 5 – Create MariaDB Galera Cluster users"></a>Step 5 – Create MariaDB Galera Cluster users</h2><p>Now, we have to create some users that must be able to access the database. The ‘sst_user’ is the user which a database node will use for authenticating to another database node in the State Transfer Snapshot (SST) phase. Run the following command on all nodes:</p>
+<pre><code>mysql -u root -p
+mysql&gt; DELETE FROM mysql.user WHERE user=&apos;&apos;;
+mysql&gt; GRANT ALL ON *.* TO &apos;root&apos;@&apos;%&apos; IDENTIFIED BY &apos;dbpass&apos;;
+mysql&gt; GRANT USAGE ON *.* to sst_user@&apos;%&apos; IDENTIFIED BY &apos;dbpass&apos;;
+mysql&gt; GRANT ALL PRIVILEGES on *.* to sst_user@&apos;%&apos;;
+mysql&gt; FLUSH PRIVILEGES;
+mysql&gt; quit
+</code></pre><p>You are suggested to change ‘<code>%</code>’ to hostname(s) or IP addresses from which those users can access the database. Because ‘<code>%</code>’ means that the <code>root</code> or <code>sst_user</code> is allowed to access the database from any host, So less security.</p>
+<h2 id="Step-6-–-Create-the-MariaDB-Galera-Cluster-config"><a href="#Step-6-–-Create-the-MariaDB-Galera-Cluster-config" class="headerlink" title="Step 6 – Create the MariaDB Galera Cluster config"></a>Step 6 – Create the MariaDB Galera Cluster config</h2><p>First stop the mysql services on all nodes:</p>
+<pre><code>sudo service mysql stop
+</code></pre><p>Next, We are going to create the MariaDB Galera Cluster configuration by the following command on all nodes (go through the IMPORTANT NOTE after the config and make required changes for db2, and db3):</p>
+<pre><code>sudo cat &gt;&gt; /etc/my.cnf.d/server.cnf &lt;&lt; EOF
+
+binlog_format=ROW
+default-storage-engine=innodb
+innodb_autoinc_lock_mode=2
+innodb_locks_unsafe_for_binlog=1
+query_cache_size=0
+query_cache_type=0
+bind-address=0.0.0.0
+datadir=/var/lib/mysql
+innodb_log_file_size=100M
+innodb_file_per_table
+innodb_flush_log_at_trx_commit=2
+wsrep_provider=/usr/lib64/galera/libgalera_smm.so
+wsrep_cluster_address=&quot;gcomm://1.1.1.1,1.1.1.2,1.1.1.3&quot;
+wsrep_cluster_name=&apos;galera_cluster&apos;
+wsrep_node_address=&apos;1.1.1.1&apos;
+wsrep_node_name=&apos;db1&apos;
+wsrep_sst_method=rsync
+wsrep_sst_auth=sst_user:dbpass
+EOF
+</code></pre><p><em>IMPORTANT NOTE</em>: when executing this command on db2 and db3 do not forget to adjust the <code>wsrep_node_address</code> and <code>wsrep_node_name</code> variables.</p>
+<p>On db2 :</p>
+<pre><code>wsrep_node_address=1.1.1.2
+wsrep_node_name=&apos;db2&apos;
+</code></pre><p>On db3 :</p>
+<pre><code>wsrep_node_address=&apos;1.1.1.3&apos;
+wsrep_node_name=&apos;db3&apos;
+</code></pre><h2 id="Step-7–-Initialize-the-first-cluster-node"><a href="#Step-7–-Initialize-the-first-cluster-node" class="headerlink" title="Step 7– Initialize the first cluster node"></a>Step 7– Initialize the first cluster node</h2><p>Start MariaDB with the special ‘<code>‐‐wsrep-new-cluster</code>’ option , Do it on node <code>db1</code> only so the primary node of the cluster is initialized:</p>
+<pre><code>sudo /etc/init.d/mysql start --wsrep-new-cluster
+</code></pre><p>Check status by run the following command on node db1 only:</p>
+<pre><code>mysql -u root -p -e &quot;show status like &apos;wsrep%&apos;;&quot;
+</code></pre><p>Some important information in the output are the following lines:</p>
+<pre><code>wsrep_local_state_comment | Synced &lt;-- cluster is synced
+wsrep_incoming_addresses  | 1.1.1.1:3306 &lt;-- node db1 is a provider
+wsrep_cluster_size        | 1 &lt;-- cluster consists of 1 node
+wsrep_ready               | ON &lt;-- good :)
+</code></pre><p>如果说这里报错了，请参考<a href="tomtsang.github.io/">mysql系列之集群 MariaDB-Galera-cluster 报错</a></p>
+<h2 id="Step-8–-Add-the-other-cluster-nodes"><a href="#Step-8–-Add-the-other-cluster-nodes" class="headerlink" title="Step 8– Add the other cluster nodes"></a>Step 8– Add the other cluster nodes</h2><p>Check and confirm nodes db2 and db3 have the correct configuration in <code>/etc/my.cnf.d/server.cnf</code> under the [<code>mariadb-10.0</code>] as described in step 6.</p>
+<p>With the correct configuration in place, all that is required to make db2 and db3 a member of the cluster is to start them like you would start any regular service. On db2 issue the following command:</p>
+<pre><code>sudo service mysql start
+</code></pre><p>Check what has changed in the cluster status by executing the following command on db1 or db2:</p>
+<pre><code>mysql -u root -p -e &quot;show status like &apos;wsrep%&apos;;&quot;
+</code></pre><p>And you will see that node db2 is now known as the cluster size is ‘2’ and the IP address of node db2 is listed:</p>
+<pre><code>| wsrep_local_state_comment | Synced                    |
+| wsrep_incoming_addre sses | 1.1.1.1:3306,1.1.1.2:3306 |
+| wsrep_cluster_size        | 2                         |
+| wsrep_connected           | ON                        |
+| wsrep_ready               | ON                        |
+</code></pre><p>Repeat the same step for node db3. On node db3 only execute the following command</p>
+<pre><code>sudo service mysql start
+</code></pre><p>Check what has changed in the cluster status by executing the following command on for example db1:</p>
+<pre><code>mysql -u root -p -e &quot;show status like &apos;wsrep%&apos;;&quot;
+</code></pre><p>And you should see that node db3 is now known as the cluster size is ‘3’ and the IP address of node db3 is listed:</p>
+<pre><code>| wsrep_local_state_comment | Synced                                 |
+| wsrep_incoming_addresses  | 1.1.1.3:3306,1.1.1.1:3306,1.1.1.2:3306 |
+| wsrep_cluster_size        | 3                                      |
+| wsrep_connected           | ON                                     |
+| wsrep_ready               | ON                                     |
+</code></pre><h2 id="Step-9-–-Verify-replication"><a href="#Step-9-–-Verify-replication" class="headerlink" title="Step 9 – Verify replication"></a>Step 9 – Verify replication</h2><p>Now the cluster is running. Let’s test whether it is working. On db1 create a database ‘clustertest’ by run the following command:</p>
+<pre><code>mysql -u root -p -e &apos;CREATE DATABASE clustertest;&apos;
+
+mysql -u root -p -e &apos;CREATE TABLE clustertest.mycluster ( id INT NOT NULL AUTO_INCREMENT, name VARCHAR(50), ipaddress VARCHAR(20), PRIMARY KEY(id));&apos;
+
+mysql -u root -p -e &apos;INSERT INTO clustertest.mycluster (name, ipaddress) VALUES (&quot;db1&quot;, &quot;1.1.1.1&quot;);&apos;
+</code></pre><p>Check if the database, table and data exists:</p>
+<pre><code>mysql -u root -p -e &apos;SELECT * FROM clustertest.mycluster;&apos;
+Enter password:
++----+------+-----------+
+| id | name | ipaddress |
++----+------+-----------+
+| 2  | db1  | 1.1.1.1   |
++----+------+-----------+
+</code></pre><p>Now do the check on node db2:</p>
+<pre><code>mysql -u root -p -e &apos;SELECT * FROM clustertest.mycluster;&apos;
+Enter password:
++----+------+-----------+
+| id | name | ipaddress |
++----+------+-----------+
+| 2  | db1  | 1.1.1.1   |
++----+------+-----------+
+</code></pre><p>Now do the same check on node db3:</p>
+<pre><code>mysql -u root -p -e &apos;SELECT * FROM clustertest.mycluster;&apos;
+Enter password:
++----+------+-----------+
+| id | name | ipaddress |
++----+------+-----------+
+| 2  | db1  | 1.1.1.1   |
++----+------+-----------+
+</code></pre><p>From these outputs we can confirm that everything was successfully replicated by node db1 across all other nodes.</p>
+<p>That’s it.</p>
+<p>Cheers!</p>
+<h2 id="ctrl-v-吧"><a href="#ctrl-v-吧" class="headerlink" title="ctrl + v 吧"></a>ctrl + v 吧</h2><pre><code>sudo vi /etc/hosts
+    10.10.162.11    db1
+    10.10.162.12    db2
+    10.10.162.13    db3
+sudo vi /etc/yum.repos.d/mariadb.repo
+    # MariaDB 10.1 CentOS repository list - created 2016-11-15 02:38 UTC
+    # http://downloads.mariadb.org/mariadb/repositories/
+    [mariadb]
+    name = MariaDB
+    baseurl = http://yum.mariadb.org/10.0/centos7-amd64
+    gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+    gpgcheck=1
+sudo setenforce 0
+sudo yum install socat -y
+sudo yum install socat MariaDB-Galera-server MariaDB-client rsync galera -y
+sudo service mysql start
+sudo /usr/bin/mysql_secure_installation
+mysql -u root -p
+sudo service mysql stop
+sudo cat &gt;&gt; /etc/my.cnf.d/server.cnf &lt;&lt; EOF
+    binlog_format=ROW
+    default-storage-engine=innodb
+    innodb_autoinc_lock_mode=2
+    innodb_locks_unsafe_for_binlog=1
+    query_cache_size=0
+    query_cache_type=0
+    bind-address=0.0.0.0
+    datadir=/var/lib/mysql
+    innodb_log_file_size=100M
+    innodb_file_per_table
+    innodb_flush_log_at_trx_commit=2
+    wsrep_provider=/usr/lib64/galera/libgalera_smm.so
+    wsrep_cluster_address=&quot;gcomm://1.1.1.1,1.1.1.2,1.1.1.3&quot;
+    wsrep_cluster_name=&apos;galera_cluster&apos;
+    wsrep_node_address=&apos;1.1.1.1&apos;
+    wsrep_node_name=&apos;db1&apos;
+    wsrep_sst_method=rsync
+    wsrep_sst_auth=sst_user:dbpass
+    EOF
+# 上面这个好像会出错，算了，我们 sudo vi 吧
+sudo vi /etc/my.cnf.d/server.cnf
+sudo cp -a /etc/my.cnf.d/server.cnf .
+ls
+sudo cp -a server.cnf server.cnf.12
+sudo cp -a server.cnf server.cnf.13
+sudo vi server.cnf.12
+sudo vi server.cnf.13
+scp server.cnf.12 spa@s12:/home/spa/  # 之后在spa@s12中改一改吧。
+scp server.cnf.13 spa@s13:/home/spa/
+# 好了，现在三台机器的配置都完成啦！
+sudo /etc/init.d/mysql start --wsrep-new-cluster
+mysql -u root -p -e &quot;show status like &apos;wsrep%&apos;;&quot;
+# 好了，如果没有问题，我们把其它2台机器也启动下。 sudo service mysql start; sudo service mysql status;
+mysql -u root -p -e &apos;CREATE DATABASE clustertest;&apos;
+mysql -u root -p -e &apos;CREATE TABLE clustertest.mycluster ( id INT NOT NULL AUTO_INCREMENT, name VARCHAR(50), ipaddress VARCHAR(20), PRIMARY KEY(id));&apos;
+mysql -u root -p -e &apos;INSERT INTO clustertest.mycluster (name, ipaddress) VALUES (&quot;db1&quot;, &quot;1.1.1.1&quot;);&apos;
+mysql -u root -p -e &apos;SELECT * FROM clustertest.mycluster;&apos;
+# 到其它2台机器上也查一下吧。 mysql -u root -p -e &apos;SELECT * FROM clustertest.mycluster;&apos;
+# 如果其它机器也显示出来了，那就Cheers!
+</code></pre>
+    
+  </div>
+  <footer>
+    
+      
+  <div class="categories">
+    <a class="categories-link" href="/categories/mysql/">mysql</a>
+  </div>
+
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/cluster/">cluster</a>, <a class="tags-link" href="/tags/install/">install</a>, <a class="tags-link" href="/tags/mysql/">mysql</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

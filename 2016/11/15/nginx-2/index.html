@@ -1,0 +1,180 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>nginx txt,json文件 中文乱码 | 美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+    <meta name="description" content="nginx 中 txt,json文件 中文乱码在 /etc/nginx/conf.d/default.conf 中找到 location / { ,然后加入
+charset utf-8;
+charset_types text/html
+如：
+server {
+    listen       8000;
+    server_name  localhost;
+
+    #default_type">
+  
+  <meta name="description" content="nginx 中 txt,json文件 中文乱码在 /etc/nginx/conf.d/default.conf 中找到 location / { ,然后加入
+charset utf-8;
+charset_types text/html
+如：
+server {
+    listen       8000;
+    server_name  localhost;
+
+    #default_type">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nginx txt,json文件 中文乱码">
+<meta property="og:url" content="http://tomtsang.github.io/2016/11/15/nginx-2/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="nginx 中 txt,json文件 中文乱码在 /etc/nginx/conf.d/default.conf 中找到 location / { ,然后加入
+charset utf-8;
+charset_types text/html
+如：
+server {
+    listen       8000;
+    server_name  localhost;
+
+    #default_type">
+<meta property="og:updated_time" content="2016-11-15T08:47:23.775Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="nginx txt,json文件 中文乱码">
+<meta name="twitter:description" content="nginx 中 txt,json文件 中文乱码在 /etc/nginx/conf.d/default.conf 中找到 location / { ,然后加入
+charset utf-8;
+charset_types text/html
+如：
+server {
+    listen       8000;
+    server_name  localhost;
+
+    #default_type">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/15/nginx-2/">
+  <time datetime="2016-11-15T08:47:05.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">nginx txt,json文件 中文乱码</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="nginx-中-txt-json文件-中文乱码"><a href="#nginx-中-txt-json文件-中文乱码" class="headerlink" title="nginx 中 txt,json文件 中文乱码"></a>nginx 中 txt,json文件 中文乱码</h2><p>在 /etc/nginx/conf.d/default.conf 中找到 <code>location / {</code> ,然后加入</p>
+<pre><code>charset utf-8;
+charset_types text/html
+</code></pre><p>如：</p>
+<pre><code>server {
+    listen       8000;
+    server_name  localhost;
+
+    #default_type &apos;text/html&apos;;
+    #charset utf-8;
+    #charset koi8-r;
+    #access_log  /var/log/nginx/log/host.access.log  main;
+
+    location / {
+        charset utf-8;
+        charset_types text/html application/json;
+        add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;;
+        add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;
+        add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;
+</code></pre>
+    
+  </div>
+  <footer>
+    
+      
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/nginx/">nginx</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

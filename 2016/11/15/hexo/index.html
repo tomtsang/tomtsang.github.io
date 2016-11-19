@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>hexo | 美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+    <meta name="description" content="hexo下新建页面下如何放多个文章？https://www.zhihu.com/question/33324071
+hexo分类与tags配置Hexo中如何给一篇文章加多个tags？下面2种方式：    tags: [a,b,c] # 冒号后有一个空格    tags: - abc- def- xxx    tags:
+- tag1
+- tag2
+可以做到自动增加哟。tom@adata:~/m6s">
+  
+  <meta name="description" content="hexo下新建页面下如何放多个文章？https://www.zhihu.com/question/33324071
+hexo分类与tags配置Hexo中如何给一篇文章加多个tags？下面2种方式：    tags: [a,b,c] # 冒号后有一个空格    tags: - abc- def- xxx    tags:
+- tag1
+- tag2
+可以做到自动增加哟。tom@adata:~/m6s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hexo">
+<meta property="og:url" content="http://tomtsang.github.io/2016/11/15/hexo/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="hexo下新建页面下如何放多个文章？https://www.zhihu.com/question/33324071
+hexo分类与tags配置Hexo中如何给一篇文章加多个tags？下面2种方式：    tags: [a,b,c] # 冒号后有一个空格    tags: - abc- def- xxx    tags:
+- tag1
+- tag2
+可以做到自动增加哟。tom@adata:~/m6s">
+<meta property="og:updated_time" content="2016-11-15T10:25:01.905Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hexo">
+<meta name="twitter:description" content="hexo下新建页面下如何放多个文章？https://www.zhihu.com/question/33324071
+hexo分类与tags配置Hexo中如何给一篇文章加多个tags？下面2种方式：    tags: [a,b,c] # 冒号后有一个空格    tags: - abc- def- xxx    tags:
+- tag1
+- tag2
+可以做到自动增加哟。tom@adata:~/m6s">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/15/hexo/">
+  <time datetime="2016-11-15T09:39:24.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">hexo</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="hexo下新建页面下如何放多个文章？"><a href="#hexo下新建页面下如何放多个文章？" class="headerlink" title="hexo下新建页面下如何放多个文章？"></a>hexo下新建页面下如何放多个文章？</h2><p><a href="https://www.zhihu.com/question/33324071" target="_blank" rel="external">https://www.zhihu.com/question/33324071</a></p>
+<h2 id="hexo分类与tags配置"><a href="#hexo分类与tags配置" class="headerlink" title="hexo分类与tags配置"></a>hexo分类与tags配置</h2><p>Hexo中如何给一篇文章加多个tags？<br>下面2种方式：<br>    tags: [a,b,c] # 冒号后有一个空格<br>    tags: - abc- def- xxx<br>    tags:</p>
+<pre><code>- tag1
+- tag2
+</code></pre><h2 id="可以做到自动增加哟。"><a href="#可以做到自动增加哟。" class="headerlink" title="可以做到自动增加哟。"></a>可以做到自动增加哟。</h2><pre><code>tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql-21&quot;
+INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-21.md
+tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql&quot;
+INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-22.md
+tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql&quot;
+INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-23.md_
+</code></pre><p>这样的话，方便形成系列的文章。每次就不用管是第几个mysql系列文章了。<br>不过系列文章，最好用的，还是 categories</p>
+<h2 id="可以用自定义的post"><a href="#可以用自定义的post" class="headerlink" title="可以用自定义的post:"></a>可以用自定义的post:</h2><pre><code>tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql&quot; [mysql]
+INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-4.md
+tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql&quot; [mysql]
+INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-5.md
+tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql&quot; [mysql]
+INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-1.md_
+</code></pre><h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
+    
+  </div>
+  <footer>
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

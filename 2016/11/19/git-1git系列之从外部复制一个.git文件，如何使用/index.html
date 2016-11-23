@@ -1,0 +1,240 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>git系列之从外部复制一个.git文件，如何使用 | 美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+    <meta name="description" content="从外部复制一个.git文件，如何使用
+问题有.git 文件　 ，直接使用，报错如下：
+fatal: &amp;apos;/srv/OpenX.git&amp;apos; does not appear to be a git repository
+fatal: Could not read from remote repository.
+现在有一个新来的.git文件, 如：OpenX.git
+
+放到本机的git仓">
+  
+  <meta name="description" content="从外部复制一个.git文件，如何使用
+问题有.git 文件　 ，直接使用，报错如下：
+fatal: &amp;apos;/srv/OpenX.git&amp;apos; does not appear to be a git repository
+fatal: Could not read from remote repository.
+现在有一个新来的.git文件, 如：OpenX.git
+
+放到本机的git仓">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git系列之从外部复制一个.git文件，如何使用">
+<meta property="og:url" content="http://tomtsang.github.io/2016/11/19/git-1git系列之从外部复制一个.git文件，如何使用/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="从外部复制一个.git文件，如何使用
+问题有.git 文件　 ，直接使用，报错如下：
+fatal: &amp;apos;/srv/OpenX.git&amp;apos; does not appear to be a git repository
+fatal: Could not read from remote repository.
+现在有一个新来的.git文件, 如：OpenX.git
+
+放到本机的git仓">
+<meta property="og:updated_time" content="2016-11-19T10:54:59.782Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="git系列之从外部复制一个.git文件，如何使用">
+<meta name="twitter:description" content="从外部复制一个.git文件，如何使用
+问题有.git 文件　 ，直接使用，报错如下：
+fatal: &amp;apos;/srv/OpenX.git&amp;apos; does not appear to be a git repository
+fatal: Could not read from remote repository.
+现在有一个新来的.git文件, 如：OpenX.git
+
+放到本机的git仓">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/19/git-1git系列之从外部复制一个.git文件，如何使用/">
+  <time datetime="2016-11-19T10:05:00.000Z">
+    2016-11-19
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">git系列之从外部复制一个.git文件，如何使用</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>从外部复制一个.git文件，如何使用</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>有.git 文件　 ，直接使用，报错如下：</p>
+<pre><code>fatal: &apos;/srv/OpenX.git&apos; does not appear to be a git repository
+fatal: Could not read from remote repository.
+</code></pre><p>现在有一个新来的.git文件, 如：OpenX.git</p>
+<ol>
+<li><p>放到本机的git仓库目录</p>
+<pre><code>[tom@check repositories]$ sudo cp -a OpenX.git/ /srv/
+</code></pre></li>
+<li><p>建立新的下传使用目录</p>
+<pre><code>[tom@check repositories]$ cd ../testgit/
+[tom@check testgit]$ mkdir testgit2
+[tom@check testgit]$ ls
+OpenXtest  testgit2
+[tom@check testgit]$ cd testgit2/
+[tom@check testgit2]$ git init
+Initialized empty Git repository in /home/tom/in/testgit/testgit2/.git/
+</code></pre></li>
+<li><p>下传pull</p>
+<ol>
+<li><p>remote报错啦</p>
+<pre><code>[tom@check testgit2]$ git remote add checkgit git@192.168.31.181:/srv/OpenX.git
+[tom@check testgit2]$ git pull checkgit master
+git@192.168.31.181&apos;s password:
+fatal: &apos;/srv/OpenX.git&apos; does not appear to be a git repository
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+[tom@check testgit2]$
+</code></pre></li>
+<li><p>clone也是会报错哟</p>
+<pre><code>[tom@check testgit2]$ git clone git@192.168.31.181:/srv/OpenX.git
+Cloning into &apos;OpenX&apos;...
+git@192.168.31.181&apos;s password:
+fatal: &apos;/srv/OpenX.git&apos; does not appear to be a git repository
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+[tom@check testgit2]$
+</code></pre></li>
+</ol>
+</li>
+</ol>
+<h2 id="解决"><a href="#解决" class="headerlink" title="解决　"></a>解决　</h2><p>查看文件属性</p>
+<pre><code>[tom@check testgit2]$ ll /srv/
+total 0
+drwxr-xr-x 7 git git 111 Jan 19 18:13 conan.git
+drwxr-xr-x 7 git git 111 Jan 11 10:52 crawler.git
+drwxr-xr-x 7 git git 111 Jan  8 16:19 eastmoney.git
+drwx------ 7 tom tom 107 Feb 28 08:59 OpenX.git
+drwxr-xr-x 7 git git 111 Jan 19 11:18 qlw.git
+drwxr-xr-x 7 git git 111 Jan  6 15:03 sample.git
+[tom@check testgit2]$
+</code></pre><p>发现OpenX.git 属性不对.</p>
+<p>检查是否安装git,并有git用户。如果没有，则建立git账户和密码<br>修改 OpenX.git 属性</p>
+<pre><code>[tom@check testgit2]$ sudo chown -R git:git /srv/OpenX.git/
+[tom@check testgit2]$ sudo chmod -R 755 /srv/OpenX.git/
+[tom@check testgit2]$ ll /srv/
+total 0
+drwxr-xr-x 7 git git 111 Jan 19 18:13 conan.git
+drwxr-xr-x 7 git git 111 Jan 11 10:52 crawler.git
+drwxr-xr-x 7 git git 111 Jan  8 16:19 eastmoney.git
+drwxr-xr-x 7 git git 107 Feb 28 08:59 OpenX.git
+drwxr-xr-x 7 git git 111 Jan 19 11:18 qlw.git
+drwxr-xr-x 7 git git 111 Jan  6 15:03 sample.git
+[tom@check testgit2]$
+</code></pre><p>验收</p>
+<pre><code>[tom@check testgit2]$ git remote add checkgit git@192.168.31.181:/srv/OpenX.git
+fatal: remote checkgit already exists.
+[tom@check testgit2]$ git pull checkgit master
+git@192.168.31.181&apos;s password:
+remote: Counting objects: 1673, done.
+remote: Compressing objects: 100% (1637/1637), done.
+remote: Total 1673 (delta 928), reused 76 (delta 32)
+Receiving objects: 100% (1673/1673), 6.90 MiB | 7.48 MiB/s, done.
+Resolving deltas: 100% (928/928), done.
+From 192.168.31.181:/srv/OpenX
+ * branch            master     -&gt; FETCH_HEAD
+[tom@check testgit2]$ ls
+lib  OpenInfo  OpenQuote
+[tom@check testgit2]$
+</code></pre>
+    
+  </div>
+  <footer>
+    
+      
+  <div class="categories">
+    <a class="categories-link" href="/categories/git/">git</a>
+  </div>
+
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/git/">git</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

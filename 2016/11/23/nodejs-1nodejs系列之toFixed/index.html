@@ -1,0 +1,269 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>nodejs系列之toFixed | 美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+    <meta name="description" content="在遇到，4147.8015这样的浮点数时的，toFixed()的替代方案。
+通过下面这一段，应该知道，这里的toFixed2 中的 “9”（是可以设置成限定的位数的准确度的，不应该设置成“2”，“2”太小了，是有问题的，所以设置成大数“9”）。    tom@adata:~/m6s/nodejs/module/toFixed$ node
+&amp;gt; var aux = Math.pow(0.1, 1">
+  
+  <meta name="description" content="在遇到，4147.8015这样的浮点数时的，toFixed()的替代方案。
+通过下面这一段，应该知道，这里的toFixed2 中的 “9”（是可以设置成限定的位数的准确度的，不应该设置成“2”，“2”太小了，是有问题的，所以设置成大数“9”）。    tom@adata:~/m6s/nodejs/module/toFixed$ node
+&amp;gt; var aux = Math.pow(0.1, 1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nodejs系列之toFixed">
+<meta property="og:url" content="http://tomtsang.github.io/2016/11/23/nodejs-1nodejs系列之toFixed/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="在遇到，4147.8015这样的浮点数时的，toFixed()的替代方案。
+通过下面这一段，应该知道，这里的toFixed2 中的 “9”（是可以设置成限定的位数的准确度的，不应该设置成“2”，“2”太小了，是有问题的，所以设置成大数“9”）。    tom@adata:~/m6s/nodejs/module/toFixed$ node
+&amp;gt; var aux = Math.pow(0.1, 1">
+<meta property="og:updated_time" content="2016-11-23T06:15:59.857Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="nodejs系列之toFixed">
+<meta name="twitter:description" content="在遇到，4147.8015这样的浮点数时的，toFixed()的替代方案。
+通过下面这一段，应该知道，这里的toFixed2 中的 “9”（是可以设置成限定的位数的准确度的，不应该设置成“2”，“2”太小了，是有问题的，所以设置成大数“9”）。    tom@adata:~/m6s/nodejs/module/toFixed$ node
+&amp;gt; var aux = Math.pow(0.1, 1">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/23/nodejs-1nodejs系列之toFixed/">
+  <time datetime="2016-11-23T06:11:56.000Z">
+    2016-11-23
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">nodejs系列之toFixed</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>在遇到，4147.8015这样的浮点数时的，toFixed()的替代方案。</p>
+<p>通过下面这一段，应该知道，这里的toFixed2 中的 “9”（是可以设置成限定的位数的准确度的，不应该设置成“2”，“2”太小了，是有问题的，所以设置成大数“9”）。<br>    tom@adata:~/m6s/nodejs/module/toFixed$ node</p>
+<pre><code>&gt; var aux = Math.pow(0.1, 1 + 2)
+undefined
+&gt; var number = 14.44999
+undefined
+&gt; number + aux
+14.45099
+&gt; (number + aux).toFixed(1)
+&apos;14.5&apos;
+</code></pre><p>下面，直接上代码吧。共2个js文件。写法不同，意思相同。</p>
+<p>toFixedTest1.js</p>
+<pre><code>module.exports.MathHelper = MathHelper;
+
+var MathHelper = (function() {
+    this.round = function(number, numberOfDecimals) {
+        var aux = Math.pow(10, numberOfDecimals);
+        return Math.round(number * aux) / aux;
+    };
+    this.floor = function(number, numberOfDecimals) {
+        var aux = Math.pow(10, numberOfDecimals);
+        return Math.floor(number * aux) / aux;
+    };
+    this.ceil = function(number, numberOfDecimals) {
+        var aux = Math.pow(10, numberOfDecimals);
+        return Math.ceil(number * aux) / aux;
+    };
+    this.toFixed = function(number, numberOfDecimals) {
+        return (number + 0.000001).toFixed(numberOfDecimals);
+    };
+    this.toFixed2 = function(number, numberOfDecimals) {
+        var aux = Math.pow(0.1, numberOfDecimals + 9); // 这里的这个9,只是让它小一点，再小一点。
+        return (number + aux).toFixed(numberOfDecimals);
+    };
+    this.toFixed3 = function(number, numberOfDecimals) {
+        var aux = Math.pow(0.1, numberOfDecimals);
+        console.log(&quot;aux =&gt;&quot;, aux);
+        return (number + aux).toFixed(numberOfDecimals);
+    };
+    return {
+        round: round,
+        floor: floor,
+        ceil: ceil,
+        toFixed: toFixed,
+        toFixed2: toFixed2,
+        toFixed3: round
+    };
+})();
+
+var ToFixedHelper = (function() {
+    this.toFixed = function(number, numberOfDecimals) {
+        var aux = Math.pow(0.1, numberOfDecimals);
+        return (number + aux).toFixed(numberOfDecimals);
+    };
+    return {
+        toFixed: toFixed
+    }
+})();
+
+console.log(MathHelper.round(5.175, 2));
+console.log(MathHelper.toFixed(5.175, 2));
+console.log(MathHelper.toFixed(4147.8015, 3));
+console.log(MathHelper.toFixed2(4147.8015, 3));
+console.log(ToFixedHelper.toFixed(4147.8015, 3));
+
+var number = 4147.8015;
+var num = 10000;
+console.time(&quot;toFixed&quot;);
+for (var i = 0; i &lt; num; i++) {
+    number.toFixed(3);
+}
+console.timeEnd(&quot;toFixed&quot;);
+
+console.time(&quot;toFixed1&quot;);
+for (var i = 0; i &lt; num; i++) {
+    MathHelper.toFixed(number, 3);
+}
+console.timeEnd(&quot;toFixed1&quot;);
+
+console.time(&quot;toFixed2&quot;);
+for (var i = 0; i &lt; num; i++) {
+    MathHelper.toFixed2(number, 3);
+}
+console.timeEnd(&quot;toFixed2&quot;);
+</code></pre><p>toFixedTest2.js</p>
+<pre><code>var MathHelper = {
+    toFixed : function(number, numberOfDecimals) {
+        // var aux = Math.pow(0.1, numberOfDecimals + 2) + Math.pow(0.1, numberOfDecimals + 1);
+        var aux = 0.000001; // Math.pow(0.1, numberOfDecimals + 2);
+        return (number + aux).toFixed(numberOfDecimals);
+    },
+    toFixed2 : function(number, numberOfDecimals) {
+        // var aux = Math.pow(0.1, numberOfDecimals + 2) + Math.pow(0.1, numberOfDecimals + 1);
+        var aux = Math.pow(0.1, numberOfDecimals + 9);
+        return (number + aux).toFixed(numberOfDecimals);
+    }
+};
+
+console.log(MathHelper.toFixed(5.175, 2));
+console.log(5.175.toFixed(2));
+console.log(MathHelper.toFixed(4147.8015, 3));
+console.log(4147.8015.toFixed(3));
+console.log(MathHelper.toFixed(14.499, 1));
+console.log(14.499.toFixed(1));
+
+console.log(14.44999.toFixed(1));
+console.log(MathHelper.toFixed(14.44999, 1));
+console.log(MathHelper.toFixed2(14.44999, 1));
+
+var number = 4147.8015;
+var num = 10000;
+console.time(&quot;toFixed&quot;);
+for (var i = 0; i &lt; num; i++) {
+    number.toFixed(3);
+}
+console.timeEnd(&quot;toFixed&quot;);
+
+console.time(&quot;toFixed1&quot;);
+for (var i = 0; i &lt; num; i++) {
+    MathHelper.toFixed(number, 3);
+}
+console.timeEnd(&quot;toFixed1&quot;);
+
+console.time(&quot;toFixed1&quot;);
+for (var i = 0; i &lt; num; i++) {
+    MathHelper.toFixed(number, 3);
+}
+console.timeEnd(&quot;toFixed1&quot;);
+</code></pre>
+    
+  </div>
+  <footer>
+    
+      
+  <div class="categories">
+    <a class="categories-link" href="/categories/nodejs/">nodejs</a>
+  </div>
+
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/nodejs/">nodejs</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

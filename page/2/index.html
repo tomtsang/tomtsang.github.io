@@ -68,6 +68,1296 @@
   <header>
     
       <div class="icon"></div>
+      <a href="/2016/11/17/mysql-4mysql系列之集群 MariaDB Galera Cluster 部署/">
+  <time datetime="2016-11-17T10:29:59.000Z">
+    2016-11-17
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/17/mysql-4mysql系列之集群 MariaDB Galera Cluster 部署/">mysql系列之集群 MariaDB Galera Cluster 部署</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.unixmen.com/setup-mariadb-galera-cluster-10-0-centos/" target="_blank" rel="external">How To Setup MariaDB Galera Cluster 10.0 On CentOS</a><br><a href="http://www.unixmen.com/setup-mariadb-galera-cluster-10-0-centos/" target="_blank" rel="external">http://www.unixmen.com/setup-mariadb-galera-cluster-10-0-centos/</a></p>
+<h2 id="安装-过程"><a href="#安装-过程" class="headerlink" title="安装 过程"></a>安装 过程</h2><p><em>MariaDB</em> is a relational database management system (RDBMS) and  <a href="https://mariadb.com/kb/en/mariadb/what-is-mariadb-galera-cluster/" target="_blank" rel="external">MariaDB Galera Cluster</a> is a synchronous multi-master cluster for MariaDB. It is available on Linux only, and only supports the <em>XtraDB/InnoDB</em> storage engines. This article explains how to setup MariaDB Galera Cluster 10.0 with 3 nodes running on CentOS 6.5(tom注：在CentOS 7.0上也成功) x86_64 resulting in a HA (high-availability) database cluster.</p>
+<h4 id="CLUSTER-DETAILS"><a href="#CLUSTER-DETAILS" class="headerlink" title="CLUSTER DETAILS"></a>CLUSTER DETAILS</h4><p>We using 3 freshly deployed VMs running a minimal install of CentOS 6.5 x86_64.</p>
+<pre><code>Cluster node 1 has hostname db1 and IP address 1.1.1.1
+Cluster node 2 has hostname db2 and IP address 1.1.1.2
+Cluster node 3 has hostname db3 and IP address 1.1.1.3
+</code></pre><h2 id="Step-1-Add-MariaDB-Repositories"><a href="#Step-1-Add-MariaDB-Repositories" class="headerlink" title="Step 1: Add MariaDB Repositories"></a>Step 1: Add MariaDB Repositories</h2><p>Create a mariadb repository <code>/etc/yum.repos.d/mariadb.repo</code> using following content in your system.</p>
+<p>For CentOS 7 – 64bit:</p>
+<pre><code>[mariadb]
+name = MariaDB
+baseurl = http://yum.mariadb.org/10.0/centos7-amd64
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgcheck=1
+</code></pre><p>For CentOS 7 – 32bit:</p>
+<pre><code>[mariadb]
+name = MariaDB
+baseurl = http://yum.mariadb.org/10.0/centos7-x86
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgcheck=1
+</code></pre><h2 id="Step-2-–-Set-SELinux-in-permissive-mode"><a href="#Step-2-–-Set-SELinux-in-permissive-mode" class="headerlink" title="Step 2 – Set SELinux in permissive mode"></a>Step 2 – Set SELinux in permissive mode</h2><p>Before starting the setup put SELinux into permissive mode on all nodes:</p>
+<pre><code>sudo setenforce 0
+</code></pre><h2 id="Step-3-–-Install-MariaDB-Galera-Cluster-10-0-software"><a href="#Step-3-–-Install-MariaDB-Galera-Cluster-10-0-software" class="headerlink" title="Step 3 – Install MariaDB Galera Cluster 10.0 software"></a>Step 3 – Install MariaDB Galera Cluster 10.0 software</h2><p>If you did a CentOS 6 minimal installation then make sure you install the socat package from the EPEL repository before proceeding with installing the MariaDB Galera Cluster 10.0 software.</p>
+<p>You can install socat package directly from EPEL with the following command (for x86_64):</p>
+<pre><code>sudo yum install http://dl.fedoraproject.org/pub/epel/6/x86_64/socat-1.7.2.3-1.el6.x86_64.rpm
+</code></pre><p>On CentOS 7 you can install socat package with following command.</p>
+<pre><code>sudo yum install socat -y
+</code></pre><p>Install the MariaDB Galera Cluster 10.0 software by executing the following command on all nodes:</p>
+<pre><code>sudo yum install MariaDB-Galera-server MariaDB-client rsync galera -y
+</code></pre><p>如果说，这一步没有安装成功，请参考之前的那一篇<a href="tomtsang.github.io/2016/11/15/mysql-1/">mysql系列之集群 MariaDB-Galera-server 安装</a></p>
+<h2 id="Step-4-Setup-MariaDB-security"><a href="#Step-4-Setup-MariaDB-security" class="headerlink" title="Step 4:  Setup MariaDB security"></a>Step 4:  Setup MariaDB security</h2><p>Start the mysql ( init script in MariaDB 10.0 is still called mysql)</p>
+<pre><code>sudo service mysql start
+</code></pre><p>Run the <code>mysql_secure_installation</code> script so we can improve the security. Run the following command on all nodes:</p>
+<pre><code>sudo /usr/bin/mysql_secure_installation
+</code></pre><p>I choose password as ‘<code>dbpass</code>’ and accepted all defaults (so answered <code>yes</code> to all questions).</p>
+<h2 id="Step-5-–-Create-MariaDB-Galera-Cluster-users"><a href="#Step-5-–-Create-MariaDB-Galera-Cluster-users" class="headerlink" title="Step 5 – Create MariaDB Galera Cluster users"></a>Step 5 – Create MariaDB Galera Cluster users</h2><p>Now, we have to create some users that must be able to access the database. The ‘sst_user’ is the user which a database node will use for authenticating to another database node in the State Transfer Snapshot (SST) phase. Run the following command on all nodes:</p>
+<pre><code>mysql -u root -p
+mysql&gt; DELETE FROM mysql.user WHERE user=&apos;&apos;;
+mysql&gt; GRANT ALL ON *.* TO &apos;root&apos;@&apos;%&apos; IDENTIFIED BY &apos;dbpass&apos;;
+mysql&gt; GRANT USAGE ON *.* to sst_user@&apos;%&apos; IDENTIFIED BY &apos;dbpass&apos;;
+mysql&gt; GRANT ALL PRIVILEGES on *.* to sst_user@&apos;%&apos;;
+mysql&gt; FLUSH PRIVILEGES;
+mysql&gt; quit
+</code></pre><p>You are suggested to change ‘<code>%</code>’ to hostname(s) or IP addresses from which those users can access the database. Because ‘<code>%</code>’ means that the <code>root</code> or <code>sst_user</code> is allowed to access the database from any host, So less security.</p>
+<h2 id="Step-6-–-Create-the-MariaDB-Galera-Cluster-config"><a href="#Step-6-–-Create-the-MariaDB-Galera-Cluster-config" class="headerlink" title="Step 6 – Create the MariaDB Galera Cluster config"></a>Step 6 – Create the MariaDB Galera Cluster config</h2><p>First stop the mysql services on all nodes:</p>
+<pre><code>sudo service mysql stop
+</code></pre><p>Next, We are going to create the MariaDB Galera Cluster configuration by the following command on all nodes (go through the IMPORTANT NOTE after the config and make required changes for db2, and db3):</p>
+<pre><code>sudo cat &gt;&gt; /etc/my.cnf.d/server.cnf &lt;&lt; EOF
+
+binlog_format=ROW
+default-storage-engine=innodb
+innodb_autoinc_lock_mode=2
+innodb_locks_unsafe_for_binlog=1
+query_cache_size=0
+query_cache_type=0
+bind-address=0.0.0.0
+datadir=/var/lib/mysql
+innodb_log_file_size=100M
+innodb_file_per_table
+innodb_flush_log_at_trx_commit=2
+wsrep_provider=/usr/lib64/galera/libgalera_smm.so
+wsrep_cluster_address=&quot;gcomm://1.1.1.1,1.1.1.2,1.1.1.3&quot;
+wsrep_cluster_name=&apos;galera_cluster&apos;
+wsrep_node_address=&apos;1.1.1.1&apos;
+wsrep_node_name=&apos;db1&apos;
+wsrep_sst_method=rsync
+wsrep_sst_auth=sst_user:dbpass
+EOF
+</code></pre><p><em>IMPORTANT NOTE</em>: when executing this command on db2 and db3 do not forget to adjust the <code>wsrep_node_address</code> and <code>wsrep_node_name</code> variables.</p>
+<p>On db2 :</p>
+<pre><code>wsrep_node_address=1.1.1.2
+wsrep_node_name=&apos;db2&apos;
+</code></pre><p>On db3 :</p>
+<pre><code>wsrep_node_address=&apos;1.1.1.3&apos;
+wsrep_node_name=&apos;db3&apos;
+</code></pre><h2 id="Step-7–-Initialize-the-first-cluster-node"><a href="#Step-7–-Initialize-the-first-cluster-node" class="headerlink" title="Step 7– Initialize the first cluster node"></a>Step 7– Initialize the first cluster node</h2><p>Start MariaDB with the special ‘<code>‐‐wsrep-new-cluster</code>’ option , Do it on node <code>db1</code> only so the primary node of the cluster is initialized:</p>
+<pre><code>sudo /etc/init.d/mysql start --wsrep-new-cluster
+</code></pre><p>Check status by run the following command on node db1 only:</p>
+<pre><code>mysql -u root -p -e &quot;show status like &apos;wsrep%&apos;;&quot;
+</code></pre><p>Some important information in the output are the following lines:</p>
+<pre><code>wsrep_local_state_comment | Synced &lt;-- cluster is synced
+wsrep_incoming_addresses  | 1.1.1.1:3306 &lt;-- node db1 is a provider
+wsrep_cluster_size        | 1 &lt;-- cluster consists of 1 node
+wsrep_ready               | ON &lt;-- good :)
+</code></pre><p>如果说这里报错了，请参考<a href="tomtsang.github.io/">mysql系列之集群 MariaDB-Galera-cluster 报错</a></p>
+<h2 id="Step-8–-Add-the-other-cluster-nodes"><a href="#Step-8–-Add-the-other-cluster-nodes" class="headerlink" title="Step 8– Add the other cluster nodes"></a>Step 8– Add the other cluster nodes</h2><p>Check and confirm nodes db2 and db3 have the correct configuration in <code>/etc/my.cnf.d/server.cnf</code> under the [<code>mariadb-10.0</code>] as described in step 6.</p>
+<p>With the correct configuration in place, all that is required to make db2 and db3 a member of the cluster is to start them like you would start any regular service. On db2 issue the following command:</p>
+<pre><code>sudo service mysql start
+</code></pre><p>Check what has changed in the cluster status by executing the following command on db1 or db2:</p>
+<pre><code>mysql -u root -p -e &quot;show status like &apos;wsrep%&apos;;&quot;
+</code></pre><p>And you will see that node db2 is now known as the cluster size is ‘2’ and the IP address of node db2 is listed:</p>
+<pre><code>| wsrep_local_state_comment | Synced                    |
+| wsrep_incoming_addre sses | 1.1.1.1:3306,1.1.1.2:3306 |
+| wsrep_cluster_size        | 2                         |
+| wsrep_connected           | ON                        |
+| wsrep_ready               | ON                        |
+</code></pre><p>Repeat the same step for node db3. On node db3 only execute the following command</p>
+<pre><code>sudo service mysql start
+</code></pre><p>Check what has changed in the cluster status by executing the following command on for example db1:</p>
+<pre><code>mysql -u root -p -e &quot;show status like &apos;wsrep%&apos;;&quot;
+</code></pre><p>And you should see that node db3 is now known as the cluster size is ‘3’ and the IP address of node db3 is listed:</p>
+<pre><code>| wsrep_local_state_comment | Synced                                 |
+| wsrep_incoming_addresses  | 1.1.1.3:3306,1.1.1.1:3306,1.1.1.2:3306 |
+| wsrep_cluster_size        | 3                                      |
+| wsrep_connected           | ON                                     |
+| wsrep_ready               | ON                                     |
+</code></pre><h2 id="Step-9-–-Verify-replication"><a href="#Step-9-–-Verify-replication" class="headerlink" title="Step 9 – Verify replication"></a>Step 9 – Verify replication</h2><p>Now the cluster is running. Let’s test whether it is working. On db1 create a database ‘clustertest’ by run the following command:</p>
+<pre><code>mysql -u root -p -e &apos;CREATE DATABASE clustertest;&apos;
+
+mysql -u root -p -e &apos;CREATE TABLE clustertest.mycluster ( id INT NOT NULL AUTO_INCREMENT, name VARCHAR(50), ipaddress VARCHAR(20), PRIMARY KEY(id));&apos;
+
+mysql -u root -p -e &apos;INSERT INTO clustertest.mycluster (name, ipaddress) VALUES (&quot;db1&quot;, &quot;1.1.1.1&quot;);&apos;
+</code></pre><p>Check if the database, table and data exists:</p>
+<pre><code>mysql -u root -p -e &apos;SELECT * FROM clustertest.mycluster;&apos;
+Enter password:
++----+------+-----------+
+| id | name | ipaddress |
++----+------+-----------+
+| 2  | db1  | 1.1.1.1   |
++----+------+-----------+
+</code></pre><p>Now do the check on node db2:</p>
+<pre><code>mysql -u root -p -e &apos;SELECT * FROM clustertest.mycluster;&apos;
+Enter password:
++----+------+-----------+
+| id | name | ipaddress |
++----+------+-----------+
+| 2  | db1  | 1.1.1.1   |
++----+------+-----------+
+</code></pre><p>Now do the same check on node db3:</p>
+<pre><code>mysql -u root -p -e &apos;SELECT * FROM clustertest.mycluster;&apos;
+Enter password:
++----+------+-----------+
+| id | name | ipaddress |
++----+------+-----------+
+| 2  | db1  | 1.1.1.1   |
++----+------+-----------+
+</code></pre><p>From these outputs we can confirm that everything was successfully replicated by node db1 across all other nodes.</p>
+<p>That’s it.</p>
+<p>Cheers!</p>
+<h2 id="ctrl-v-吧"><a href="#ctrl-v-吧" class="headerlink" title="ctrl + v 吧"></a>ctrl + v 吧</h2><pre><code>sudo vi /etc/hosts
+    10.10.162.11    db1
+    10.10.162.12    db2
+    10.10.162.13    db3
+sudo vi /etc/yum.repos.d/mariadb.repo
+    # MariaDB 10.1 CentOS repository list - created 2016-11-15 02:38 UTC
+    # http://downloads.mariadb.org/mariadb/repositories/
+    [mariadb]
+    name = MariaDB
+    baseurl = http://yum.mariadb.org/10.0/centos7-amd64
+    gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+    gpgcheck=1
+sudo setenforce 0
+sudo yum install socat -y
+sudo yum install socat MariaDB-Galera-server MariaDB-client rsync galera -y
+sudo service mysql start
+sudo /usr/bin/mysql_secure_installation
+mysql -u root -p
+sudo service mysql stop
+sudo cat &gt;&gt; /etc/my.cnf.d/server.cnf &lt;&lt; EOF
+    binlog_format=ROW
+    default-storage-engine=innodb
+    innodb_autoinc_lock_mode=2
+    innodb_locks_unsafe_for_binlog=1
+    query_cache_size=0
+    query_cache_type=0
+    bind-address=0.0.0.0
+    datadir=/var/lib/mysql
+    innodb_log_file_size=100M
+    innodb_file_per_table
+    innodb_flush_log_at_trx_commit=2
+    wsrep_provider=/usr/lib64/galera/libgalera_smm.so
+    wsrep_cluster_address=&quot;gcomm://1.1.1.1,1.1.1.2,1.1.1.3&quot;
+    wsrep_cluster_name=&apos;galera_cluster&apos;
+    wsrep_node_address=&apos;1.1.1.1&apos;
+    wsrep_node_name=&apos;db1&apos;
+    wsrep_sst_method=rsync
+    wsrep_sst_auth=sst_user:dbpass
+    EOF
+# 上面这个好像会出错，算了，我们 sudo vi 吧
+sudo vi /etc/my.cnf.d/server.cnf
+sudo cp -a /etc/my.cnf.d/server.cnf .
+ls
+sudo cp -a server.cnf server.cnf.12
+sudo cp -a server.cnf server.cnf.13
+sudo vi server.cnf.12
+sudo vi server.cnf.13
+scp server.cnf.12 spa@s12:/home/spa/  # 之后在spa@s12中改一改吧。
+scp server.cnf.13 spa@s13:/home/spa/
+# 好了，现在三台机器的配置都完成啦！
+sudo /etc/init.d/mysql start --wsrep-new-cluster
+mysql -u root -p -e &quot;show status like &apos;wsrep%&apos;;&quot;
+# 好了，如果没有问题，我们把其它2台机器也启动下。 sudo service mysql start; sudo service mysql status;
+mysql -u root -p -e &apos;CREATE DATABASE clustertest;&apos;
+mysql -u root -p -e &apos;CREATE TABLE clustertest.mycluster ( id INT NOT NULL AUTO_INCREMENT, name VARCHAR(50), ipaddress VARCHAR(20), PRIMARY KEY(id));&apos;
+mysql -u root -p -e &apos;INSERT INTO clustertest.mycluster (name, ipaddress) VALUES (&quot;db1&quot;, &quot;1.1.1.1&quot;);&apos;
+mysql -u root -p -e &apos;SELECT * FROM clustertest.mycluster;&apos;
+# 到其它2台机器上也查一下吧。 mysql -u root -p -e &apos;SELECT * FROM clustertest.mycluster;&apos;
+# 如果其它机器也显示出来了，那就Cheers!
+</code></pre>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/17/mysql-5mysql系列之集群 MariaDB-Galera-cluster 报错/">
+  <time datetime="2016-11-17T08:45:39.000Z">
+    2016-11-17
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/17/mysql-5mysql系列之集群 MariaDB-Galera-cluster 报错/">mysql系列之集群 MariaDB-Galera-cluster 报错</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="报错1-etc-my-cnf-d-下-有一个-不应该存在的-cnf"><a href="#报错1-etc-my-cnf-d-下-有一个-不应该存在的-cnf" class="headerlink" title="报错1, /etc/my.cnf.d/下 有一个 不应该存在的 .cnf"></a>报错1, /etc/my.cnf.d/下 有一个 不应该存在的 .cnf</h2><p>错误原因：</p>
+<p>mysql 加载了 /etc/my.cnf.d/下的所有 <code>*.cnf</code> 文件，其中又有一个之前的不应该存在的 <code>*.cnf</code>。</p>
+<p>正确情况下，应该只有4个<code>.cnf</code>文件。<br>    [spa@s11 ~]$ ls /etc/my.cnf.d/<br>    client.cnf  mysql-clients.cnf  server.cnf  tokudb.cnf<br>    [spa@s11 ~]$</p>
+<p>错误情况：</p>
+<pre><code>[tom@kube-node-13 ~]$ sudo /etc/init.d/mysql start --wsrep-new-cluster
+Starting MySQL.161116 17:44:54 mysqld_safe Logging to &apos;/data/mariadb/mysql/kube-node-13.err&apos;.
+. SUCCESS!
+[tom@kube-node-13 ~]$ mysql -u root -p -e &quot;show status like &apos;wsrep%&apos;&quot;
+Enter password:
++--------------------------+----------------------+
+| Variable_name            | Value                |
++--------------------------+----------------------+
+| wsrep_cluster_conf_id    | 18446744073709551615 |
+| wsrep_cluster_size       | 0                    |
+| wsrep_cluster_state_uuid |                      |
+| wsrep_cluster_status     | Disconnected         |
+| wsrep_connected          | OFF                  |
+| wsrep_local_bf_aborts    | 0                    |
+| wsrep_local_index        | 18446744073709551615 |
+| wsrep_provider_name      |                      |
+| wsrep_provider_vendor    |                      |
+| wsrep_provider_version   |                      |
+| wsrep_ready              | ON                   |
+| wsrep_thread_count       | 0                    |
++--------------------------+----------------------+
+[tom@kube-node-13 ~]$
+</code></pre><p>解决过程：</p>
+<p>怎么办呢？</p>
+<p>先看状态</p>
+<pre><code>[tom@kube-node-13 ~]$ sudo service mysql status -l
+ SUCCESS! MySQL running (11946)
+</code></pre><p>关闭掉，我们来手动启动查原因。</p>
+<pre><code>[tom@kube-node-13 ~]$ sudo service mysql stop
+Shutting down MySQL... SUCCESS!
+[tom@kube-node-13 ~]$
+</code></pre><p>查一下，如何手动启动</p>
+<pre><code>[spa@s11 ~]$ which mysqld
+/usr/sbin/mysqld
+[cdn@test_240 OpenPicker]$ mysqld --help
+mysqld  Ver 10.0.28-MariaDB-wsrep for Linux on x86_64 (MariaDB Server, wsrep_25.16.rc3fc46e)
+Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.
+
+Starts the MariaDB database server.
+
+Usage: mysqld [OPTIONS]
+
+For more help options (several pages), use mysqld --verbose --help.
+[cdn@test_240 OpenPicker]$ use mysqld --verbose --help
+...
+一大串
+...
+</code></pre><p>手动启动</p>
+<pre><code>[tom@kube-node-13 ~]$ mysqld --verbose
+161116 18:30:01 [Note] mysqld (mysqld 10.0.28-MariaDB-wsrep) starting as process 12713 ...
+161116 18:30:01 [Warning] Can&apos;t create test file /data/mariadb/mysql/kube-node-13.lower-test
+161116 18:30:01 [Note] WSREP: Read nil XID from storage engines, skipping position init
+161116 18:30:01 [Note] WSREP: wsrep_load(): loading provider library &apos;/usr/lib/galera/libgalera_smm.so&apos;
+161116 18:30:01 [ERROR] WSREP: wsrep_load(): dlopen(): /usr/lib/galera/libgalera_smm.so: cannot open shared object file: No such file or directory
+161116 18:30:01 [ERROR] WSREP: wsrep_load(/usr/lib/galera/libgalera_smm.so) failed: Invalid argument (22). Reverting to no provider.
+161116 18:30:01 [Note] WSREP: Read nil XID from storage engines, skipping position init
+161116 18:30:01 [Note] WSREP: wsrep_load(): loading provider library &apos;none&apos;
+2016-11-16 18:30:01 7f1069f42880 InnoDB: Warning: Using innodb_locks_unsafe_for_binlog is DEPRECATED. This option may be removed in future releases. Please use READ COMMITTED transaction isolation level instead, see http://dev.mysql.com/doc/refman/5.6/en/set-transaction.html.
+161116 18:30:01 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+161116 18:30:01 [Note] InnoDB: The InnoDB memory heap is disabled
+161116 18:30:01 [Note] InnoDB: Mutexes and rw_locks use GCC atomic builtins
+161116 18:30:01 [Note] InnoDB: GCC builtin __atomic_thread_fence() is used for memory barrier
+161116 18:30:01 [Note] InnoDB: Compressed tables use zlib 1.2.7
+161116 18:30:01 [Note] InnoDB: Using Linux native AIO
+161116 18:30:01 [Note] InnoDB: Using CPU crc32 instructions
+161116 18:30:01 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+161116 18:30:01 [Note] InnoDB: Completed initialization of buffer pool
+161116 18:30:01 [ERROR] InnoDB: ./ibdata1 can&apos;t be opened in read-write mode
+161116 18:30:01 [ERROR] InnoDB: The system tablespace must be writable!
+161116 18:30:01 [ERROR] Plugin &apos;InnoDB&apos; init function returned error.
+161116 18:30:01 [ERROR] Plugin &apos;InnoDB&apos; registration as a STORAGE ENGINE failed.
+161116 18:30:01 [ERROR] mysqld: File &apos;/data/mariadb/mysql/aria_log_control&apos; not found (Errcode: 13 &quot;Permission denied&quot;)
+161116 18:30:01 [ERROR] mysqld: Got error &apos;Can&apos;t open file&apos; when trying to use aria control file &apos;/data/mariadb/mysql/aria_log_control&apos;
+161116 18:30:01 [ERROR] Plugin &apos;Aria&apos; init function returned error.
+161116 18:30:01 [ERROR] Plugin &apos;Aria&apos; registration as a STORAGE ENGINE failed.
+161116 18:30:01 [Note] Plugin &apos;FEEDBACK&apos; is disabled.
+161116 18:30:01 [ERROR] Can&apos;t open the mysql.plugin table. Please run mysql_upgrade to create it.
+161116 18:30:01 [ERROR] Unknown/unsupported storage engine: innodb
+161116 18:30:01 [ERROR] Aborting
+
+161116 18:30:01 [Note] WSREP: Service disconnected.
+161116 18:30:02 [Note] WSREP: Some threads may fail to exit.
+161116 18:30:02 [Note] mysqld: Shutdown complete
+</code></pre><p>看到了吧，上面有一行</p>
+<p><code>161116 18:30:01 [ERROR] WSREP: wsrep_load(): dlopen(): /usr/lib/galera/libgalera_smm.so: cannot open shared object file: No such file or directory</code></p>
+<p>说明有问题了吧。<br>先这样，我们确保一下，启动程序的用户是mysql,来吧。</p>
+<pre><code>[tom@kube-node-13 ~]$ sudo --help
+sudo: invalid option -- &apos;-&apos;
+usage: sudo [-D level] -h | -K | -k | -V
+usage: sudo -v [-AknS] [-D level] [-g groupname|#gid] [-p prompt] [-u user name|#uid]
+usage: sudo -l[l] [-AknS] [-D level] [-g groupname|#gid] [-p prompt] [-U user name] [-u user name|#uid] [-g groupname|#gid] [command]
+usage: sudo [-AbEHknPS] [-r role] [-t type] [-C fd] [-D level] [-g groupname|#gid] [-p prompt] [-u user name|#uid] [-g groupname|#gid] [VAR=value] [-i|-s] [&lt;command&gt;]
+usage: sudo -e [-AknS] [-r role] [-t type] [-C fd] [-D level] [-g groupname|#gid] [-p prompt] [-u user name|#uid] file ...
+[tom@kube-node-13 ~]$
+</code></pre><p>好了，知道了，用sudo -u ,那这个 -u 后面接什么用户呢？mysql ,还是 mysqld？</p>
+<pre><code>[tom@kube-node-13 ~]$ ll /var/lib/mysql/
+total 217128
+-rw-rw----. 1 mysql mysql     16384 11月 16 18:18 aria_log.00000001
+-rw-rw----. 1 mysql mysql        52 11月 16 18:18 aria_log_control
+-rw-rw----. 1 mysql mysql  12582912 11月 16 18:18 ibdata1
+-rw-rw----. 1 mysql mysql 104857600 11月 16 18:18 ib_logfile0
+-rw-rw----. 1 mysql mysql 104857600 11月 16 18:18 ib_logfile1
+-rw-r-----. 1 mysql root       5489 11月 16 18:18 kube-node-13.err
+-rw-rw----. 1 mysql mysql         0 11月 16 13:34 multi-master.info
+drwx--x--x. 2 mysql mysql      4096 11月 16 12:51 mysql
+srwxrwxrwx. 1 mysql mysql         0 11月 17 10:28 mysql.sock
+drwx------. 2 mysql mysql      4096 11月 16 12:51 performance_schema
+-rw-------. 1 mysql root       2538 11月 16 18:18 wsrep_recovery.N15shv
+[tom@kube-node-13 ~]$
+</code></pre><p>好了，现在知道了，这些文件都是 <code>mysql</code>用户的，那自然，我们应该是 <code>sudo -u mysql</code> .<br>来吧。</p>
+<pre><code>[tom@kube-node-13 ~]$ sudo -u mysql mysqld --verbose
+161116 18:32:38 [Note] mysqld (mysqld 10.0.28-MariaDB-wsrep) starting as process 12963 ...
+161116 18:32:38 [Note] WSREP: Read nil XID from storage engines, skipping position init
+161116 18:32:38 [Note] WSREP: wsrep_load(): loading provider library &apos;/usr/lib/galera/libgalera_smm.so&apos;
+161116 18:32:38 [ERROR] WSREP: wsrep_load(): dlopen(): /usr/lib/galera/libgalera_smm.so: cannot open shared object file: No such file or directory
+161116 18:32:38 [ERROR] WSREP: wsrep_load(/usr/lib/galera/libgalera_smm.so) failed: Invalid argument (22). Reverting to no provider.
+161116 18:32:38 [Note] WSREP: Read nil XID from storage engines, skipping position init
+161116 18:32:38 [Note] WSREP: wsrep_load(): loading provider library &apos;none&apos;
+2016-11-16 18:32:38 7f71c04dd880 InnoDB: Warning: Using innodb_locks_unsafe_for_binlog is DEPRECATED. This option may be removed in future releases. Please use READ COMMITTED transaction isolation level instead, see http://dev.mysql.com/doc/refman/5.6/en/set-transaction.html.
+161116 18:32:38 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+161116 18:32:38 [Note] InnoDB: The InnoDB memory heap is disabled
+161116 18:32:38 [Note] InnoDB: Mutexes and rw_locks use GCC atomic builtins
+161116 18:32:38 [Note] InnoDB: GCC builtin __atomic_thread_fence() is used for memory barrier
+161116 18:32:38 [Note] InnoDB: Compressed tables use zlib 1.2.7
+161116 18:32:38 [Note] InnoDB: Using Linux native AIO
+161116 18:32:38 [Note] InnoDB: Using CPU crc32 instructions
+161116 18:32:38 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+161116 18:32:38 [Note] InnoDB: Completed initialization of buffer pool
+161116 18:32:38 [Note] InnoDB: Highest supported file format is Barracuda.
+161116 18:32:38 [Note] InnoDB: 128 rollback segment(s) are active.
+161116 18:32:38 [Note] InnoDB: Waiting for purge to start
+161116 18:32:38 [Note] InnoDB:  Percona XtraDB (http://www.percona.com) 5.6.32-79.0 started; log sequence number 1624176
+161116 18:32:38 [Note] Plugin &apos;FEEDBACK&apos; is disabled.
+161116 18:32:38 [Note] Server socket created on IP: &apos;0.0.0.0&apos;.
+161116 18:32:38 [Note] WSREP: Read nil XID from storage engines, skipping position init
+161116 18:32:38 [Note] WSREP: wsrep_load(): loading provider library &apos;none&apos;
+161116 18:32:38 [Note] mysqld: ready for connections.
+Version: &apos;10.0.28-MariaDB-wsrep&apos;  socket: &apos;/var/lib/mysql/mysql.sock&apos;  port: 3306  MariaDB Server, wsrep_25.16.rc3fc46e
+^C^C^C^C^C^CKilled
+[tom@kube-node-13 ~]$
+</code></pre><p>看到了。错误</p>
+<p><code>161116 18:32:38 [ERROR] WSREP: wsrep_load(): dlopen(): /usr/lib/galera/libgalera_smm.so: cannot open shared object file: No such file or directory</code></p>
+<p>还在。</p>
+<p>找一下，看这个文件在不在了？</p>
+<pre><code>[tom@kube-node-13 ~]$ sudo ls -l /usr/lib/galera/libgalera_smm.so
+ls: cannot access /usr/lib/galera/libgalera_smm.so: No such file or directory
+</code></pre><p>好了，这个文件真的不存在。<br>那试一下 /usr/lib64/ 下有没有这个文件呢？</p>
+<pre><code>[tom@kube-node-13 ~]$ sudo ls  /usr/lib64/galera/libgalera_smm.so
+/usr/lib64/galera/libgalera_smm.so
+</code></pre><p>哈哈。有呀。<br>那看一下，我们配置里面的是哪个？</p>
+<pre><code>[tom@kube-node-13 ~]$ sudo cat /etc/my.cnf.d/server.cnf
+...
+binlog_format=ROW
+default-storage-engine=innodb
+innodb_autoinc_lock_mode=2
+innodb_locks_unsafe_for_binlog=1
+query_cache_size=0
+query_cache_type=0
+bind-address=0.0.0.0
+datadir=/data/mariadb/mysql
+#datadir=/var/lib/mysql
+innodb_log_file_size=100M
+innodb_file_per_table
+innodb_flush_log_at_trx_commit=2
+wsrep_provider=/usr/lib64/galera/libgalera_smm.so
+wsrep_cluster_address=&quot;gcomm://10.10.13.110,192.168.31.240,10.10.12.13&quot;
+wsrep_cluster_name=&apos;galera_cluster&apos;
+wsrep_node_address=&apos;10.10.12.13&apos;
+wsrep_node_name=&apos;db3&apos;
+wsrep_sst_method=rsync
+wsrep_sst_auth=sst_user:dbpass
+</code></pre><p>看到了吧，是<code>wsrep_provider=/usr/lib64/galera/libgalera_smm.so</code>。是<code>/usr/lib64/</code>。那说明了，程序没有成功加载我们的配置文件呀。</p>
+<p>无论怎样，我们先做一个软链接，看下，能不能成功。</p>
+<p>注意哈，这里是直接把整个文件夹做成软链接，不要写错了。不是<code>sudo ln -s /usr/lib64/galera/ /usr/lib/galera/</code>， 更不是<code>sudo ln -s /usr/lib64/galera/ /usr/lib/galera/</code>。</p>
+<pre><code>[tom@kube-node-13 galera]$ sudo ln -s /usr/lib64/galera /usr/lib/galera
+[tom@kube-node-13 galera]$ cd /usr/lib/galera/
+[tom@kube-node-13 galera]$ ls
+libgalera_smm.so
+[tom@kube-node-13 galera]$
+</code></pre><p>做好了。再来一次。</p>
+<pre><code>[tom@kube-node-13 galera]$ sudo -u mysql mysqld --verbose
+161116 18:46:07 [Note] mysqld (mysqld 10.0.28-MariaDB-wsrep) starting as process 14216 ...
+161116 18:46:07 [Note] WSREP: Read nil XID from storage engines, skipping position init
+161116 18:46:07 [Note] WSREP: wsrep_load(): loading provider library &apos;/usr/lib/galera/libgalera_smm.so&apos;
+161116 18:46:07 [Note] WSREP: wsrep_load(): Galera 25.3.18(r3632) by Codership Oy &lt;info@codership.com&gt; loaded successfully.
+161116 18:46:07 [Note] WSREP: CRC-32C: using hardware acceleration.
+161116 18:46:07 [Warning] WSREP: Could not open state file for reading: &apos;/data/mariadb/mysql//grastate.dat&apos;
+161116 18:46:07 [Note] WSREP: Found saved state: 00000000-0000-0000-0000-000000000000:-1
+161116 18:46:07 [Note] WSREP: Passing config to GCS: base_dir = /data/mariadb/mysql/; base_host = 10.10.12.13; base_port = 4567; cert.log_conflicts = no; debug = no; evs.auto_evict = 0; evs.delay_margin = PT1S; evs.delayed_keep_period = PT30S; evs.inactive_check_period = PT0.5S; evs.inactive_timeout = PT15S; evs.join_retrans_period = PT1S; evs.max_install_timeouts = 3; evs.send_window = 4; evs.stats_report_period = PT1M; evs.suspect_timeout = PT5S; evs.user_send_window = 2; evs.view_forget_timeout = PT24H; gcache.dir = /data/mariadb/mysql/; gcache.keep_pages_size = 0; gcache.mem_size = 0; gcache.name = /data/mariadb/mysql//galera.cache; gcache.page_size = 128M; gcache.size = 128M; gcomm.thread_prio = ; gcs.fc_debug = 0; gcs.fc_factor = 1.0; gcs.fc_limit = 16; gcs.fc_master_slave = no; gcs.max_packet_size = 64500; gcs.max_throttle = 0.25; gcs.recv_q_hard_limit = 9223372036854775807; gcs.recv_q_soft_limit = 0.25; gcs.sync_donor = no; gmcast.segment = 0; gmcast.version = 0; pc.announce_timeout = PT3S; pc.checksum = false; pc.ignore_q
+161116 18:46:07 [Note] WSREP: Service thread queue flushed.
+161116 18:46:07 [Note] WSREP: Assign initial position for certification: -1, protocol version: -1
+161116 18:46:07 [Note] WSREP: wsrep_sst_grab()
+161116 18:46:07 [Note] WSREP: Start replication
+161116 18:46:07 [Note] WSREP: Setting initial position to 00000000-0000-0000-0000-000000000000:-1
+161116 18:46:07 [Note] WSREP: protonet asio version 0
+161116 18:46:07 [Note] WSREP: Using CRC-32C for message checksums.
+161116 18:46:07 [Note] WSREP: backend: asio
+161116 18:46:07 [Note] WSREP: gcomm thread scheduling priority set to other:0
+161116 18:46:07 [Warning] WSREP: access file(/data/mariadb/mysql//gvwstate.dat) failed(No such file or directory)
+161116 18:46:07 [Note] WSREP: restore pc from disk failed
+161116 18:46:07 [Note] WSREP: GMCast version 0
+161116 18:46:07 [Note] WSREP: (e0f5cb2a, &apos;tcp://0.0.0.0:4567&apos;) listening at tcp://0.0.0.0:4567
+161116 18:46:07 [Note] WSREP: (e0f5cb2a, &apos;tcp://0.0.0.0:4567&apos;) multicast: , ttl: 1
+161116 18:46:07 [Note] WSREP: EVS version 0
+161116 18:46:07 [Note] WSREP: gcomm: connecting to group &apos;my_wsrep_cluster&apos;, peer &apos;10.10.13.110:&apos;
+161116 18:46:10 [Warning] WSREP: no nodes coming from prim view, prim not possible
+161116 18:46:10 [Note] WSREP: view(view_id(NON_PRIM,e0f5cb2a,1) memb {
+    e0f5cb2a,0
+} joined {
+} left {
+} partitioned {
+})
+161116 18:46:10 [Warning] WSREP: last inactive check more than PT1.5S ago (PT3.50279S), skipping check
+161116 18:46:40 [Note] WSREP: view((empty))
+161116 18:46:40 [ERROR] WSREP: failed to open gcomm backend connection: 110: failed to reach primary view: 110 (Connection timed out)
+     at gcomm/src/pc.cpp:connect():162
+161116 18:46:40 [ERROR] WSREP: gcs/src/gcs_core.cpp:gcs_core_open():208: Failed to open backend connection: -110 (Connection timed out)
+161116 18:46:40 [ERROR] WSREP: gcs/src/gcs.cpp:gcs_open():1380: Failed to open channel &apos;my_wsrep_cluster&apos; at &apos;gcomm://10.10.13.110&apos;: -110 (Connection timed out)
+161116 18:46:40 [ERROR] WSREP: gcs connect failed: Connection timed out
+161116 18:46:40 [ERROR] WSREP: wsrep::connect(gcomm://10.10.13.110) failed: 7
+161116 18:46:40 [ERROR] Aborting
+
+161116 18:46:40 [Note] WSREP: Service disconnected.
+161116 18:46:41 [Note] WSREP: Some threads may fail to exit.
+161116 18:46:41 [Note] mysqld: Shutdown complete
+
+[tom@kube-node-13 galera]$
+</code></pre><p>哈哈，看 <code>161116 18:46:07 [Note] WSREP: wsrep_load(): loading provider library &#39;/usr/lib/galera/libgalera_smm.so&#39;</code> 知道，这个错误，确实是跳过去了。<br>现在来找第一个 [Warning] 。找到了。<code>161116 18:46:07 [Warning] WSREP: Could not open state file for reading: &#39;/data/mariadb/mysql//grastate.dat&#39;</code><br>那看下，这个文件有没有？</p>
+<pre><code>[tom@kube-node-13 galera]$ cd /data/mariadb/mysql
+[tom@kube-node-13 mysql]$ ls -lZ
+-rw-rw----. mysql mysql unconfined_u:object_r:mysqld_db_t:s0 aria_log.00000001
+-rw-rw----. mysql mysql unconfined_u:object_r:mysqld_db_t:s0 aria_log_control
+-rw-------. mysql mysql unconfined_u:object_r:mysqld_db_t:s0 galera.cache
+-rw-rw----. mysql mysql unconfined_u:object_r:mysqld_db_t:s0 grastate.dat
+-rw-rw----. mysql mysql unconfined_u:object_r:mysqld_db_t:s0 ibdata1
+-rw-rw----. mysql mysql unconfined_u:object_r:mysqld_db_t:s0 ib_logfile0
+-rw-rw----. mysql mysql unconfined_u:object_r:mysqld_db_t:s0 ib_logfile1
+-rw-r-----. mysql root  unconfined_u:object_r:mysqld_db_t:s0 kube-node-13.err
+-rw-rw----. mysql mysql unconfined_u:object_r:mysqld_db_t:s0 kube-node-13.pid
+-rw-rw----. mysql mysql unconfined_u:object_r:mysqld_db_t:s0 multi-master.info
+drwx--x--x. mysql mysql unconfined_u:object_r:mysqld_db_t:s0 mysql
+drwx------. mysql mysql unconfined_u:object_r:mysqld_db_t:s0 performance_schema
+-rw-rw-rw-. root  root  unconfined_u:object_r:mysqld_db_t:s0 slow_query_log.log
+</code></pre><p>有<code>/data/mariadb/mysql//grastate.dat</code>呀。什么鬼？<br>不要手动启动了。用sudo service 启动一下。</p>
+<pre><code>[tom@kube-node-13 mysql]$ sudo service mysql start
+Starting MySQL SUCCESS!
+[tom@kube-node-13 mysql]$ 161116 18:50:43 mysqld_safe Logging to &apos;/data/mariadb/mysql/kube-node-13.err&apos;.
+^C
+[tom@kube-node-13 mysql]$
+</code></pre><p>好了，再把现有的 mysqld 关闭了去。</p>
+<pre><code>[tom@kube-node-13 mysql]$ sudo service mysql stop
+Shutting down MySQL161116 18:54:00 [Note] mysqld: Normal shutdown
+
+.161116 18:54:00 [Note] WSREP: Stop replication
+161116 18:54:00 [Note] Event Scheduler: Purging the queue. 0 events
+161116 18:54:00 [Note] InnoDB: FTS optimize thread exiting.
+161116 18:54:00 [Note] InnoDB: Starting shutdown...
+161116 18:54:01 [Note] InnoDB: Waiting for page_cleaner to finish flushing of buffer pool
+..161116 18:54:02 [Note] InnoDB: Shutdown completed; log sequence number 1624196
+161116 18:54:02 [Note] mysqld: Shutdown complete
+
+ SUCCESS!
+[tom@kube-node-13 mysql]$ ps -ef | grep mysql
+tom      15073 36010  0 18:54 pts/1    00:00:00 grep --color=auto mysql
+
+[tom@kube-node-13 mysql]$ sudo service mysql start
+Starting MySQL.161116 18:54:29 mysqld_safe Logging to &apos;/data/mariadb/mysql/kube-node-13.err&apos;.
+..
+................................ ERROR!
+[tom@kube-node-13 mysql]$
+</code></pre><p>有错误日志了。看去。</p>
+<pre><code>[tom@kube-node-13 mysql]$ sudo cat /data/mariadb/mysql/kube-node-13.err
+...
+...
+...
+161116 18:19:18 [Note] WSREP: wsrep_load(): loading provider library &apos;none&apos;
+161116 18:19:18 [Note] /usr/sbin/mysqld: ready for connections.
+Version: &apos;10.0.28-MariaDB-wsrep&apos;  socket: &apos;/var/lib/mysql/mysql.sock&apos;  port: 3306  MariaDB Server, wsrep_25.16.rc3fc46e
+161116 18:29:53 [Note] /usr/sbin/mysqld: Normal shutdown
+
+161116 18:29:53 [Note] WSREP: Stop replication
+161116 18:29:53 [Note] Event Scheduler: Purging the queue. 0 events
+161116 18:29:53 [Note] InnoDB: FTS optimize thread exiting.
+161116 18:29:53 [Note] InnoDB: Starting shutdown...
+161116 18:29:54 [Note] InnoDB: Waiting for page_cleaner to finish flushing of buffer pool
+161116 18:29:56 [Note] InnoDB: Shutdown completed; log sequence number 1624176
+161116 18:29:56 [Note] /usr/sbin/mysqld: Shutdown complete
+
+161116 18:29:56 mysqld_safe mysqld from pid file /data/mariadb/mysql/kube-node-13.pid ended
+161116 18:54:29 mysqld_safe Starting mysqld daemon with databases from /data/mariadb/mysql
+161116 18:54:29 mysqld_safe WSREP: Running position recovery with --log_error=&apos;/data/mariadb/mysql/wsrep_recovery.N6pzuB&apos; --pid-file=&apos;/data/mariadb/mysql/kube-node-13-recover.pid&apos;
+161116 18:54:29 [Note] /usr/sbin/mysqld (mysqld 10.0.28-MariaDB-wsrep) starting as process 15313 ...
+161116 18:54:32 mysqld_safe WSREP: Recovered position 00000000-0000-0000-0000-000000000000:-1
+161116 18:54:32 [Note] /usr/sbin/mysqld (mysqld 10.0.28-MariaDB-wsrep) starting as process 15379 ...
+161116 18:54:32 [Note] WSREP: Read nil XID from storage engines, skipping position init
+161116 18:54:32 [Note] WSREP: wsrep_load(): loading provider library &apos;/usr/lib/galera/libgalera_smm.so&apos;
+161116 18:54:32 [Note] WSREP: wsrep_load(): Galera 25.3.18(r3632) by Codership Oy &lt;info@codership.com&gt; loaded successfully.
+161116 18:54:32 [Note] WSREP: CRC-32C: using hardware acceleration.
+161116 18:54:32 [Note] WSREP: Found saved state: 00000000-0000-0000-0000-000000000000:-1
+161116 18:54:32 [Note] WSREP: Passing config to GCS: base_dir = /data/mariadb/mysql/; base_host = 10.10.12.13; base_port = 4567; cert.log_conflicts = no; debug = no; evs.auto_evict = 0; evs.delay_margin = PT1S; evs.delayed_keep_period = PT30S; evs.inactive_check_period = PT0.5S; evs.inactive_timeout = PT15S; evs.join_retrans_period = PT1S; evs.max_install_timeouts = 3; evs.send_window = 4; evs.stats_report_period = PT1M; evs.suspect_timeout = PT5S; evs.user_send_window = 2; evs.view_forget_timeout = PT24H; gcache.dir = /data/mariadb/mysql/; gcache.keep_pages_size = 0; gcache.mem_size = 0; gcache.name = /data/mariadb/mysql//galera.cache; gcache.page_size = 128M; gcache.size = 128M; gcomm.thread_prio = ; gcs.fc_debug = 0; gcs.fc_factor = 1.0; gcs.fc_limit = 16; gcs.fc_master_slave = no; gcs.max_packet_size = 64500; gcs.max_throttle = 0.25; gcs.recv_q_hard_limit = 9223372036854775807; gcs.recv_q_soft_limit = 0.25; gcs.sync_donor = no; gmcast.segment = 0; gmcast.version = 0; pc.announce_timeout = PT3S; pc.checksum = false; pc.ignore_q
+161116 18:54:32 [Note] WSREP: Service thread queue flushed.
+161116 18:54:32 [Note] WSREP: Assign initial position for certification: -1, protocol version: -1
+161116 18:54:32 [Note] WSREP: wsrep_sst_grab()
+161116 18:54:32 [Note] WSREP: Start replication
+161116 18:54:32 [Note] WSREP: Setting initial position to 00000000-0000-0000-0000-000000000000:-1
+161116 18:54:32 [Note] WSREP: protonet asio version 0
+161116 18:54:32 [Note] WSREP: Using CRC-32C for message checksums.
+161116 18:54:32 [Note] WSREP: backend: asio
+161116 18:54:32 [Note] WSREP: gcomm thread scheduling priority set to other:0
+161116 18:54:32 [Warning] WSREP: access file(/data/mariadb/mysql//gvwstate.dat) failed(No such file or directory)
+161116 18:54:32 [Note] WSREP: restore pc from disk failed
+161116 18:54:32 [Note] WSREP: GMCast version 0
+161116 18:54:32 [Note] WSREP: (0e6fea53, &apos;tcp://0.0.0.0:4567&apos;) listening at tcp://0.0.0.0:4567
+161116 18:54:32 [Note] WSREP: (0e6fea53, &apos;tcp://0.0.0.0:4567&apos;) multicast: , ttl: 1
+161116 18:54:32 [Note] WSREP: EVS version 0
+161116 18:54:32 [Note] WSREP: gcomm: connecting to group &apos;my_wsrep_cluster&apos;, peer &apos;10.10.13.110:&apos;
+161116 18:54:35 [Warning] WSREP: no nodes coming from prim view, prim not possible
+161116 18:54:35 [Note] WSREP: view(view_id(NON_PRIM,0e6fea53,1) memb {
+    0e6fea53,0
+} joined {
+} left {
+} partitioned {
+})
+161116 18:54:36 [Warning] WSREP: last inactive check more than PT1.5S ago (PT3.50217S), skipping check
+161116 18:55:05 [Note] WSREP: view((empty))
+161116 18:55:05 [ERROR] WSREP: failed to open gcomm backend connection: 110: failed to reach primary view: 110 (Connection timed out)
+     at gcomm/src/pc.cpp:connect():162
+161116 18:55:05 [ERROR] WSREP: gcs/src/gcs_core.cpp:gcs_core_open():208: Failed to open backend connection: -110 (Connection timed out)
+161116 18:55:05 [ERROR] WSREP: gcs/src/gcs.cpp:gcs_open():1380: Failed to open channel &apos;my_wsrep_cluster&apos; at &apos;gcomm://10.10.13.110&apos;: -110 (Connection timed out)
+161116 18:55:05 [ERROR] WSREP: gcs connect failed: Connection timed out
+161116 18:55:05 [ERROR] WSREP: wsrep::connect(gcomm://10.10.13.110) failed: 7
+161116 18:55:05 [ERROR] Aborting
+
+161116 18:55:05 [Note] WSREP: Service disconnected.
+161116 18:55:06 [Note] WSREP: Some threads may fail to exit.
+161116 18:55:06 [Note] /usr/sbin/mysqld: Shutdown complete
+
+161116 18:55:06 mysqld_safe mysqld from pid file /data/mariadb/mysql/kube-node-13.pid ended
+[tom@kube-node-13 mysql]$ date
+2016年 11月 16日 星期三 18:55:16 CST
+[tom@kube-node-13 mysql]$
+</code></pre><p>嗯，确实是现在的日志。<br>来看一下。</p>
+<pre><code>161116 18:54:32 [Warning] WSREP: access file(/data/mariadb/mysql//gvwstate.dat) failed(No such file or directory)
+161116 18:54:32 [Note] WSREP: restore pc from disk failed
+161116 18:54:32 [Note] WSREP: GMCast version 0
+161116 18:54:32 [Note] WSREP: (0e6fea53, &apos;tcp://0.0.0.0:4567&apos;) listening at tcp://0.0.0.0:4567
+161116 18:54:32 [Note] WSREP: (0e6fea53, &apos;tcp://0.0.0.0:4567&apos;) multicast: , ttl: 1
+161116 18:54:32 [Note] WSREP: EVS version 0
+161116 18:54:32 [Note] WSREP: gcomm: connecting to group &apos;my_wsrep_cluster&apos;, peer &apos;10.10.13.110:&apos;
+</code></pre><p>哈。有问题呀。我们在配置文件中的 <code>wsrep_cluster_address=&quot;gcomm://10.10.13.110,192.168.31.240,10.10.12.13&quot;
+wsrep_cluster_name=&#39;galera_cluster&#39;</code> 到这里怎么是这样的啦！！！</p>
+<p>好吧。快回忆，是哪里配置过 <code>my_wsrep_cluster</code>.</p>
+<p>想到了。<br>之前在 <code>/etc/my.cnf.d/wsrep.cnf</code> 里面配置过这个。</p>
+<pre><code>[tom@kube-node-13 mysql]$ cd /etc/my.cnf.d/
+[tom@kube-node-13 my.cnf.d]$ ls -la
+total 40
+drwxr-xr-x.   2 root root 4096 11月 16 19:09 .
+drwxr-xr-x. 141 root root 8192 11月 16 16:45 ..
+-rw-r--r--.   1 root root  295 10月 28 01:16 client.cnf
+-rw-r--r--.   1 root root  232 10月 28 01:16 mysql-clients.cnf
+-rw-r--r--.   1 root root 1772 11月 16 18:59 server.cnf
+-rw-r--r--.   1 root root 1007 11月 16 14:10 server.cnf_original
+-rw-r--r--.   1 root root  285 11月  3 09:14 tokudb.cnf
+-rw-r--r--.   1 root root 3611 11月 16 15:10 wsrep.cnf
+[tom@kube-node-13 my.cnf.d]$ vi wsrep.cnf
+</code></pre><p>查了一下，里面确实就是有呀。哭了。原来是这个文件的<br>那把这个文件移出去，再试一下吧。</p>
+<pre><code>[tom@kube-node-13 my.cnf.d]$ sudo mv wsrep.cnf ~/wsrep.cnf.bak
+[tom@kube-node-13 my.cnf.d]$ ls
+client.cnf  mysql-clients.cnf  server.cnf  server.cnf_original  tokudb.cnf
+[tom@kube-node-13 my.cnf.d]$ sudo service mysql status
+ ERROR! MySQL is not running, but lock file (/var/lock/subsys/mysql) exists
+[tom@kube-node-13 my.cnf.d]$ sudo service mysql stop
+ ERROR! MySQL server PID file could not be found!
+[tom@kube-node-13 my.cnf.d]$ sudo service mysql start
+Starting MySQL.161116 19:12:20 mysqld_safe Logging to &apos;/data/mariadb/mysql/kube-node-13.err&apos;.
+............a...................... ERROR!
+[tom@kube-node-13 my.cnf.d]$
+</code></pre><p>崩溃，看日志。</p>
+<pre><code>[tom@kube-node-13 my.cnf.d]$ sudo cat /data/mariadb/mysql/kube-node-13.err
+...
+...
+...
+161116 19:02:19 mysqld_safe mysqld from pid file /data/mariadb/mysql/kube-node-13.pid ended
+161116 19:12:20 mysqld_safe Starting mysqld daemon with databases from /data/mariadb/mysql
+161116 19:12:20 mysqld_safe WSREP: Running position recovery with --log_error=&apos;/data/mariadb/mysql/wsrep_recovery.3kyk74&apos; --pid-file=&apos;/data/mariadb/mysql/kube-node-13-recover.pid&apos;
+161116 19:12:20 [Note] /usr/sbin/mysqld (mysqld 10.0.28-MariaDB-wsrep) starting as process 17474 ...
+161116 19:12:23 mysqld_safe WSREP: Recovered position 00000000-0000-0000-0000-000000000000:-1
+161116 19:12:23 [Note] /usr/sbin/mysqld (mysqld 10.0.28-MariaDB-wsrep) starting as process 17514 ...
+161116 19:12:23 [Note] WSREP: Read nil XID from storage engines, skipping position init
+161116 19:12:23 [Note] WSREP: wsrep_load(): loading provider library &apos;/usr/lib64/galera/libgalera_smm.so&apos;
+161116 19:12:23 [Note] WSREP: wsrep_load(): Galera 25.3.18(r3632) by Codership Oy &lt;info@codership.com&gt; loaded successfully.
+161116 19:12:23 [Note] WSREP: CRC-32C: using hardware acceleration.
+161116 19:12:23 [Note] WSREP: Found saved state: 00000000-0000-0000-0000-000000000000:-1
+161116 19:12:23 [Note] WSREP: Passing config to GCS: base_dir = /data/mariadb/mysql/; base_host = 10.10.12.13; base_port = 4567; cert.log_conflicts = no; debug = no; evs.auto_evict = 0; evs.delay_margin = PT1S; evs.delayed_keep_period = PT30S; evs.inactive_check_period = PT0.5S; evs.inactive_timeout = PT15S; evs.join_retrans_period = PT1S; evs.max_install_timeouts = 3; evs.send_window = 4; evs.stats_report_period = PT1M; evs.suspect_timeout = PT5S; evs.user_send_window = 2; evs.view_forget_timeout = PT24H; gcache.dir = /data/mariadb/mysql/; gcache.keep_pages_size = 0; gcache.mem_size = 0; gcache.name = /data/mariadb/mysql//galera.cache; gcache.page_size = 128M; gcache.size = 128M; gcomm.thread_prio = ; gcs.fc_debug = 0; gcs.fc_factor = 1.0; gcs.fc_limit = 16; gcs.fc_master_slave = no; gcs.max_packet_size = 64500; gcs.max_throttle = 0.25; gcs.recv_q_hard_limit = 9223372036854775807; gcs.recv_q_soft_limit = 0.25; gcs.sync_donor = no; gmcast.segment = 0; gmcast.version = 0; pc.announce_timeout = PT3S; pc.checksum = false; pc.ignore_q
+161116 19:12:23 [Note] WSREP: Service thread queue flushed.
+161116 19:12:23 [Note] WSREP: Assign initial position for certification: -1, protocol version: -1
+161116 19:12:23 [Note] WSREP: wsrep_sst_grab()
+161116 19:12:23 [Note] WSREP: Start replication
+161116 19:12:23 [Note] WSREP: Setting initial position to 00000000-0000-0000-0000-000000000000:-1
+161116 19:12:23 [Note] WSREP: protonet asio version 0
+161116 19:12:23 [Note] WSREP: Using CRC-32C for message checksums.
+161116 19:12:23 [Note] WSREP: backend: asio
+161116 19:12:23 [Note] WSREP: gcomm thread scheduling priority set to other:0
+161116 19:12:23 [Warning] WSREP: access file(/data/mariadb/mysql//gvwstate.dat) failed(No such file or directory)
+161116 19:12:23 [Note] WSREP: restore pc from disk failed
+161116 19:12:23 [Note] WSREP: GMCast version 0
+161116 19:12:23 [Note] WSREP: (8c84d2c7, &apos;tcp://0.0.0.0:4567&apos;) listening at tcp://0.0.0.0:4567
+161116 19:12:23 [Note] WSREP: (8c84d2c7, &apos;tcp://0.0.0.0:4567&apos;) multicast: , ttl: 1
+161116 19:12:23 [Note] WSREP: EVS version 0
+161116 19:12:23 [Note] WSREP: gcomm: connecting to group &apos;galera_cluster&apos;, peer &apos;10.10.12.13:,10.10.13.110:,192.168.31.240:&apos;
+161116 19:12:23 [Note] WSREP: (8c84d2c7, &apos;tcp://0.0.0.0:4567&apos;) connection established to 8c84d2c7 tcp://10.10.12.13:4567
+161116 19:12:23 [Warning] WSREP: (8c84d2c7, &apos;tcp://0.0.0.0:4567&apos;) address &apos;tcp://10.10.12.13:4567&apos; points to own listening address, blacklisting
+161116 19:12:23 [Note] WSREP: (8c84d2c7, &apos;tcp://0.0.0.0:4567&apos;) connection established to 8c84d2c7 tcp://10.10.12.13:4567
+161116 19:12:26 [Warning] WSREP: no nodes coming from prim view, prim not possible
+161116 19:12:26 [Note] WSREP: view(view_id(NON_PRIM,8c84d2c7,1) memb {
+    8c84d2c7,0
+} joined {
+} left {
+} partitioned {
+})
+161116 19:12:26 [Warning] WSREP: last inactive check more than PT1.5S ago (PT3.50305S), skipping check
+161116 19:12:56 [Note] WSREP: view((empty))
+161116 19:12:56 [ERROR] WSREP: failed to open gcomm backend connection: 110: failed to reach primary view: 110 (Connection timed out)
+     at gcomm/src/pc.cpp:connect():162
+161116 19:12:56 [ERROR] WSREP: gcs/src/gcs_core.cpp:gcs_core_open():208: Failed to open backend connection: -110 (Connection timed out)
+161116 19:12:56 [ERROR] WSREP: gcs/src/gcs.cpp:gcs_open():1380: Failed to open channel &apos;galera_cluster&apos; at &apos;gcomm://10.10.12.13,10.10.13.110,192.168.31.240&apos;: -110 (Connection timed out)
+161116 19:12:56 [ERROR] WSREP: gcs connect failed: Connection timed out
+161116 19:12:56 [ERROR] WSREP: wsrep::connect(gcomm://10.10.12.13,10.10.13.110,192.168.31.240) failed: 7
+161116 19:12:56 [ERROR] Aborting
+
+161116 19:12:56 [Note] WSREP: Service disconnected.
+161116 19:12:57 [Note] WSREP: Some threads may fail to exit.
+161116 19:12:57 [Note] /usr/sbin/mysqld: Shutdown complete
+
+161116 19:12:57 mysqld_safe mysqld from pid file /data/mariadb/mysql/kube-node-13.pid ended
+[tom@kube-node-13 my.cnf.d]$
+</code></pre><p>好事情。<br><code>161116 19:12:23 [Note] WSREP: wsrep_load(): loading provider library &#39;/usr/lib64/galera/libgalera_smm.so&#39;</code><br><code>161116 19:12:23 [Note] WSREP: gcomm: connecting to group &#39;galera_cluster&#39;, peer &#39;10.10.12.13:,10.10.13.110:,192.168.31.240:&#39;</code><br><code>161116 19:12:23 [Note] WSREP: (8c84d2c7, &#39;tcp://0.0.0.0:4567&#39;) connection established to 8c84d2c7 tcp://10.10.12.13:4567</code><br>这几个关键的点，都正常了。</p>
+<p>但是为什么还出错了呢。崩溃了吧。</p>
+<p>清醒一下，让我想想，为什么？</p>
+<p>叮咚。</p>
+<p>明白了。刚刚是，只启动cluster的第一台机器，命令错了哈。应该用 <code>sudo /etc/init.d/mysql start --wsrep-new-cluster</code>，下回要注意呀。</p>
+<pre><code>[tom@kube-node-13 my.cnf.d]$ sudo /etc/init.d/mysql start --wsrep-new-cluster
+Starting MySQL.161116 19:17:28 mysqld_safe Logging to &apos;/data/mariadb/mysql/kube-node-13.err&apos;.
+. SUCCESS!
+[tom@kube-node-13 my.cnf.d]$ mysql -u root -p -e &quot;show status like &apos;wsrep%&apos;&quot;;
+Enter password:
++------------------------------+---------------------------------------------+
+| Variable_name                | Value                                       |
++------------------------------+---------------------------------------------+
+| wsrep_local_state_uuid       | 440fe21c-abee-11e6-b1c1-9bfbe1e4335d        |
+| wsrep_protocol_version       | 7                                           |
+| wsrep_last_committed         | 0                                           |
+| wsrep_replicated             | 0                                           |
+| wsrep_replicated_bytes       | 0                                           |
+| wsrep_repl_keys              | 0                                           |
+| wsrep_repl_keys_bytes        | 0                                           |
+| wsrep_repl_data_bytes        | 0                                           |
+| wsrep_repl_other_bytes       | 0                                           |
+| wsrep_received               | 2                                           |
+| wsrep_received_bytes         | 138                                         |
+| wsrep_local_commits          | 0                                           |
+| wsrep_local_cert_failures    | 0                                           |
+| wsrep_local_replays          | 0                                           |
+| wsrep_local_send_queue       | 0                                           |
+| wsrep_local_send_queue_max   | 1                                           |
+| wsrep_local_send_queue_min   | 0                                           |
+| wsrep_local_send_queue_avg   | 0.000000                                    |
+| wsrep_local_recv_queue       | 0                                           |
+| wsrep_local_recv_queue_max   | 2                                           |
+| wsrep_local_recv_queue_min   | 0                                           |
+| wsrep_local_recv_queue_avg   | 0.500000                                    |
+| wsrep_local_cached_downto    | 18446744073709551615                        |
+| wsrep_flow_control_paused_ns | 0                                           |
+| wsrep_flow_control_paused    | 0.000000                                    |
+| wsrep_flow_control_sent      | 0                                           |
+| wsrep_flow_control_recv      | 0                                           |
+| wsrep_cert_deps_distance     | 0.000000                                    |
+| wsrep_apply_oooe             | 0.000000                                    |
+| wsrep_apply_oool             | 0.000000                                    |
+| wsrep_apply_window           | 0.000000                                    |
+| wsrep_commit_oooe            | 0.000000                                    |
+| wsrep_commit_oool            | 0.000000                                    |
+| wsrep_commit_window          | 0.000000                                    |
+| wsrep_local_state            | 4                                           |
+| wsrep_local_state_comment    | Synced                                      |
+| wsrep_cert_index_size        | 0                                           |
+| wsrep_causal_reads           | 0                                           |
+| wsrep_cert_interval          | 0.000000                                    |
+| wsrep_incoming_addresses     | 10.10.12.13:3306                            |
+| wsrep_desync_count           | 0                                           |
+| wsrep_evs_delayed            |                                             |
+| wsrep_evs_evict_list         |                                             |
+| wsrep_evs_repl_latency       | 4.903e-06/9.301e-06/1.892e-05/5.26662e-06/5 |
+| wsrep_evs_state              | OPERATIONAL                                 |
+| wsrep_gcomm_uuid             | 440ea66b-abee-11e6-9185-f7b2a306dbf2        |
+| wsrep_cluster_conf_id        | 1                                           |
+| wsrep_cluster_size           | 1                                           |
+| wsrep_cluster_state_uuid     | 440fe21c-abee-11e6-b1c1-9bfbe1e4335d        |
+| wsrep_cluster_status         | Primary                                     |
+| wsrep_connected              | ON                                          |
+| wsrep_local_bf_aborts        | 0                                           |
+| wsrep_local_index            | 0                                           |
+| wsrep_provider_name          | Galera                                      |
+| wsrep_provider_vendor        | Codership Oy &lt;info@codership.com&gt;           |
+| wsrep_provider_version       | 25.3.18(r3632)                              |
+| wsrep_ready                  | ON                                          |
+| wsrep_thread_count           | 2                                           |
++------------------------------+---------------------------------------------+
+[tom@kube-node-13 my.cnf.d]$
+</code></pre><p>终于是成功了!<br>终于是成功了!<br>终于是成功了!</p>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/17/markdown/">
+  <time datetime="2016-11-17T06:19:03.000Z">
+    2016-11-17
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/17/markdown/">markdown</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="Markdown转HTML"><a href="#Markdown转HTML" class="headerlink" title="Markdown转HTML"></a>Markdown转HTML</h2><p>在线版：</p>
+<ul>
+<li><p><a href="http://www.zai17.com/md2html/" target="_blank" rel="external">在一起</a>（这个网站还有很多其实转换工具）<br>带了样式，但是不能用于 表格</p>
+</li>
+<li><p><a href="https://www.zybuluo.com/mdeditor#" target="_blank" rel="external">作业部落</a><br>不带样式，但是可用于 表格</p>
+</li>
+</ul>
+<h2 id="HTML转Markdown"><a href="#HTML转Markdown" class="headerlink" title="HTML转Markdown"></a>HTML转Markdown</h2><p>在线版：</p>
+<ul>
+<li><a href="http://tool.lu/markdown/" target="_blank" rel="external">在线工具</a> （这个网站还有很多其实转换工具）<br>*</li>
+</ul>
+<h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/15/mysql-2mysql系列之mysql_secure_installation/">
+  <time datetime="2016-11-15T10:31:35.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/15/mysql-2mysql系列之mysql_secure_installation/">mysql系列之mysql_secure_installation</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.myexception.cn/mysql/1902013.html" target="_blank" rel="external">http://www.myexception.cn/mysql/1902013.html</a></p>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>安装完mysql-server 会提示可以运行mysql_secure_installation。<br>运行mysql_secure_installation会执行几个设置：<br>  a)为root用户设置密码<br>  b)删除匿名账号<br>  c)取消root用户远程登录<br>  d)删除test库和对test库的访问权限<br>  e)刷新授权表使修改生效<br>通过这几项的设置能够提高mysql库的安全。建议生产环境中mysql安装这完成后一定要运行一次mysql_secure_installation，详细步骤请参看下面的命令:</p>
+<pre><code>[root@dns ~]# mysql_secure_installation
+/usr/bin/mysql_secure_installation:行379: find_mysql_client: 未找到命令
+
+NOTE: RUNNING ALL PARTS OF THIS SCRIPT IS RECOMMENDED FOR ALL MariaDB
+      SERVERS IN PRODUCTION USE!  PLEASE READ EACH STEP CAREFULLY!
+
+In order to log into MariaDB to secure it, we&apos;ll need the current
+password for the root user.  If you&apos;ve just installed MariaDB, and
+you haven&apos;t set the root password yet, the password will be blank,
+so you should just press enter here.
+
+ERROR 1045 (28000): Access denied for user &apos;root&apos;@&apos;localhost&apos; (using password: YES)
+Enter current password for root (enter for none):   --&gt;初次运行直接enter
+OK, successfully used password, moving on...
+
+Setting the root password ensures that nobody can log into the MariaDB
+root user without the proper authorisation.
+
+Set root password? [Y/n] Y
+New password:
+Re-enter new password:
+Password updated successfully!
+Reloading privilege tables..
+ ... Success!
+
+
+By default, a MariaDB installation has an anonymous user, allowing anyone
+to log into MariaDB without having to have a user account created for
+them.  This is intended only for testing, and to make the installation
+go a bit smoother.  You should remove them before moving into a
+production environment.
+
+Remove anonymous users? [Y/n] y
+ ... Success!
+
+Normally, root should only be allowed to connect from &apos;localhost&apos;.  This
+ensures that someone cannot guess at the root password from the network.
+
+Disallow root login remotely? [Y/n]
+ ... Success!
+
+By default, MariaDB comes with a database named &apos;test&apos; that anyone can
+access.  This is also intended only for testing, and should be removed
+before moving into a production environment.
+
+Remove test database and access to it? [Y/n]
+ - Dropping test database...
+ ... Success!
+ - Removing privileges on test database...
+ ... Success!
+
+Reloading the privilege tables will ensure that all changes made so far
+will take effect immediately.
+
+Reload privilege tables now? [Y/n]
+ ... Success!
+
+Cleaning up...
+
+All done!  If you&apos;ve completed all of the above steps, your MariaDB
+installation should now be secure.
+
+Thanks for using MariaDB!
+</code></pre>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/15/mysql-1mysql系列之集群 MariaDB-Galera-server 安装/">
+  <time datetime="2016-11-15T10:29:59.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/15/mysql-1mysql系列之集群 MariaDB-Galera-server 安装/">mysql系列之集群 MariaDB-Galera-server 安装</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>MariaDB Galera Cluster 部署</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.linuxidc.com/Linux/2015-07/119512.htm" target="_blank" rel="external">http://www.linuxidc.com/Linux/2015-07/119512.htm</a></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h5 id="安装mariadb10-0"><a href="#安装mariadb10-0" class="headerlink" title="安装mariadb10.0"></a>安装mariadb10.0</h5><blockquote>
+<p>官方的<a href="https://mariadb.com/kb/zh-cn/installing-mariadb-with-yum/" target="_blank" rel="external">通过yum安装</a>教程</p>
+<p>根据不同的系统来下载repo吧，更多的<a href="https://downloads.mariadb.org/mariadb/repositories/#mirror=marty-anstey&amp;distro=CentOS&amp;distro_release=centos7-amd64--centos7&amp;version=10.1" target="_blank" rel="external">MariaDB.repo</a></p>
+</blockquote>
+<p>或者，查看之前的 mariadb安装教程，就可以了。</p>
+<p>具体，我的是这样的。</p>
+<ol>
+<li><p>MariaDB.repo</p>
+<p> [cdn@test_240 yum.repos.d]$ cat /etc/yum.repos.d/MariaDB.repo</p>
+<h1 id="MariaDB-10-0-CentOS-repository-list-created-2016-11-16-02-27-UTC"><a href="#MariaDB-10-0-CentOS-repository-list-created-2016-11-16-02-27-UTC" class="headerlink" title="MariaDB 10.0 CentOS repository list - created 2016-11-16 02:27 UTC"></a>MariaDB 10.0 CentOS repository list - created 2016-11-16 02:27 UTC</h1><h1 id="http-downloads-mariadb-org-mariadb-repositories"><a href="#http-downloads-mariadb-org-mariadb-repositories" class="headerlink" title="http://downloads.mariadb.org/mariadb/repositories/"></a><a href="http://downloads.mariadb.org/mariadb/repositories/" target="_blank" rel="external">http://downloads.mariadb.org/mariadb/repositories/</a></h1><p> [mariadb]<br> name = MariaDB<br> baseurl = <a href="http://yum.mariadb.org/10.0/centos7-amd64" target="_blank" rel="external">http://yum.mariadb.org/10.0/centos7-amd64</a><br> gpgkey=<a href="https://yum.mariadb.org/RPM-GPG-KEY-MariaDB" target="_blank" rel="external">https://yum.mariadb.org/RPM-GPG-KEY-MariaDB</a><br> gpgcheck=1</p>
+</li>
+</ol>
+<h3 id="2-安装数据库"><a href="#2-安装数据库" class="headerlink" title="2. 安装数据库"></a>2. 安装数据库</h3><pre><code>sudo yum clean all
+sudo yum install MariaDB-Galera-server MariaDB-client galera -y
+</code></pre><p>卸载<br>    sudo yum remove MariaDB-server MariaDB-client<br>    sudo yum remove MariaDB-common -y</p>
+<p>如果要删除旧的数据库可以使用remove, 参数 -y 是确认，不用提示。此处，安装的是服务器和客户端，一般来说安装这两个就可以了。</p>
+<h3 id="3-启动数据库"><a href="#3-启动数据库" class="headerlink" title="3. 启动数据库"></a>3. 启动数据库</h3><p>如果不用进行其他的操作，则现在就可以直接启动数据库，并进行测试了。</p>
+<p>查看mysql状态;关闭数据库  </p>
+<pre><code># service mysql status
+# sudo /etc/init.d/mysql status
+# service mysql stop  
+# sudo /etc/init.d/mysql stop
+</code></pre><p>启动数据库</p>
+<pre><code># service mysql start
+# sudo /etc/init.d/mysql start  
+</code></pre><p>开机自启动</p>
+<pre><code># sudo chkconfig mysql on
+</code></pre><p><em><code>sudo systemctl start mariadb.service</code>类似这种的方式，在这已失效</em></p>
+<pre><code>[cdn@test_240 ~]$ sudo systemctl start mariadb.service
+[sudo] password for cdn:
+Failed to start mariadb.service: Unit mariadb.service failed to load: No such file or directory.
+[cdn@test_240 ~]$ sudo /etc/init.d/mysql start
+Starting MySQL.161116 13:34:03 mysqld_safe Logging to &apos;/var/lib/mysql/test_240.err&apos;.
+.. SUCCESS!
+[cdn@test_240 ~]$ sudo chkconfig mysql on
+[cdn@test_240 ~]$ sudo /etc/init.d/mysql status
+ SUCCESS! MySQL running (13959)
+[cdn@test_240 ~]$ sudo /etc/init.d/mysql stop
+Shutting down MySQL... SUCCESS!
+[cdn@test_240 ~]$
+</code></pre><h3 id="4-修改root密码"><a href="#4-修改root密码" class="headerlink" title="4. 修改root密码"></a>4. 修改root密码</h3><pre><code>#  修改root密码  
+mysqladmin -u root password &apos;root&apos;  
+</code></pre><p>因为安装好以后的root密码是空,所以需要设置; 如果是测试服务器,那么你可以直接使用root,不重要的密码很多时候可以设置为和用户名一致，以免忘记了又想不起来。<br>如果是重要的服务器，请使用复杂密码，例如邮箱，各种自由组合的规则的字符等。</p>
+<h3 id="5-登录数据库"><a href="#5-登录数据库" class="headerlink" title="5. 登录数据库"></a>5. 登录数据库</h3><pre><code>mysql -u root -p  
+</code></pre><p>如果是本机,那可以直接使用上面的命令登录，当然，需要输入密码. 如果是其他机器，那么可能需要如下的形式:</p>
+<pre><code>mysql -h 127.0.0.1 -P 3306 -u root -p  
+</code></pre><h3 id="6-简单SQL测试"><a href="#6-简单SQL测试" class="headerlink" title="6. 简单SQL测试"></a>6. 简单SQL测试</h3><pre><code>&gt;  
+-- 查看MySQL的状态
+status;  
+-- 显示支持的引擎
+show engines;  
+-- 显示所有数据库
+show databases;  
+-- 切换数据库上下文,即设置当前会话的默认数据库
+use test;  
+-- 显示本数据库所有的表
+show tables;  
+-- 创建一个表
+CREATETABLE t_test (  
+  id int(11) UNSIGNED NOTNULL AUTO_INCREMENT,  
+  userId char(36),  
+  lastLoginTime timestamp,  
+PRIMARYKEY (id)  
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
+-- 插入测试数据
+insertinto t_test(userId)  
+values
+(&apos;admin&apos;)  
+,(&apos;haha&apos;)  
+;  
+-- 简单查询
+select * from t_test;  
+select id,userId from t_test  where userId=&apos;admin&apos; ;  
+</code></pre><h3 id="7-修改数据存放目录"><a href="#7-修改数据存放目录" class="headerlink" title="7.  修改数据存放目录"></a>7.  修改数据存放目录</h3><p>mysql, MariaDB 的默认数据存放在 /var/lib/mysql/ 目录下,如果不想放到此处,或者是想要程序和数据分离，或者是磁盘原因,需要切换到其他路径,则可以通过修改 datadir系统变量来达成目的.</p>
+<pre><code># 停止数据库  
+service mysql stop
+# 创建目录,假设没有的话  
+mkdir /usr/local/ieternal/mysql_data  
+# 拷贝默认数据库到新的位置  
+# -a 命令是将文件属性一起拷贝,否则各种问题  
+cp -a /var/lib/mysql /usr/local/ieternal/mysql_data  
+# 备份原来的数据  
+cp -a /etc/my.cnf /etc/my.cnf_original  
+# 其实查看 /etc/my.cnf 文件可以发现  
+# MariaDB 的此文件之中只有一个包含语句  
+# 所以需要修改的配置文件为 /etc/my.cnf.d/server.cnf  
+cp /etc/my.cnf.d/server.cnf /etc/my.cnf.d/server.cnf_original  
+vim /etc/my.cnf.d/server.cnf    
+</code></pre><p>然后 按 i 进入编辑模式,可以插入相关内容.使用键盘的上下左右键可以移动光标, 编辑完成以后，按 ESC 退出编辑模式(进入命令模式), 然后输入命令:wq 保存并退出</p>
+<pre><code># 在文件的 mysqld 节下添加内容  
+[mysqld]  
+datadir=/usr/local/ieternal/mysql_data/mysql  
+socket=/var/lib/mysql/mysql.sock  
+#default-character-set=utf8  
+character_set_server=utf8  
+slow_query_log=on
+slow_query_log_file=/usr/local/ieternal/mysql_data/slow_query_log.log  
+long_query_time=2  
+</code></pre><p>其中,也只有 datadir 和 socket 比较重要; 而 default-character-set 是 mysql 自己认识的,而 mariadb5.5 就不认识,相当于变成了 character_set_server</p>
+<h5 id="7-1-创建慢查询日志文件"><a href="#7-1-创建慢查询日志文件" class="headerlink" title="7.1 创建慢查询日志文件"></a>7.1 创建慢查询日志文件</h5><p>既然上面指定了慢查询日志文件，我后来看了下MariaDB的err日志，发现MariaDB不会自己创建该文件，所以我们需要自己创建,并修改相应的文件权限(比如 MySQL 采用 mysql用户，可能我们使用 root用户创建的文件,此时要求慢查询日志文件对mysql用户可读可写就行。)</p>
+<pre><code>touch /usr/local/ieternal/mysql_data/slow_query_log.log  
+chmod 666 /usr/local/ieternal/mysql_data/slow_query_log.log  
+</code></pre><p>然后重新启动MySQL.</p>
+<pre><code>service mysql start  
+</code></pre><h2 id="综合命令"><a href="#综合命令" class="headerlink" title="综合命令"></a>综合命令</h2><p>方便大家ctrl+c, ctrl+v</p>
+<pre><code>sudo service mysql status
+sudo service mysql stop
+cd /data/
+ls
+sudo mkdir ./mariadb/mysql/ -p
+ls
+cd mariadb/mysql/
+ls
+sudo cp -a /var/lib/mysql /data/mariadb/
+ls
+cd ../
+ls
+cd mysql/
+ls
+sudo cp -a /etc/my.cnf /etc/my.cnf_original
+sudo cp /etc/my.cnf.d/server.cnf /etc/my.cnf.d/server.cnf_original
+sudo vim /etc/my.cnf.d/server.cnf
+sudo touch /data/mariadb/mysql/slow_query_log.log
+sudo chmod 666 /data/mariadb/mysql/slow_query_log.log
+sudo systemctl restart mariadb.service
+</code></pre><p>其中 vim /etc/my.cnf.d/server.cnf</p>
+<pre><code>#
+# These groups are read by MariaDB server.
+# Use it for options that only the server (but not clients) should see
+#
+# See the examples of server my.cnf files in /usr/share/mysql/
+#
+
+# this is read by the standalone daemon and embedded servers
+[server]
+
+# this is only for the mysqld standalone daemon
+[mysqld]
+datadir=/data/mariadb/mysql  
+socket=/var/lib/mysql/mysql.sock  
+#default-character-set=utf8  
+character_set_server=utf8  
+slow_query_log=on  
+slow_query_log_file=/data/mariadb/mysql/slow_query_log.log  
+long_query_time=2
+
+
+# this is only for embedded server
+[embedded]
+
+# This group is only read by MariaDB-5.5 servers.
+# If you use the same .cnf file for MariaDB of different versions,
+# use this group for options that older servers don&apos;t understand
+[mysqld-5.5]
+
+# These two groups are only read by MariaDB servers, not by MySQL.
+# If you use the same .cnf file for MySQL and MariaDB,
+# you can put MariaDB-only options here
+[mariadb]
+
+[mariadb-5.5]
+</code></pre><h2 id="安装报错"><a href="#安装报错" class="headerlink" title="安装报错"></a>安装报错</h2><h3 id="报错1"><a href="#报错1" class="headerlink" title="报错1"></a>报错1</h3><p>报错：</p>
+<pre><code>MariaDB-client-10.1.19-1.el7.centos.x86_64: [Errno 256] No more mirrors to try.
+</code></pre><p>出错原因：</p>
+<p> 之前已经在 /etc/yum.repos.d/MariaDB.repo 中设置过 <code>baseurl = http://yum.mariadb.org/10.1/centos6-amd64</code>, 而后又觉得不对，要降低为<code>baseurl = http://yum.mariadb.org/10.0/centos6-amd64</code>, 导致之前的缓存没有清除。</p>
+<p>解决：</p>
+<p>运行<code>sudo yum clean all</code>，然后再次运行<code>sudo yum install MariaDB-Galera-server MariaDB-client galera -y</code></p>
+<p>具体报错如下：</p>
+<pre><code>[tom@kube-node-13 ~]$ ll /etc/yum.repos.d/
+总用量 44
+-rw-r--r--. 1 root root 1664 12月  9 2015 CentOS-Base.repo
+-rw-r--r--. 1 root root 1309 12月  9 2015 CentOS-CR.repo
+-rw-r--r--. 1 root root  649 12月  9 2015 CentOS-Debuginfo.repo
+-rw-r--r--. 1 root root  290 12月  9 2015 CentOS-fasttrack.repo
+-rw-r--r--. 1 root root  630 12月  9 2015 CentOS-Media.repo
+-rw-r--r--. 1 root root 1331 12月  9 2015 CentOS-Sources.repo
+-rw-r--r--. 1 root root 1952 12月  9 2015 CentOS-Vault.repo
+-rw-r--r--. 1 root root  957 3月  31 2016 epel.repo
+-rw-r--r--. 1 root root 1056 3月  31 2016 epel-testing.repo
+-rw-r--r--. 1 root root  261 11月 16 10:28 MariaDB.repo
+-rw-r--r--. 1 root root  401 2月  15 2016 zabbix.repo
+[tom@kube-node-13 ~]$ sudo yum install  MariaDB-client galera -y
+已加载插件：fastestmirror, langpacks
+Loading mirror speeds from cached hostfile
+ * base: ftp.sjtu.edu.cn
+ * epel: free.nchc.org.tw
+ * extras: ftp.sjtu.edu.cn
+ * updates: ftp.sjtu.edu.cn
+正在解决依赖关系
+--&gt; 正在检查事务
+---&gt; 软件包 MariaDB-client.x86_64.0.10.1.19-1.el7.centos 将被 安装
+--&gt; 正在处理依赖关系 MariaDB-common，它被软件包 MariaDB-client-10.1.19-1.el7.centos.x86_64 需要
+---&gt; 软件包 galera.x86_64.0.25.3.18-1.rhel7.el7.centos 将被 安装
+--&gt; 正在处理依赖关系 libboost_program_options.so.1.53.0()(64bit)，它被软件包 galera-25.3.18-1.rhel7.el7.centos.x86_64 需要
+--&gt; 正在检查事务
+---&gt; 软件包 MariaDB-common.x86_64.0.10.1.19-1.el7.centos 将被 安装
+---&gt; 软件包 boost-program-options.x86_64.0.1.53.0-25.el7 将被 安装
+--&gt; 处理 MariaDB-common-10.1.19-1.el7.centos.x86_64 与 mariadb-libs &lt; 1:10.1.19-1.el7.centos 的冲突
+--&gt; 正在使用新的信息重新解决依赖关系
+--&gt; 正在检查事务
+---&gt; 软件包 MariaDB-shared.x86_64.0.10.1.19-1.el7.centos 将被 舍弃
+---&gt; 软件包 mariadb-libs.x86_64.1.5.5.50-1.el7_2 将被 取代
+--&gt; 解决依赖关系完成
+
+依赖关系解决
+
+====================================================================================================================================================================================================================
+ Package                                                  架构                                      版本                                                           源                                          大小
+====================================================================================================================================================================================================================
+正在安装:
+ MariaDB-client                                           x86_64                                    10.1.19-1.el7.centos                                           mariadb                                     39 M
+ MariaDB-shared                                           x86_64                                    10.1.19-1.el7.centos                                           mariadb                                    1.3 M
+      替换  mariadb-libs.x86_64 1:5.5.50-1.el7_2
+ galera                                                   x86_64                                    25.3.18-1.rhel7.el7.centos                                     mariadb                                    7.8 M
+为依赖而安装:
+ MariaDB-common                                           x86_64                                    10.1.19-1.el7.centos                                           mariadb                                     43 k
+ boost-program-options                                    x86_64                                    1.53.0-25.el7                                                  base                                       155 k
+
+事务概要
+====================================================================================================================================================================================================================
+安装  3 软件包 (+2 依赖软件包)
+
+总计：48 M
+总下载量：40 M
+Downloading packages:
+MariaDB-10.1.19-centos7-x86_64 FAILED                                          
+http://yum.mariadb.org/10.0/centos7-amd64/rpms/MariaDB-10.1.19-centos7-x86_64-client.rpm: [Errno 14] HTTP Error 404 - Not Found                                                   ]  0.0 B/s |    0 B  --:--:-- ETA
+正在尝试其它镜像。
+To address this issue please refer to the below knowledge base article
+
+https://access.redhat.com/articles/1320623
+
+If above article doesn&apos;t help to resolve this issue please create a bug on https://bugs.centos.org/
+
+MariaDB-10.1.19-centos7-x86_64 FAILED                                          
+http://yum.mariadb.org/10.0/centos7-amd64/rpms/MariaDB-10.1.19-centos7-x86_64-common.rpm: [Errno 14] HTTP Error 404 - Not Found                                                   ]  0.0 B/s |    0 B  --:--:-- ETA
+正在尝试其它镜像。
+MariaDB-10.1.19-centos7-x86_64 FAILED                                          
+http://yum.mariadb.org/10.0/centos7-amd64/rpms/MariaDB-10.1.19-centos7-x86_64-shared.rpm: [Errno 14] HTTP Error 404 - Not Found                                                   ]  0.0 B/s |    0 B  --:--:-- ETA
+正在尝试其它镜像。
+
+
+Error downloading packages:
+  MariaDB-client-10.1.19-1.el7.centos.x86_64: [Errno 256] No more mirrors to try.
+  MariaDB-shared-10.1.19-1.el7.centos.x86_64: [Errno 256] No more mirrors to try.
+  MariaDB-common-10.1.19-1.el7.centos.x86_64: [Errno 256] No more mirrors to try.
+
+[tom@kube-node-13 ~]$
+</code></pre><h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/15/mysql-3mysql系列之mysql使用规范/">
+  <time datetime="2016-11-15T10:29:52.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/15/mysql-3mysql系列之mysql使用规范/">mysql系列之mysql使用规范</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>mysql使用规范</p>
+<h2 id="级别说明"><a href="#级别说明" class="headerlink" title="级别说明"></a>级别说明</h2><p>所有级别：</p>
+<ul>
+<li>级别1，必须做到</li>
+<li>级别2，优先做到</li>
+</ul>
+<p>级别：1</p>
+<ol>
+<li>库名，表名，字段名：使用小写</li>
+<li>字符：utf8</li>
+<li>表：不使用删除表（<code>drop</code>），而使用清空表（<code>truncate</code>，或者<code>delete from</code>）</li>
+<li>表：记录数超过10000的情况下，加索引</li>
+</ol>
+<p>级别：2</p>
+<ol>
+<li>库名，表名，字段名：使用下划线分割。如：<code>day_stocka_wind</code></li>
+<li>表：加主键</li>
+<li>清空表：优先使用<code>truncate</code>（命令：<code>truncate table tbl_name;</code>），其次使用<code>delete from</code>(命令：<code>delete from tbl_name;</code>）</li>
+</ol>
+<h2 id="关于删除表"><a href="#关于删除表" class="headerlink" title="关于删除表"></a>关于删除表</h2><p>删除表：使用<code>DROP TABLE tbl_name;</code>， 或者<code>DROP TABLE IF EXISTS tbl_name;</code></p>
+<p>若有业务确实需要删除表的，请联系小鱼。</p>
+<h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/15/mysql/">
+  <time datetime="2016-11-15T10:29:52.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/15/mysql/">mysql系列之目录</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>mysql系列之目录</p>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
       <a href="/2016/11/15/nginx-2txt,json文件 中文乱码.txt,json文件 中文乱码/">
   <time datetime="2016-11-15T08:47:05.000Z">
     2016-11-15
@@ -254,629 +1544,13 @@ location / {
 
 
   
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/15/mysql-0mysql系列之mariadb-install/">
-  <time datetime="2016-11-15T06:03:52.000Z">
-    2016-11-15
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/15/mysql-0mysql系列之mariadb-install/">mysql系列之mysql-install</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <h2 id="主要参考："><a href="#主要参考：" class="headerlink" title="主要参考："></a>主要参考：</h2><p><a href="http://blog.csdn.net/renfufei/article/details/17616549" target="_blank" rel="external">http://blog.csdn.net/renfufei/article/details/17616549</a></p>
-<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>说明: 首先必须能链接外网. 如果不能直接访问,那也可以设置代理,请参考: 在内网机器上设置yum代理<br>使用 yum 的权限要求是 root 用户,如果你不是,那么可以需要 在 shell命令之前加上 sudo, 或者 su root  切换到 super 管理员进行操作. 并可能需要输入密码.</p>
-<h3 id="1-添加-yum-数据源"><a href="#1-添加-yum-数据源" class="headerlink" title="1. 添加 yum 数据源"></a>1. 添加 yum 数据源</h3><blockquote>
-<h5 id="安装mariadb10-1"><a href="#安装mariadb10-1" class="headerlink" title="安装mariadb10.1"></a>安装mariadb10.1</h5><p>官方的<a href="https://mariadb.com/kb/zh-cn/installing-mariadb-with-yum/" target="_blank" rel="external">通过yum安装</a>教程</p>
-<p>根据不同的系统来下载repo吧，更多的<a href="https://downloads.mariadb.org/mariadb/repositories/#mirror=marty-anstey&amp;distro=CentOS&amp;distro_release=centos7-amd64--centos7&amp;version=10.1" target="_blank" rel="external">MariaDB.repo</a></p>
-</blockquote>
-<p>建议命名为 MariaDB.repo 类似的名字：</p>
-<pre><code>cd /etc/yum.repos.d/  
-vim /etc/yum.repos.d/MariaDB.repo  
-</code></pre><p>然后,写入文件内容:(建议使用 10.0)</p>
-<pre><code># MariaDB 10.0 CentOS repository list - created 2015-08-12 10:59 UTC  
-# http://mariadb.org/mariadb/repositories/  
-[mariadb]  
-name = MariaDB  
-baseurl = http://yum.mariadb.org/10.0/centos6-amd64  
-gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB  
-gpgcheck=1  
-</code></pre><p><em>这个baseurl可以通过浏览器打开，然后在 <a href="http://yum.mariadb.org/10.0/centos7-amd64/rpms/" target="_blank" rel="external">http://yum.mariadb.org/10.0/centos7-amd64/rpms/</a> 中<br>可以看到这里面有些什么 .rpm 文件。</em></p>
-<p>该文件的内容是参考官网,并从官网上生成的，设置安装源仓库的 具体的地址为:  <a href="https://downloads.mariadb.org/mariadb/repositories/" target="_blank" rel="external">https://downloads.mariadb.org/mariadb/repositories/</a><br>选择好操作系统版本之后既可以查看，其他操作系统的安装源也可以在此处查看并设置。<br>如果服务器不支持https协议，或者gpgkey 保错，确保没问题的话，可以将 gpgcheck=1 修改为 gpgcheck=0,则不进行校验.</p>
-<h3 id="2-安装数据库"><a href="#2-安装数据库" class="headerlink" title="2. 安装数据库"></a>2. 安装数据库</h3><pre><code>yum remove MariaDB-server MariaDB-client  
-yum -y install MariaDB-server MariaDB-client  
-</code></pre><p>如果要删除旧的数据库可以使用remove, 参数 -y 是确认，不用提示。此处，安装的是服务器和客户端，一般来说安装这两个就可以了。</p>
-<h3 id="3-启动数据库"><a href="#3-启动数据库" class="headerlink" title="3. 启动数据库"></a>3. 启动数据库</h3><p>如果不用进行其他的操作，则现在就可以直接启动数据库，并进行测试了。</p>
-<p>查看mysql状态;关闭数据库  </p>
-<pre><code># service mysql status  
-# service mysql stop  
-</code></pre><p>启动数据库  </p>
-<pre><code># service mysql start  
-</code></pre><h3 id="4-修改root密码"><a href="#4-修改root密码" class="headerlink" title="4. 修改root密码"></a>4. 修改root密码</h3><pre><code>#  修改root密码  
-mysqladmin -u root password &apos;root&apos;  
-</code></pre><p>因为安装好以后的root密码是空,所以需要设置; 如果是测试服务器,那么你可以直接使用root,不重要的密码很多时候可以设置为和用户名一致，以免忘记了又想不起来。<br>如果是重要的服务器，请使用复杂密码，例如邮箱，各种自由组合的规则的字符等。</p>
-<h3 id="5-登录数据库"><a href="#5-登录数据库" class="headerlink" title="5. 登录数据库"></a>5. 登录数据库</h3><pre><code>mysql -u root -p  
-</code></pre><p>如果是本机,那可以直接使用上面的命令登录，当然，需要输入密码. 如果是其他机器，那么可能需要如下的形式:</p>
-<pre><code>mysql -h 127.0.0.1 -P 3306 -u root -p  
-</code></pre><h3 id="6-简单SQL测试"><a href="#6-简单SQL测试" class="headerlink" title="6. 简单SQL测试"></a>6. 简单SQL测试</h3><pre><code>&gt;  
--- 查看MySQL的状态
-status;  
--- 显示支持的引擎
-show engines;  
--- 显示所有数据库
-show databases;  
--- 切换数据库上下文,即设置当前会话的默认数据库
-use test;  
--- 显示本数据库所有的表
-show tables;  
--- 创建一个表
-CREATETABLE t_test (  
-  id int(11) UNSIGNED NOTNULL AUTO_INCREMENT,  
-  userId char(36),  
-  lastLoginTime timestamp,  
-PRIMARYKEY (id)  
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
--- 插入测试数据
-insertinto t_test(userId)  
-values
-(&apos;admin&apos;)  
-,(&apos;haha&apos;)  
-;  
--- 简单查询
-select * from t_test;  
-select id,userId from t_test  where userId=&apos;admin&apos; ;  
-</code></pre><h3 id="7-修改数据存放目录"><a href="#7-修改数据存放目录" class="headerlink" title="7.  修改数据存放目录"></a>7.  修改数据存放目录</h3><p>mysql, MariaDB 的默认数据存放在 /var/lib/mysql/ 目录下,如果不想放到此处,或者是想要程序和数据分离，或者是磁盘原因,需要切换到其他路径,则可以通过修改 datadir系统变量来达成目的.</p>
-<pre><code># 停止数据库  
-service mysql stop
-# 创建目录,假设没有的话  
-mkdir /usr/local/ieternal/mysql_data  
-# 拷贝默认数据库到新的位置  
-# -a 命令是将文件属性一起拷贝,否则各种问题  
-cp -a /var/lib/mysql /usr/local/ieternal/mysql_data  
-# 备份原来的数据  
-cp -a /etc/my.cnf /etc/my.cnf_original  
-# 其实查看 /etc/my.cnf 文件可以发现  
-# MariaDB 的此文件之中只有一个包含语句  
-# 所以需要修改的配置文件为 /etc/my.cnf.d/server.cnf  
-cp /etc/my.cnf.d/server.cnf /etc/my.cnf.d/server.cnf_original  
-vim /etc/my.cnf.d/server.cnf    
-</code></pre><p>然后 按 i 进入编辑模式,可以插入相关内容.使用键盘的上下左右键可以移动光标, 编辑完成以后，按 ESC 退出编辑模式(进入命令模式), 然后输入命令:wq 保存并退出</p>
-<pre><code># 在文件的 mysqld 节下添加内容  
-[mysqld]  
-datadir=/usr/local/ieternal/mysql_data/mysql  
-socket=/var/lib/mysql/mysql.sock  
-#default-character-set=utf8  
-character_set_server=utf8  
-slow_query_log=on
-slow_query_log_file=/usr/local/ieternal/mysql_data/slow_query_log.log  
-long_query_time=2  
-</code></pre><p>其中,也只有 datadir 和 socket 比较重要; 而 default-character-set 是 mysql 自己认识的,而 mariadb5.5 就不认识,相当于变成了 character_set_server</p>
-<h5 id="7-1-创建慢查询日志文件"><a href="#7-1-创建慢查询日志文件" class="headerlink" title="7.1 创建慢查询日志文件"></a>7.1 创建慢查询日志文件</h5><p>既然上面指定了慢查询日志文件，我后来看了下MariaDB的err日志，发现MariaDB不会自己创建该文件，所以我们需要自己创建,并修改相应的文件权限(比如 MySQL 采用 mysql用户，可能我们使用 root用户创建的文件,此时要求慢查询日志文件对mysql用户可读可写就行。)</p>
-<pre><code>touch /usr/local/ieternal/mysql_data/slow_query_log.log  
-chmod 666 /usr/local/ieternal/mysql_data/slow_query_log.log  
-</code></pre><p>然后重新启动MySQL.</p>
-<pre><code>service mysql start  
-</code></pre><h2 id="综合命令"><a href="#综合命令" class="headerlink" title="综合命令"></a>综合命令</h2><p>方便大家ctrl+c, ctrl+v</p>
-<pre><code>sudo systemctl status mariadb.service
-sudo systemctl stop mariadb.service
-cd /data/
-ls
-sudo mkdir ./mariadb/mysql/ -p
-ls
-cd mariadb/mysql/
-ls
-sudo cp -a /var/lib/mysql /data/mariadb/
-ls
-cd ../
-ls
-cd mysql/
-ls
-sudo cp -a /etc/my.cnf /etc/my.cnf_original
-sudo cp /etc/my.cnf.d/server.cnf /etc/my.cnf.d/server.cnf_original
-sudo vim /etc/my.cnf.d/server.cnf
-sudo touch /data/mariadb/mysql/slow_query_log.log
-sudo chmod 666 /data/mariadb/mysql/slow_query_log.log
-sudo systemctl restart mariadb.service
-</code></pre><p>其中 vim /etc/my.cnf.d/server.cnf</p>
-<pre><code>#
-# These groups are read by MariaDB server.
-# Use it for options that only the server (but not clients) should see
-#
-# See the examples of server my.cnf files in /usr/share/mysql/
-#
-
-# this is read by the standalone daemon and embedded servers
-[server]
-
-# this is only for the mysqld standalone daemon
-[mysqld]
-datadir=/data/mariadb/mysql  
-socket=/var/lib/mysql/mysql.sock  
-#default-character-set=utf8  
-character_set_server=utf8  
-slow_query_log=on  
-slow_query_log_file=/data/mariadb/mysql/slow_query_log.log  
-long_query_time=2
-
-
-# this is only for embedded server
-[embedded]
-
-# This group is only read by MariaDB-5.5 servers.
-# If you use the same .cnf file for MariaDB of different versions,
-# use this group for options that older servers don&apos;t understand
-[mysqld-5.5]
-
-# These two groups are only read by MariaDB servers, not by MySQL.
-# If you use the same .cnf file for MySQL and MariaDB,
-# you can put MariaDB-only options here
-[mariadb]
-
-[mariadb-5.5]
-</code></pre><h2 id="卸载"><a href="#卸载" class="headerlink" title="卸载"></a>卸载</h2><pre><code>sudo yum remove MariaDB-server -y
-sudo yum remove MariaDB-client -y
-sudo yum remove MariaDB-common -y
-</code></pre><h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/15/linux-1/">
-  <time datetime="2016-11-15T04:53:44.000Z">
-    2016-11-15
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/15/linux-1/">linux系列之yum</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <h2 id="yum安装的软件在哪-linux下如何查看某个软件-是否安装？安装路径在哪"><a href="#yum安装的软件在哪-linux下如何查看某个软件-是否安装？安装路径在哪" class="headerlink" title="yum安装的软件在哪? linux下如何查看某个软件 是否安装？安装路径在哪?"></a>yum安装的软件在哪? linux下如何查看某个软件 是否安装？安装路径在哪?</h2><p><a href="https://zhidao.baidu.com/question/752680403805026404.html" target="_blank" rel="external">linux下如何查看某个软件 是否安装？安装路径在哪</a></p>
-<p>使用<code>sudo rpm -qa</code>来查看通过 yum安装的软件</p>
-<pre><code>[tom@kube-node-11 ~]$ sudo rpm -qa | grep Maria
-MariaDB-client-10.1.19-1.el7.centos.x86_64
-MariaDB-common-10.1.19-1.el7.centos.x86_64
-MariaDB-Galera-server-10.0.28-1.el7.centos.x86_64
-MariaDB-shared-10.1.19-1.el7.centos.x86_64
-</code></pre><h2 id="linux-通过-yum-search-得到，在当前情况下，能安装哪些软件，哪些软件安装不了。"><a href="#linux-通过-yum-search-得到，在当前情况下，能安装哪些软件，哪些软件安装不了。" class="headerlink" title="linux 通过 yum search 得到，在当前情况下，能安装哪些软件，哪些软件安装不了。"></a>linux 通过 yum search 得到，在当前情况下，能安装哪些软件，哪些软件安装不了。</h2><p>如下面 这个地方，显示 MariaDB-Galera-server 找不到。</p>
-<pre><code>[cdn@test_240 ~]$ sudo yum install MariaDB-Galera-server MariaDB-client galera -y
-Loaded plugins: fastestmirror, langpacks
-Loading mirror speeds from cached hostfile
- * base: mirrors.cn99.com
- * extras: mirrors.cn99.com
- * updates: mirrors.cn99.com
-No package MariaDB-Galera-server available.
-Package MariaDB-client-10.1.19-1.el7.centos.x86_64 already installed and latest version
-Package galera-25.3.18-1.rhel7.el7.centos.x86_64 already installed and latest version
-Nothing to do
-[cdn@test_240 ~]$
-</code></pre><p>那么，我们怎么办呢？<br>用<code>yum search</code>吧</p>
-<ol>
-<li><p>确保 MariaDB.repo 存在</p>
-<p> [cdn@test_240 ~]$ ll /etc/yum.repos.d/<br> [cdn@test_240 ~]$ cat /etc/yum.repos.d/MariaDB.repo</p>
-<h1 id="MariaDB-10-1-CentOS-repository-list-created-2016-11-15-02-38-UTC"><a href="#MariaDB-10-1-CentOS-repository-list-created-2016-11-15-02-38-UTC" class="headerlink" title="MariaDB 10.1 CentOS repository list - created 2016-11-15 02:38 UTC"></a>MariaDB 10.1 CentOS repository list - created 2016-11-15 02:38 UTC</h1><h1 id="http-downloads-mariadb-org-mariadb-repositories"><a href="#http-downloads-mariadb-org-mariadb-repositories" class="headerlink" title="http://downloads.mariadb.org/mariadb/repositories/"></a><a href="http://downloads.mariadb.org/mariadb/repositories/" target="_blank" rel="external">http://downloads.mariadb.org/mariadb/repositories/</a></h1><p> [mariadb]<br> name = MariaDB<br> baseurl = <a href="http://yum.mariadb.org/10.0/centos7-amd64" target="_blank" rel="external">http://yum.mariadb.org/10.0/centos7-amd64</a><br> gpgkey=<a href="https://yum.mariadb.org/RPM-GPG-KEY-MariaDB" target="_blank" rel="external">https://yum.mariadb.org/RPM-GPG-KEY-MariaDB</a><br> gpgcheck=1<br> [cdn@test_240 ~]$</p>
-</li>
-<li><p>确保 MariaDB.repo 生效</p>
-</li>
-</ol>
-<p>先查是否能ping到baseurl</p>
-<pre><code>[cdn@test_240 ~]$ cat /etc/yum.repos.d/MariaDB.repo
-# MariaDB 10.0 CentOS repository list - created 2016-11-16 02:27 UTC
-# http://downloads.mariadb.org/mariadb/repositories/
-[mariadb]
-name = MariaDB
-baseurl = http://yum.mariadb.org/10.0/centos7-amd64
-gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
-gpgcheck=1
-[cdn@test_240 ~]$ ping yum.mariabdb.org
-^C
-[cdn@test_240 ~]$ ping yum.mariadb.org
-PING yum.mariadb.org (142.4.217.28) 56(84) bytes of data.
-64 bytes from bb02.mariadb.net (142.4.217.28): icmp_seq=1 ttl=47 time=272 ms
-64 bytes from bb02.mariadb.net (142.4.217.28): icmp_seq=2 ttl=47 time=272 ms
-64 bytes from bb02.mariadb.net (142.4.217.28): icmp_seq=3 ttl=47 time=272 ms
-^C
---- yum.mariadb.org ping statistics ---
-3 packets transmitted, 3 received, 0% packet loss, time 2001ms
-rtt min/avg/max/mdev = 272.301/272.492/272.588/0.135 ms
-</code></pre><p>说明可以<code>ping yum.mariadb.org</code>。</p>
-<p>用 <code>yum search</code>查，有MariaDB.repo VS 没有MariaDB.repo情况下，得到的软件列表是否相同。</p>
-<p>先走一个 <code>sudo yum search MariaDB</code></p>
-<pre><code>[cdn@test_240 ~]$ sudo yum search MariaDB
-Loaded plugins: fastestmirror, langpacks
-Loading mirror speeds from cached hostfile
- * base: mirrors.nwsuaf.edu.cn
- * epel: ftp.cuhk.edu.hk
- * extras: mirrors.cn99.com
- * updates: mirrors.cn99.com
-=============================================================================================== N/S matched: MariaDB ===============================================================================================
-MariaDB-client.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-common.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-compat.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-connect-engine.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-cracklib-password-check.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-devel.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-gssapi-client.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-gssapi-server.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-oqgraph-engine.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-server.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-shared.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-test.x86_64 : MariaDB: a very fast and robust SQL database server
-mariadb-bench.x86_64 : MariaDB benchmark scripts and data
-mariadb-devel.i686 : Files for development of MariaDB/MySQL applications
-mariadb-devel.x86_64 : Files for development of MariaDB/MySQL applications
-mariadb-embedded.i686 : MariaDB as an embeddable library
-mariadb-embedded.x86_64 : MariaDB as an embeddable library
-mariadb-embedded-devel.i686 : Development files for MariaDB as an embeddable library
-mariadb-embedded-devel.x86_64 : Development files for MariaDB as an embeddable library
-mariadb-libs.i686 : The shared libraries required for MariaDB/MySQL clients
-mariadb-libs.x86_64 : The shared libraries required for MariaDB/MySQL clients
-mariadb-server.x86_64 : The MariaDB server and related files
-mariadb.x86_64 : A community developed branch of MySQL
-mariadb-test.x86_64 : The test suite distributed with MariaD
-percona-xtrabackup.x86_64 : Online backup for InnoDB/XtraDB in MySQL, Percona Server and MariaDB
-
-  Name and summary matches only, use &quot;search all&quot; for everything.
-[cdn@test_240 ~]$
-</code></pre><p>两2种方法（2种用其1就可以了）：</p>
-<ol>
-<li><p>方法1, 把<code>MariaDB.repo</code>移除。<br> 不<code>MariaDB.repo</code> 移除，再运行 <code>sudo yum search MariaDB</code>。<br> 把<code>MariaDB.repo</code> 移除，再运行 <code>sudo yum search MariaDB</code>。</p>
-</li>
-<li><p>方法2, 用<code>yum search --disablerepo=</code>。</p>
-<p> 先 <code>sudo yum search MariaDB</code>。<br> 再运行 <code>sudo yum search MariaDB --disablerepo=base,extras,updates,epel</code>。</p>
-</li>
-</ol>
-<p>对比结果。最后，可知，列表不同。说明本<code>MariaDB.repo</code> 已生效。</p>
-<p><em>所以，以后每次安装软件前，可以先用<code>yum search</code>一下，这样，确保我们想要安装的，就是实际安装的</em></p>
-<h2 id="yum-install-之前要做的事"><a href="#yum-install-之前要做的事" class="headerlink" title="yum install 之前要做的事"></a>yum install 之前要做的事</h2><ol>
-<li>sudo yum makecache</li>
-<li>sudo yum clean all</li>
-<li>sudo yum search XXX</li>
-</ol>
-<h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/15/mysql-6mysql系列之mariadb-cluster/">
-  <time datetime="2016-11-15T02:41:02.000Z">
-    2016-11-15
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/15/mysql-6mysql系列之mariadb-cluster/">mysql系列之mysql-cluster</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <p>mysql-cluster</p>
-<h2 id="主要参考"><a href="#主要参考" class="headerlink" title="主要参考"></a>主要参考</h2><p><a href="http://mariadb.org/" target="_blank" rel="external">http://mariadb.org/</a></p>
-<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><ol>
-<li>centos7-amd64</li>
-<li>mariadb10.1（IP:10.10.13.110） + mariadb5.5(IP:192.168.31.240)</li>
-</ol>
-<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><h3 id="准备2台机器"><a href="#准备2台机器" class="headerlink" title="准备2台机器"></a>准备2台机器</h3><p>安装mariadb10.1</p>
-<p><a href="http://localhost:4000/2016/11/15/mysql-install/" target="_blank" rel="external">参考这里</a></p>
-<h3 id="把-mariadb5-5-的数据，导出后，导入到-mariadb10-1"><a href="#把-mariadb5-5-的数据，导出后，导入到-mariadb10-1" class="headerlink" title="把 mariadb5.5 的数据，导出后，导入到 mariadb10.1"></a>把 mariadb5.5 的数据，导出后，导入到 mariadb10.1</h3><h5 id="导出"><a href="#导出" class="headerlink" title="导出"></a>导出</h5><h5 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h5><p>mysql主从复制<br>    第一步，就要看这几个参考<br>依次看<br>        <a href="http://blog.csdn.net/gaowenhui2008/article/details/46698321" target="_blank" rel="external">http://blog.csdn.net/gaowenhui2008/article/details/46698321</a><br>        <a href="http://blog.csdn.net/hguisu/article/details/7325124" target="_blank" rel="external">http://blog.csdn.net/hguisu/article/details/7325124</a><br>        <a href="http://blog.jobbole.com/94595/" target="_blank" rel="external">http://blog.jobbole.com/94595/</a><br>        <a href="http://www.xuejiehome.com/blread-1664.html" target="_blank" rel="external">http://www.xuejiehome.com/blread-1664.html</a><br>    MYSQL主从同步的管理<br>        参考<br>            <a href="http://blog.csdn.net/gaowenhui2008/article/details/46698321" target="_blank" rel="external">http://blog.csdn.net/gaowenhui2008/article/details/46698321</a></p>
-<pre><code>    1.  停止MYSQL同步
-1.  停止MYSQL同步
-    STOP SLAVE IO_THREAD;    #停止IO进程
-    STOP SLAVE SQL_THREAD;    #停止SQL进程
-    STOP SLAVE;                               #停止IO和SQL进程
-2.  启动MYSQL同步
-    START SLAVE IO_THREAD;    #启动IO进程
-    START SLAVE SQL_THREAD;  #启动SQL进程
-    START SLAVE;                             #启动IO和SQL进程
-3.   重置MYSQL同步
-    RESET SLAVE;
-    用于让从属服务器忘记其在主服务器的二进制日志中的复制位置, 它会删除master.info和relay-log.info文件，以及所有的中继日志，并启动一个新的中继日志,当你不需要主从的时候可以在从上执行这个操作。不然以后还会同步，可能会覆盖掉你的数据库，我以前就遇到过这样傻叉的事情。哈哈！
-4.   查看MYSQL同步状态
-    SHOW SLAVE STATUS;
-    这个命令主要查看Slave_IO_Running、Slave_SQL_Running、Seconds_Behind_Master、Last_IO_Error、Last_SQL_Error这些值来把握复制的状态。
-5.  临时跳过MYSQL同步错误
-    经常会朋友mysql主从同步遇到错误的时候，比如一个主键冲突等，那么我就需要在确保那一行数据一致的情况下临时的跳过这个错误，那就需要使用SQL_SLAVE_SKIP_COUNTER = n命令了，n是表示跳过后面的n个事件,比如我跳过一个事件的操作如下：
-    STOP SLAVE;
-    SET GLOBAL SQL_SLAVE_SKIP_COUNTER=1;
-    START SLAVE;
-6.  从指定位置重新同步
-    有的时候主从同步有问题了以后，需要从log位置的下一个位置进行同步，相当于跳过那个错误，这时候也可以使用CHANGE MASTER命令来处理，只要找到对应的LOG位置就可以,比如：
-    CHANGE MASTER TO MASTER_HOST=&apos;10.1.1.75&apos;,MASTER_USER=&apos;replication&apos;,MASTER_PASSWORD=&apos;123456&apos;,MASTER_LOG_FILE=&apos;mysql-bin.000006&apos;, MASTER_LOG_POS=106;
-    START SLAVE;
-MYSQL主从同步的管理经验介绍
-    1.   不要乱使用SQL_SLAVE_SKIP_COUNTER命令。
-        这个命令跳过之后很可能会导致你的主从数据不一致，一定要先将指定的错误记录下来，然后再去检查数据是否一致，尤其是核心的业务数据。
-    2.   结合percona-toolkit工具pt-table-checksum定期查看数据是否一致
-        这个是DBA必须要定期做的事情，呵呵，有合适的工具何乐而不为呢？另外percona-toolkit还提供了对数据库不一致的解决方案，可以采用pt-table-sync，这个工具不会更改主的数据。还可以使用pt-heartbeat来查看从服务器的复制落后情况。
-        具体的请查看：http://blog.chinaunix.net/uid-20639775-id-3229211.html。
-    3.   使用replicate-wild-ignore-table选项而不要使用replicate-do-db或者replicate-ignore-db。
-        原因已经在上面做了说明。
-    4.   将主服务器的日志模式调整成mixed。
-    5.   每个表都加上主键，主键对数据库的同步会有影响尤其是居于ROW复制模式。
-　mysql主从复制
-</code></pre><p>情况１：主从mysql，之前都无数据<br>        参考<br>            <a href="http://blog.jobbole.com/94595/" target="_blank" rel="external">http://blog.jobbole.com/94595/</a><br>            <a href="http://www.xuejiehome.com/blread-1664.html" target="_blank" rel="external">http://www.xuejiehome.com/blread-1664.html</a><br>        步骤<br>            目标<br>                10.10.12.14(主)<br>10.10.12.15(从)<br>            1、主从安装mysql，版本一致<br>                mysql&gt;status;</p>
-<pre><code>                　MariaDB [test]&gt; status;
-</code></pre><hr>
-<p>mysql  Ver 15.1 Distrib 5.5.44-MariaDB, for Linux (x86_64) using readline 5.1</p>
-<p>Connection id:        4<br>Current database:    test<br>Current user:        root@localhost<br>SSL:            Not in use<br>Current pager:        stdout<br>Using outfile:        ‘’<br>Using delimiter:    ;<br>Server:            MariaDB<br>Server version:        5.5.44-MariaDB-log MariaDB Server<br>Protocol version:    10<br>Connection:        Localhost via UNIX socket<br>Server characterset:    utf8<br>Db     characterset:    utf8<br>Client characterset:    utf8<br>Conn.  characterset:    utf8<br>UNIX socket:        /var/lib/mysql/mysql.sock<br>Uptime:            18 min 15 sec</p>
-<h2 id="Threads-2-Questions-24-Slow-queries-0-Opens-1-Flush-tables-2-Open-tables-27-Queries-per-second-avg-0-021"><a href="#Threads-2-Questions-24-Slow-queries-0-Opens-1-Flush-tables-2-Open-tables-27-Queries-per-second-avg-0-021" class="headerlink" title="Threads: 2  Questions: 24  Slow queries: 0  Opens: 1  Flush tables: 2  Open tables: 27  Queries per second avg: 0.021"></a>Threads: 2  Questions: 24  Slow queries: 0  Opens: 1  Flush tables: 2  Open tables: 27  Queries per second avg: 0.021</h2><p>MariaDB [test]&gt;</p>
-<pre><code>2、修改master，slave服务器
-    master服务器配置：
-        sudo　　vi /etc/my.cnf
-            　[mysqld]
-</code></pre><p>datadir=/var/lib/mysql<br>socket=/var/lib/mysql/mysql.sock</p>
-<h1 id="Disabling-symbolic-links-is-recommended-to-prevent-assorted-security-risks"><a href="#Disabling-symbolic-links-is-recommended-to-prevent-assorted-security-risks" class="headerlink" title="Disabling symbolic-links is recommended to prevent assorted security risks"></a>Disabling symbolic-links is recommended to prevent assorted security risks</h1><p>symbolic-links=0</p>
-<h1 id="Settings-user-and-group-are-ignored-when-systemd-is-used"><a href="#Settings-user-and-group-are-ignored-when-systemd-is-used" class="headerlink" title="Settings user and group are ignored when systemd is used."></a>Settings user and group are ignored when systemd is used.</h1><h1 id="If-you-need-to-run-mysqld-under-a-different-user-or-group"><a href="#If-you-need-to-run-mysqld-under-a-different-user-or-group" class="headerlink" title="If you need to run mysqld under a different user or group,"></a>If you need to run mysqld under a different user or group,</h1><h1 id="customize-your-systemd-unit-file-for-mariadb-according-to-the"><a href="#customize-your-systemd-unit-file-for-mariadb-according-to-the" class="headerlink" title="customize your systemd unit file for mariadb according to the"></a>customize your systemd unit file for mariadb according to the</h1><h1 id="instructions-in-http-fedoraproject-org-wiki-Systemd"><a href="#instructions-in-http-fedoraproject-org-wiki-Systemd" class="headerlink" title="instructions in http://fedoraproject.org/wiki/Systemd"></a>instructions in <a href="http://fedoraproject.org/wiki/Systemd" target="_blank" rel="external">http://fedoraproject.org/wiki/Systemd</a></h1><p>log-bin=mysql-bin<br>server-id=14<br>binlog-ignore-db = mysql,information_schema</p>
-<p>[mysqld]<br>server-id=14     </p>
-<p>#设置服务器唯一的id，默认是1，一般取IP最后一段，我们设置ip最后一段，slave设置14<br>log-bin=mysql-bin</p>
-<h1 id="启用二进制日志"><a href="#启用二进制日志" class="headerlink" title="启用二进制日志"></a>启用二进制日志</h1><p>binlog-ignore-db = mysql,information_schema  </p>
-<p>#忽略写入binlog的库<br>                slave服务器配置：<br>                    sudo　　vi /etc/my.cnf<br>                        　[mysqld]<br>datadir=/var/lib/mysql<br>socket=/var/lib/mysql/mysql.sock</p>
-<h1 id="Disabling-symbolic-links-is-recommended-to-prevent-assorted-security-risks-1"><a href="#Disabling-symbolic-links-is-recommended-to-prevent-assorted-security-risks-1" class="headerlink" title="Disabling symbolic-links is recommended to prevent assorted security risks"></a>Disabling symbolic-links is recommended to prevent assorted security risks</h1><p>symbolic-links=0</p>
-<h1 id="Settings-user-and-group-are-ignored-when-systemd-is-used-1"><a href="#Settings-user-and-group-are-ignored-when-systemd-is-used-1" class="headerlink" title="Settings user and group are ignored when systemd is used."></a>Settings user and group are ignored when systemd is used.</h1><h1 id="If-you-need-to-run-mysqld-under-a-different-user-or-group-1"><a href="#If-you-need-to-run-mysqld-under-a-different-user-or-group-1" class="headerlink" title="If you need to run mysqld under a different user or group,"></a>If you need to run mysqld under a different user or group,</h1><h1 id="customize-your-systemd-unit-file-for-mariadb-according-to-the-1"><a href="#customize-your-systemd-unit-file-for-mariadb-according-to-the-1" class="headerlink" title="customize your systemd unit file for mariadb according to the"></a>customize your systemd unit file for mariadb according to the</h1><h1 id="instructions-in-http-fedoraproject-org-wiki-Systemd-1"><a href="#instructions-in-http-fedoraproject-org-wiki-Systemd-1" class="headerlink" title="instructions in http://fedoraproject.org/wiki/Systemd"></a>instructions in <a href="http://fedoraproject.org/wiki/Systemd" target="_blank" rel="external">http://fedoraproject.org/wiki/Systemd</a></h1><p>log-bin=mysql-bin<br>server-id=15<br>replicate-wild-ignore-table=test.%</p>
-<p>#replicate-do-db = test</p>
-<p>#slave-skip-errors = all</p>
-<pre><code>replicate-wild-ignore-table=test.%
-</code></pre><p>#　replicate-do-db = test     </p>
-<p>#上面２句都可以表示只同步test库(但是第一句更好，不要使用第２名)，　<br>＃如果同步所有的库，则不要加上这一句<br>slave-skip-errors = all   </p>
-<p>#忽略因复制出现的所有错误<br>            3、重启主从服务器mysql<br>                sudo systemctl restart mariadb.service<br>                sudo systemctl status mariadb.service<br>            4、在主服务器上建立帐户并授权slave<br>                GRANT REPLICATION SLAVE ON <em>.</em> to ‘sync’@’10.10.12.%’ identified by ‘123.com’;<br>                    注意，这里是　<br>10.10.12.%, 而不是<br>10.10.12.<em><br>我犯过这样的错误<br>                GRANT REPLICATION SLAVE ON </em>.* to ‘sync’@’10.10.12.15’ identified by ‘123.com’;<br>                注意：大家在设置权限的时候不要将密码设置过于简单！<br>            5、查看主数据库状态<br>                　show master status\G;<br>                    　MariaDB [(none)]&gt; show master status;<br>+——————+———-+————–+————————–+<br>| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB         |<br>+——————+———-+————–+————————–+<br>| mysql-bin.000002 |      707 |              | mysql,information_schema |<br>+——————+———-+————–+————————–+<br>1 row in set (0.00 sec)</p>
-<p>MariaDB [(none)]&gt;<br>                    　MariaDB [(none)]&gt; show master status\G;<br><strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong> 1. row <strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong><br>            File: mysql-bin.000002<br>        Position: 707<br>    Binlog_Do_DB:<br>Binlog_Ignore_DB: mysql,information_schema<br>1 row in set (0.01 sec)</p>
-<p>ERROR: No query specified</p>
-<p>MariaDB [(none)]&gt;<br>                记录下 File 及 Position 的值，在后面进行从服务器操作的时候需要用到。<br>            6、配置从数据库<br>                change master to<br>master_host=’10.10.12.14’,<br>master_user=’sync’,<br>master_password=’123.com’,<br>master_log_file’=’mysql-bin.000002’,<br>master_log_pos=707;<br>            　7、启动slave同步进程并<br>                MariaDB [(none)]&gt; start slave;<br>            查看状态<br>                　　MariaDB [(none)]&gt; show slave status\G;<br>                    　MariaDB [(none)]&gt; show slave status\G;<br><strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong> 1. row <strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong><br>               Slave_IO_State: Waiting for master to send event<br>                  Master_Host: 10.10.12.14<br>                  Master_User: sync<br>                  Master_Port: 3306<br>                Connect_Retry: 60<br>              Master_Log_File: mysql-bin.000002<br>          Read_Master_Log_Pos: 707<br>               Relay_Log_File: mariadb-relay-bin.000002<br>                Relay_Log_Pos: 838<br>        Relay_Master_Log_File: mysql-bin.000002<br>             Slave_IO_Running: Yes<br>            Slave_SQL_Running: Yes<br>              Replicate_Do_DB: test<br>                其中Slave_IO_Running 与 Slave_SQL_Running 的值都必须为YES，才表明状态正常。<br>                报错<br>                    主从同步出现一下错误：Slave_IO_Running: Connecting<br>                        导致lave_IO_Running 为connecting 的原因主要有以下 3 个方面：<br>                        1、网络不通<br>                        2、密码不对<br>                            解决<br>                                从服务器<br>                                    STOP SLAVE;                               #停止IO和SQL进程<br>                                    RESET SLAVE;<br>                                    STOP SLAVE;                               #停止IO和SQL进程<br>                                    6、配置从数据库<br>                                        change master to<br>master_host=’10.10.12.14’,<br>master_user=’sync’,<br>master_password=’123.com’,<br>master_log_file’=’mysql-bin.000002’,<br>master_log_pos=707;<br>                                    START SLAVE;                             #启动IO和SQL进程<br>                                    实操<br>                                        　MariaDB [(none)]&gt; reset slave;<br>ERROR 1198 (HY000): This operation cannot be performed with a running slave; run STOP SLAVE first<br>MariaDB [(none)]&gt; stop slave;<br>Query OK, 0 rows affected (0.00 sec)</p>
-<p>MariaDB [(none)]&gt; reset slave;<br>Query OK, 0 rows affected (0.00 sec)</p>
-<p>MariaDB [(none)]&gt; show slave status\G;<br>MariaDB [(none)]&gt; stop slave;<br>Query OK, 0 rows affected, 1 warning (0.00 sec)</p>
-<p>MariaDB [(none)]&gt; change master to<br>    -&gt; master_host=’10.10.13.100’,<br>    -&gt; master_user=’sync’,<br>    -&gt; master_password=’sync.com’,<br>    -&gt; master_log_file=’mysql-bin.000001’,<br>    -&gt; master_log_pos=927;<br>Query OK, 0 rows affected (0.01 sec)</p>
-<p>MariaDB [(none)]&gt; start slave;<br>Query OK, 0 rows affected (0.00 sec)</p>
-<p>MariaDB [(none)]&gt; show slave status\G;<br><strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong> 1. row <strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong><br>               Slave_IO_State: Waiting for master to send event<br>                  Master_Host: 10.10.13.100<br>                  Master_User: sync<br>                  Master_Port: 3306<br>                Connect_Retry: 60<br>              Master_Log_File: mysql-bin.000001<br>          Read_Master_Log_Pos: 927<br>               Relay_Log_File: mariadb-relay-bin.000002<br>                Relay_Log_Pos: 529<br>        Relay_Master_Log_File: mysql-bin.000001<br>             Slave_IO_Running: Yes<br>            Slave_SQL_Running: Yes<br>                        3、pos不对<br>            8、验证主从同步</p>
-
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/07/code-style/">
-  <time datetime="2016-11-07T09:35:46.000Z">
-    2016-11-07
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/07/code-style/">code style</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <h2 id="代码风格-所有的语言的代码风格汇总"><a href="#代码风格-所有的语言的代码风格汇总" class="headerlink" title="代码风格, 所有的语言的代码风格汇总"></a>代码风格, 所有的语言的代码风格汇总</h2><p>有的时候，真的是很困惑，我应该用什么代码风格.</p>
-<ol>
-<li><a href="https://github.com/sivan/javascript-style-guide/blob/master/es5/README.md" target="_blank" rel="external">Airbnb JavaScript Style Guide 中文版</a></li>
-<li><a href="https://github.com/airbnb/javascript" target="_blank" rel="external">Airbnb JavaScript Style Guide</a></li>
-<li><a href="https://www.python.org/dev/peps/pep-0008/" target="_blank" rel="external">Style Guide for Python Code</a></li>
-<li><a href="https://github.com/google/styleguide" target="_blank" rel="external">Style guides for Google-originated open-source projects</a></li>
-<li><a href="http://zh-google-styleguide.readthedocs.io/en/latest/" target="_blank" rel="external">Google 开源项目风格指南 (中文版)</a></li>
-<li><a href="https://github.com/zh-google-styleguide/zh-google-styleguide" target="_blank" rel="external">Google 开源项目风格指南 github (中文版)</a></li>
-<li><a href="http://bq69.com/blog/articles/script/868/google-javascript-style-guide.html" target="_blank" rel="external">Google JavaScript Style Guide(中文 版)</a></li>
-<li><a href="http://sideeffect.kr/popularconvention/" target="_blank" rel="external">analyzing code convention from github commits for Github data challenge</a>, <a href="https://github.com/outsideris/popularconvention/" target="_blank" rel="external">github地址</a></li>
-<li><a href="http://alloyteam.github.io/CodeGuide/#js-variable-naming" target="_blank" rel="external">Code Guide by @AlloyTeam</a></li>
-<li>盼望您的指定</li>
-</ol>
-
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/03/essay-20161103-a/">
-  <time datetime="2016-11-03T10:09:36.000Z">
-    2016-11-03
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/03/essay-20161103-a/">essay 20161103 a</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <h2 id="生产环境、测试环境、开发环境、"><a href="#生产环境、测试环境、开发环境、" class="headerlink" title="生产环境、测试环境、开发环境、"></a>生产环境、测试环境、开发环境、</h2><p><a href="https://my.oschina.net/sancuo/blog/214904" target="_blank" rel="external">https://my.oschina.net/sancuo/blog/214904</a></p>
-<p>开发环境 production environment;</p>
-<p>测试环境 testing environment;</p>
-<p>开发环境 development environment;</p>
-<pre><code>开发环境：开发环境是程序猿们专门用于开发的服务器，配置可以比较随意， 为了开发调试方便，一般打开全部错误报告。
-
-测试环境：一般是克隆一份生产环境的配置，一个程序在测试环境工作不正常，那么肯定不能把它发布到生产机上。
-
-生产环境：是值正式提供对外服务的，一般会关掉错误报告，打开错误日志。
-</code></pre><p>三个环境也可以说是系统开发的三个阶段：开发-&gt;测试-&gt;上线，其中生产环境也就是通常说的真实环境。</p>
-
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/03/tomtsang2/">
-  <time datetime="2016-11-03T03:11:51.000Z">
-    2016-11-03
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/03/tomtsang2/">tomtsang2</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <p>什么情况，明明我这个地方就是你想要的摘要嘛，</p>
-<p>搞事情！</p>
-<p>以上是摘要<br>
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-        <div class="alignleft">
-          <a href="/2016/11/03/tomtsang2/#more" class="more-link">Read More</a>
-        </div>
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="photo">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/01/tomtsang1/">
-  <time datetime="2016-11-01T08:38:42.000Z">
-    2016-11-01
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/01/tomtsang1/">tomtsang53535ere</a></h1>
-  
-
-  </header>
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      
-        <img src="http://bruce.u.qiniudn.com/2013/11/27/reading/photos-0.jpg">
-      
-        <img src="http://bruce.u.qiniudn.com/2013/11/27/reading/photos-1.jpg">
-      
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="entry">
-    
-      <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
 
   <nav id="pagination">
   
-    <a href="/" class="prev">Prev</a>
+    <a href="/" class="prev">上一页</a>
   
   
-    <a href="/page/3/" class="next">Next</a>
+    <a href="/page/3/" class="next">下一页</a>
   
   <div class="clearfix"></div>
 </nav>

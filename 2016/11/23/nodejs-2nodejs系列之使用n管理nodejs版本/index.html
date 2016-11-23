@@ -1,0 +1,234 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>nodejs系列之使用n管理nodejs版本 | 美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+    <meta name="description" content="参考http://blog.csdn.net/jiangbo_phd/article/details/51476155
+主要点npm -g XXX :安装的XXX软件，在linux下的目录 /usr/lib/node_modules/
+sudo n :切换node版本
+n 切换之后的 node 默认装在 /usr/local/bin/node，你最好用 which node 检查一下当前使用的 n">
+  
+  <meta name="description" content="参考http://blog.csdn.net/jiangbo_phd/article/details/51476155
+主要点npm -g XXX :安装的XXX软件，在linux下的目录 /usr/lib/node_modules/
+sudo n :切换node版本
+n 切换之后的 node 默认装在 /usr/local/bin/node，你最好用 which node 检查一下当前使用的 n">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nodejs系列之使用n管理nodejs版本">
+<meta property="og:url" content="http://tomtsang.github.io/2016/11/23/nodejs-2nodejs系列之使用n管理nodejs版本/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="参考http://blog.csdn.net/jiangbo_phd/article/details/51476155
+主要点npm -g XXX :安装的XXX软件，在linux下的目录 /usr/lib/node_modules/
+sudo n :切换node版本
+n 切换之后的 node 默认装在 /usr/local/bin/node，你最好用 which node 检查一下当前使用的 n">
+<meta property="og:updated_time" content="2016-11-23T06:32:32.015Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="nodejs系列之使用n管理nodejs版本">
+<meta name="twitter:description" content="参考http://blog.csdn.net/jiangbo_phd/article/details/51476155
+主要点npm -g XXX :安装的XXX软件，在linux下的目录 /usr/lib/node_modules/
+sudo n :切换node版本
+n 切换之后的 node 默认装在 /usr/local/bin/node，你最好用 which node 检查一下当前使用的 n">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/23/nodejs-2nodejs系列之使用n管理nodejs版本/">
+  <time datetime="2016-11-23T06:20:28.000Z">
+    2016-11-23
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">nodejs系列之使用n管理nodejs版本</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://blog.csdn.net/jiangbo_phd/article/details/51476155" target="_blank" rel="external">http://blog.csdn.net/jiangbo_phd/article/details/51476155</a></p>
+<h2 id="主要点"><a href="#主要点" class="headerlink" title="主要点"></a>主要点</h2><p>npm -g XXX :安装的XXX软件，在linux下的目录 <code>/usr/lib/node_modules/</code></p>
+<p>sudo n :切换node版本</p>
+<p>n 切换之后的 node 默认装在 /usr/local/bin/node，你最好用 which node 检查一下当前使用的 node 是否是这个路径下的。</p>
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><pre><code>[jlch@kube-node-15 ~]$ sudo npm i n -g
+[sudo] password for jlch:
+/usr/bin/n -&gt; /usr/lib/node_modules/n/bin/n
+n@2.1.4 /usr/lib/node_modules/n
+[jlch@kube-node-15 ~]$ ll /usr/lib/node_modules/  # 看一下，n是不是真的安装成功
+total 8
+drwxr-xr-x. 3 nobody jlch   66 11月 23 14:08 n
+drwxr-xr-x. 9 root   root 4096 6月   8 16:05 npm
+drwxr-xr-x. 5 nobody jlch 4096 6月   8 18:00 pm2
+[jlch@kube-node-15 ~]$ sudo n --help # 找帮助
+  Usage: n [options/env] [COMMAND] [args]
+
+  Environments:
+    n [COMMAND] [args]            Uses default env (node)
+    n io [COMMAND]                Sets env as io
+    n project [COMMAND]           Uses custom env-variables to use non-official sources
+
+  Commands:
+
+    n                              Output versions installed
+    n latest                       Install or activate the latest node release
+    n -a x86 latest                As above but force 32 bit architecture
+    n stable                       Install or activate the latest stable node release
+    n lts                          Install or activate the latest LTS node release
+    n &lt;version&gt;                    Install node &lt;version&gt;
+    n use &lt;version&gt; [args ...]     Execute node &lt;version&gt; with [args ...]
+    n bin &lt;version&gt;                Output bin path for &lt;version&gt;
+    n rm &lt;version ...&gt;             Remove the given version(s)
+    n --latest                     Output the latest node version available
+    n --stable                     Output the latest stable node version available
+    n --lts                        Output the latest LTS node version available
+    n ls                           Output the versions of node available
+
+  (iojs):
+    n io latest                    Install or activate the latest iojs release
+    n io -a x86 latest             As above but force 32 bit architecture
+    n io &lt;version&gt;                 Install iojs &lt;version&gt;
+    n io use &lt;version&gt; [args ...]  Execute iojs &lt;version&gt; with [args ...]
+    n io bin &lt;version&gt;             Output bin path for &lt;version&gt;
+    n io rm &lt;version ...&gt;          Remove the given version(s)
+    n io --latest                  Output the latest iojs version available
+    n io ls                        Output the versions of iojs available
+
+  Options:
+
+    -V, --version   Output current version of n
+    -h, --help      Display help information
+    -q, --quiet     Disable curl output (if available)
+    -d, --download  Download only
+    -a, --arch      Override system architecture
+
+  Aliases:
+
+    which   bin
+    use     as
+    list    ls
+    -       rm
+
+[jlch@kube-node-15 ~]$ sudo n --version
+2.1.3
+[jlch@kube-node-15 ~]$ node -v
+v4.4.5
+[jlch@kube-node-15 ~]$ sudo n 4.4.6
+
+     install : node-v4.4.6
+       mkdir : /usr/local/n/versions/node/4.4.6
+       fetch : https://nodejs.org/dist/v4.4.6/node-v4.4.6-linux-x64.tar.gz
+##################                                                        26.0%
+</code></pre><p>查一下，各自的路径</p>
+<pre><code>tom@adata:~/m6s/blogs/tomtsang$ which node
+/usr/local/bin/node
+tom@adata:~/m6s/blogs/tomtsang$ which n
+/usr/bin/n
+tom@adata:~/m6s/blogs/tomtsang$
+</code></pre><p>切换着玩一下。</p>
+<pre><code>tom@adata:~/Projects/OpenX/lib$ node -v
+v6.9.1
+tom@adata:~/Projects/OpenX/lib$ sudo n
+[sudo] password for tom:
+tom@adata:~/Projects/OpenX/lib$ node -v
+v7.2.0
+tom@adata:~/Projects/OpenX/lib$ sudo n
+tom@adata:~/Projects/OpenX/lib$ node -v
+v6.9.1
+tom@adata:~/Projects/OpenX/lib$
+</code></pre>
+    
+  </div>
+  <footer>
+    
+      
+  <div class="categories">
+    <a class="categories-link" href="/categories/nodejs/">nodejs</a>
+  </div>
+
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/nodejs/">nodejs</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

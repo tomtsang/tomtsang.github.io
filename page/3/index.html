@@ -68,6 +68,144 @@
   <header>
     
       <div class="icon"></div>
+      <a href="/2016/11/15/nginx-1nginx 跨域访问/">
+  <time datetime="2016-11-15T08:44:04.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/15/nginx-1nginx 跨域访问/">nginx 跨域访问</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <ul>
+<li>nginx 解决跨域访问的问题</li>
+<li>跨域造成session丢失</li>
+</ul>
+<h2 id="nginx-解决跨域访问的问题。"><a href="#nginx-解决跨域访问的问题。" class="headerlink" title="nginx 解决跨域访问的问题。"></a>nginx 解决跨域访问的问题。</h2><p><a href="https://michielkalkman.com/snippets/nginx-cors-open-configuration.html" target="_blank" rel="external">https://michielkalkman.com/snippets/nginx-cors-open-configuration.html</a></p>
+<p><a href="http://enable-cors.org/server_nginx.html" target="_blank" rel="external">http://enable-cors.org/server_nginx.html</a></p>
+<ol>
+<li>所有网页都实现跨域</li>
+</ol>
+<p>把下面的代码，放到 ，配置文件 /etc/nginx/conf.d/default.conf 中的 location / { 内</p>
+<pre><code>add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;;
+add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;
+add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;
+</code></pre><ol>
+<li>部分url（下以 /ok 为例） 请求实现跨域访问</li>
+</ol>
+<p>把下面的代码，放到 ，配置文件 /etc/nginx/conf.d/default.conf 中 的 location /ok { 内</p>
+<pre><code>#
+# Wide-open CORS config for nginx
+#
+location / {
+     if ($request_method = &apos;OPTIONS&apos;) {
+        add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;;
+        #
+        # Om nom nom cookies
+        #
+        add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;
+        add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;
+        #
+        # Custom headers and headers various browsers *should* be OK with but aren&apos;t
+        #
+        add_header &apos;Access-Control-Allow-Headers&apos; &apos;DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type&apos;;
+        #
+        # Tell client that this pre-flight info is valid for 20 days
+        #
+        add_header &apos;Access-Control-Max-Age&apos; 1728000;
+        add_header &apos;Content-Type&apos; &apos;text/plain charset=UTF-8&apos;;
+        add_header &apos;Content-Length&apos; 0;
+        return 204;
+     }
+     if ($request_method = &apos;POST&apos;) {
+        add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;;
+        add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;
+        add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;
+        add_header &apos;Access-Control-Allow-Headers&apos; &apos;DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type&apos;;
+     }
+     if ($request_method = &apos;GET&apos;) {
+        add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;;
+        add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;
+        add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;
+        add_header &apos;Access-Control-Allow-Headers&apos; &apos;DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type&apos;;
+     }
+}
+</code></pre><h2 id="跨域造成session丢失"><a href="#跨域造成session丢失" class="headerlink" title="跨域造成session丢失"></a>跨域造成session丢失</h2><p><a href="https://segmentfault.com/q/1010000002905817" target="_blank" rel="external">https://segmentfault.com/q/1010000002905817</a></p>
+<p>重点参考下面这个地方：</p>
+<pre><code>这个配置在不少地方应该都能找到，不同的主要是两点：
+1。response.setHeader(&quot;Access-Control-Allow-Credentials&quot;,&quot;true&quot;); //是否支持cookie跨域
+2。response.setHeader(&quot;Access-Control-Allow-Origin&quot;, request.getHeader(&quot;Origin&quot;));
+
+首先，配置了allow-credentials之后，如果allow-origin设为*，跨域时会报错说因为允许credentials，origin不能设为通配*，那所以设为简单的某个domain也是可以的，这种写法应该就是达到了任意domain都可以的效果吧。
+
+然后angular部分也要设定个东西，举个栗子~
+</code></pre><p>解决方法：</p>
+<p>填加下面的代码到 服务端代码 如：limitup/route/index.js中。</p>
+<pre><code>app.all(&apos;*&apos;, function(req, res, next) {
+    res.header(&apos;Access-Control-Allow-Origin&apos;, req.headers.origin);
+    res.header(&apos;Access-Control-Allow-Methods&apos;, &apos;GET, POST&apos;);
+    res.header(&apos;Access-Control-Allow-Headers&apos;, &apos;Content-Type&apos;);
+    res.header(&apos;Access-Control-Allow-Credentials&apos;, &apos;true&apos;);
+    next();
+});
+</code></pre><h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/15/nginx/">
+  <time datetime="2016-11-15T08:44:02.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/15/nginx/">nginx</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>nginx 系列</p>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
       <a href="/2016/11/15/mysql-0mysql系列之mariadb-install/">
   <time datetime="2016-11-15T06:03:52.000Z">
     2016-11-15
@@ -611,7 +749,7 @@ MYSQL主从同步的管理经验介绍
     
       
         <div class="alignleft">
-          <a href="/2016/11/03/tomtsang2/#more" class="more-link">阅读全文</a>
+          <a href="/2016/11/03/tomtsang2/#more" class="more-link">Read More</a>
         </div>
       
       
@@ -725,7 +863,7 @@ MYSQL主从同步的管理经验介绍
 
   <nav id="pagination">
   
-    <a href="/page/2/" class="prev">上一页</a>
+    <a href="/page/2/" class="prev">Prev</a>
   
   
   <div class="clearfix"></div>

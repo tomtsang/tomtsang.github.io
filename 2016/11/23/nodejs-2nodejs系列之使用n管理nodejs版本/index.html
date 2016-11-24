@@ -27,7 +27,7 @@ n 切换之后的 node 默认装在 /usr/local/bin/node，你最好用 which nod
 主要点npm -g XXX :安装的XXX软件，在linux下的目录 /usr/lib/node_modules/
 sudo n :切换node版本
 n 切换之后的 node 默认装在 /usr/local/bin/node，你最好用 which node 检查一下当前使用的 n">
-<meta property="og:updated_time" content="2016-11-23T06:32:32.015Z">
+<meta property="og:updated_time" content="2016-11-23T06:42:38.700Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="nodejs系列之使用n管理nodejs版本">
 <meta name="twitter:description" content="参考http://blog.csdn.net/jiangbo_phd/article/details/51476155
@@ -96,6 +96,28 @@ n 切换之后的 node 默认装在 /usr/local/bin/node，你最好用 which nod
 <h2 id="主要点"><a href="#主要点" class="headerlink" title="主要点"></a>主要点</h2><p>npm -g XXX :安装的XXX软件，在linux下的目录 <code>/usr/lib/node_modules/</code></p>
 <p>sudo n :切换node版本</p>
 <p>n 切换之后的 node 默认装在 /usr/local/bin/node，你最好用 which node 检查一下当前使用的 node 是否是这个路径下的。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><ul>
+<li><p>如果安装过程中因为某原因（主要是网络原因），未安装成功，则删除对应的目录，重新安装就可以了。</p>
+<p>  tom@adata:~/Projects/OpenX/lib$ sudo n latest<br>  [sudo] password for tom:</p>
+<pre><code>install : node-v7.2.0
+  mkdir : /usr/local/n/versions/node/7.2.0
+  fetch : https://nodejs.org/dist/v7.2.0/node-v7.2.0-linux-x64.tar.gz
+</code></pre><p>  ######################################################                    75.1%<br>  curl: (56) GnuTLS recv error (-54): Error in the pull function.</p>
+<p>  gzip: stdin: unexpected end of file<br>  tar: Unexpected EOF in archive<br>  tar: Unexpected EOF in archive<br>  tar: Error is not recoverable: exiting now<br>  cp: cannot stat ‘/usr/local/n/versions/node/7.2.0/lib’: No such file or directory<br>  cp: cannot stat ‘/usr/local/n/versions/node/7.2.0/include’: No such file or directory<br>  cp: cannot stat ‘/usr/local/n/versions/node/7.2.0/share’: No such file or directory</p>
+<pre><code>installed : v7.2.0
+</code></pre><p>  tom@adata:~/Projects/OpenX/lib$ ll /usr/local/n/versions/node/7.2.0/<br>  total 12<br>  drwxr-xr-x 3 root root 4096 11月 23 13:07 ./<br>  drwxr-xr-x 4 root root 4096 11月 23 13:00 ../<br>  drwxrwxr-x 2  500  500 4096 11月 23 06:35 bin/<br>  tom@adata:~/Projects/OpenX/lib$ sudo n latest<br>  [sudo] password for tom:<br>  tom@adata:~/Projects/OpenX/lib$ sudo n latest<br>  tom@adata:~/Projects/OpenX/lib$ sudo rm -rf /usr/local/n/versions/node/7.2.0/<br>  tom@adata:~/Projects/OpenX/lib$ sudo n latest</p>
+<pre><code>install : node-v7.2.0
+  mkdir : /usr/local/n/versions/node/7.2.0
+  fetch : https://nodejs.org/dist/v7.2.0/node-v7.2.0-linux-x64.tar.gz
+</code></pre><p>  ######################################################################## 100.0%</p>
+<pre><code>installed : v7.2.0
+</code></pre><p>  tom@adata:~/Projects/OpenX/lib$</p>
+</li>
+<li><p>安装完成后，不要直接看node版本，另开一个terminal，查看。</p>
+<p>  tom@adata:~/Projects/OpenX/lib$ node -v<br>  v6.7.0<br>  tom@adata:~/Projects/OpenX/lib$</p>
+</li>
+</ul>
+<p>看吧，上面这个明显还是老版本。另开一个terminal，查看就是新版本了。</p>
 <h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><pre><code>[jlch@kube-node-15 ~]$ sudo npm i n -g
 [sudo] password for jlch:
 /usr/bin/n -&gt; /usr/lib/node_modules/n/bin/n

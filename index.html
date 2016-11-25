@@ -68,6 +68,47 @@
   <header>
     
       <div class="icon"></div>
+      <a href="/2016/11/25/mongodb-2/">
+  <time datetime="2016-11-25T02:03:51.000Z">
+    2016-11-25
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/25/mongodb-2/">mongodb系列之distinct</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><p><a href="http://www.jb51.net/article/65929.htm" target="_blank" rel="external">http://www.jb51.net/article/65929.htm</a></p>
+<h2 id="destinct"><a href="#destinct" class="headerlink" title="destinct"></a>destinct</h2><p>MongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.</p>
+<p>mongodb的distinct的语句： db.users.distinct(‘last_name’）;</p>
+<p>等同于 SQL 语句: select DISTINCT last_name from users;</p>
+<p>表示的是根据指定的字段返回不同的记录集。</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><pre><code>&gt; db.KLine_1Min.distinct(&quot;ID&quot;).length
+114
+&gt; db.KLine_1Min.distinct(&quot;ID&quot;)
+</code></pre>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
       <a href="/2016/11/24/mongodb-1/">
   <time datetime="2016-11-24T02:42:00.000Z">
     2016-11-24
@@ -84,6 +125,7 @@
   <div class="entry">
     
       <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#findOneAndUpdate" target="_blank" rel="external">http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#findOneAndUpdate</a></p>
+<p><a href="https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndUpdate/" target="_blank" rel="external">https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndUpdate/</a></p>
 <h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>修改键（字段）的值,修改了{b:2}</p>
 <pre><code>var MongoClient = require(&apos;mongodb&apos;).MongoClient;
 MongoClient.connect(&apos;mongodb://192.168.31.240:27017/test&apos;, function(err, db) {
@@ -143,14 +185,18 @@ MongoClient.connect(&apos;mongodb://192.168.31.240:27017/test&apos;, function(er
     
     
   
-    <h1 class="title"><a href="/2016/11/24/mongodb/">mongodb系列之</a></h1>
+    <h1 class="title"><a href="/2016/11/24/mongodb/">mongodb系列之目录</a></h1>
   
 
   </header>
   
   <div class="entry">
     
-      
+      <h2 id="mongodb系列之目录"><a href="#mongodb系列之目录" class="headerlink" title="mongodb系列之目录"></a>mongodb系列之目录</h2><ul>
+<li><a href="http://tomtsang.github.io/2016/11/25/mongodb-2/">mongodb系列之distinct</a></li>
+<li><a href="http://tomtsang.github.io/2016/11/24/mongodb-1/">mongodb系列之findOneAndUpdate</a></li>
+</ul>
+
     
   </div>
   <footer class="end-sep">
@@ -720,58 +766,6 @@ lib  OpenInfo  OpenQuote
     
       <p>git系列之目录</p>
 
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/19/hexo-1/">
-  <time datetime="2016-11-19T09:39:24.000Z">
-    2016-11-19
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/19/hexo-1/">hexo系列之使用1</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <h2 id="hexo下新建页面下如何放多个文章？"><a href="#hexo下新建页面下如何放多个文章？" class="headerlink" title="hexo下新建页面下如何放多个文章？"></a>hexo下新建页面下如何放多个文章？</h2><p><a href="https://www.zhihu.com/question/33324071" target="_blank" rel="external">https://www.zhihu.com/question/33324071</a></p>
-<h2 id="hexo分类与tags配置"><a href="#hexo分类与tags配置" class="headerlink" title="hexo分类与tags配置"></a>hexo分类与tags配置</h2><p>Hexo中如何给一篇文章加多个tags？<br>下面2种方式：</p>
-<ul>
-<li>tags: [a,b,c] # 冒号后有一个空格</li>
-<li>tags:<br>  <code>- tag1</code><br>  <code>- tag2</code></li>
-</ul>
-<h2 id="可以做到自动增加哟。"><a href="#可以做到自动增加哟。" class="headerlink" title="可以做到自动增加哟。"></a>可以做到自动增加哟。</h2><pre><code>tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql-21&quot;
-INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-21.md
-tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql&quot;
-INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-22.md
-tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql&quot;
-INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-23.md_
-</code></pre><p>这样的话，方便形成系列的文章。每次就不用管是第几个mysql系列文章了。<br>不过系列文章，最好用的，还是 categories</p>
-<h2 id="可以用自定义的post"><a href="#可以用自定义的post" class="headerlink" title="可以用自定义的post:"></a>可以用自定义的post:</h2><pre><code>tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql&quot; [mysql]
-INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-4.md
-tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql&quot; [mysql]
-INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-5.md
-tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql&quot; [mysql]
-INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-1.md_
-</code></pre><h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
     
   </div>
   <footer class="end-sep">

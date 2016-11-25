@@ -68,6 +68,58 @@
   <header>
     
       <div class="icon"></div>
+      <a href="/2016/11/19/hexo-1/">
+  <time datetime="2016-11-19T09:39:24.000Z">
+    2016-11-19
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/19/hexo-1/">hexo系列之使用1</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="hexo下新建页面下如何放多个文章？"><a href="#hexo下新建页面下如何放多个文章？" class="headerlink" title="hexo下新建页面下如何放多个文章？"></a>hexo下新建页面下如何放多个文章？</h2><p><a href="https://www.zhihu.com/question/33324071" target="_blank" rel="external">https://www.zhihu.com/question/33324071</a></p>
+<h2 id="hexo分类与tags配置"><a href="#hexo分类与tags配置" class="headerlink" title="hexo分类与tags配置"></a>hexo分类与tags配置</h2><p>Hexo中如何给一篇文章加多个tags？<br>下面2种方式：</p>
+<ul>
+<li>tags: [a,b,c] # 冒号后有一个空格</li>
+<li>tags:<br>  <code>- tag1</code><br>  <code>- tag2</code></li>
+</ul>
+<h2 id="可以做到自动增加哟。"><a href="#可以做到自动增加哟。" class="headerlink" title="可以做到自动增加哟。"></a>可以做到自动增加哟。</h2><pre><code>tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql-21&quot;
+INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-21.md
+tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql&quot;
+INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-22.md
+tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql&quot;
+INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-23.md_
+</code></pre><p>这样的话，方便形成系列的文章。每次就不用管是第几个mysql系列文章了。<br>不过系列文章，最好用的，还是 categories</p>
+<h2 id="可以用自定义的post"><a href="#可以用自定义的post" class="headerlink" title="可以用自定义的post:"></a>可以用自定义的post:</h2><pre><code>tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql&quot; [mysql]
+INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-4.md
+tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql&quot; [mysql]
+INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-5.md
+tom@adata:~/m6s/blogs/tomtsang$ hexo n &quot;mysql&quot; [mysql]
+INFO  Created: ~/m6s/blogs/tomtsang/source/_posts/mysql-1.md_
+</code></pre><h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
       <a href="/2016/11/19/hexo/">
   <time datetime="2016-11-19T07:44:56.000Z">
     2016-11-19
@@ -1338,6 +1390,40 @@ Error downloading packages:
   <header>
     
       <div class="icon"></div>
+      <a href="/2016/11/15/mysql/">
+  <time datetime="2016-11-15T10:29:52.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/15/mysql/">mysql系列之目录</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>mysql系列之目录</p>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
       <a href="/2016/11/15/mysql-3mysql系列之mysql使用规范/">
   <time datetime="2016-11-15T10:29:52.000Z">
     2016-11-15
@@ -1375,92 +1461,6 @@ Error downloading packages:
 <h2 id="关于删除表"><a href="#关于删除表" class="headerlink" title="关于删除表"></a>关于删除表</h2><p>删除表：使用<code>DROP TABLE tbl_name;</code>， 或者<code>DROP TABLE IF EXISTS tbl_name;</code></p>
 <p>若有业务确实需要删除表的，请联系小鱼。</p>
 <h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/15/mysql/">
-  <time datetime="2016-11-15T10:29:52.000Z">
-    2016-11-15
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/15/mysql/">mysql系列之目录</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <p>mysql系列之目录</p>
-
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/15/nginx-2txt,json文件 中文乱码.txt,json文件 中文乱码/">
-  <time datetime="2016-11-15T08:47:05.000Z">
-    2016-11-15
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/15/nginx-2txt,json文件 中文乱码.txt,json文件 中文乱码/">nginx txt,json文件 中文乱码</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <h2 id="nginx-中-txt-json文件-中文乱码"><a href="#nginx-中-txt-json文件-中文乱码" class="headerlink" title="nginx 中 txt,json文件 中文乱码"></a>nginx 中 txt,json文件 中文乱码</h2><p>在 /etc/nginx/conf.d/default.conf 中找到 <code>location / {</code> ,然后加入</p>
-<pre><code>charset utf-8;
-charset_types text/html
-</code></pre><p>如：</p>
-<pre><code>server {
-    listen       8000;
-    server_name  localhost;
-
-    #default_type &apos;text/html&apos;;
-    #charset utf-8;
-    #charset koi8-r;
-    #access_log  /var/log/nginx/log/host.access.log  main;
-
-    location / {
-        charset utf-8;
-        charset_types text/html application/json;
-        add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;;
-        add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;
-        add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;
-</code></pre>
     
   </div>
   <footer class="end-sep">

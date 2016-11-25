@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>mongodb系列之distinct | 美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+    <meta name="description" content="referencehttp://www.jb51.net/article/65929.htm
+destinctMongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.
+mongodb的distinct的语句： db.users.distinct(‘last_name’）;
+等同于 SQL 语句: select DISTINCT last_nam">
+  
+  <meta name="description" content="referencehttp://www.jb51.net/article/65929.htm
+destinctMongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.
+mongodb的distinct的语句： db.users.distinct(‘last_name’）;
+等同于 SQL 语句: select DISTINCT last_nam">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mongodb系列之distinct">
+<meta property="og:url" content="http://tomtsang.github.io/2016/11/25/mongodb-2/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="referencehttp://www.jb51.net/article/65929.htm
+destinctMongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.
+mongodb的distinct的语句： db.users.distinct(‘last_name’）;
+等同于 SQL 语句: select DISTINCT last_nam">
+<meta property="og:updated_time" content="2016-11-25T02:08:11.687Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mongodb系列之distinct">
+<meta name="twitter:description" content="referencehttp://www.jb51.net/article/65929.htm
+destinctMongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.
+mongodb的distinct的语句： db.users.distinct(‘last_name’）;
+等同于 SQL 语句: select DISTINCT last_nam">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/25/mongodb-2/">
+  <time datetime="2016-11-25T02:03:51.000Z">
+    2016-11-25
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">mongodb系列之distinct</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><p><a href="http://www.jb51.net/article/65929.htm" target="_blank" rel="external">http://www.jb51.net/article/65929.htm</a></p>
+<h2 id="destinct"><a href="#destinct" class="headerlink" title="destinct"></a>destinct</h2><p>MongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.</p>
+<p>mongodb的distinct的语句： db.users.distinct(‘last_name’）;</p>
+<p>等同于 SQL 语句: select DISTINCT last_name from users;</p>
+<p>表示的是根据指定的字段返回不同的记录集。</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><pre><code>&gt; db.KLine_1Min.distinct(&quot;ID&quot;).length
+114
+&gt; db.KLine_1Min.distinct(&quot;ID&quot;)
+</code></pre>
+    
+  </div>
+  <footer>
+    
+      
+  <div class="categories">
+    <a class="categories-link" href="/categories/mongodb/">mongodb</a>
+  </div>
+
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/mongodb/">mongodb</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2016 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

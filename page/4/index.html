@@ -68,6 +68,193 @@
   <header>
     
       <div class="icon"></div>
+      <a href="/2016/11/19/git-2/">
+  <time datetime="2016-11-19T10:56:10.000Z">
+    2016-11-19
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/19/git-2/">git系列之使用</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="git-reset-–hard-commit-id"><a href="#git-reset-–hard-commit-id" class="headerlink" title="git reset –hard commit_id"></a>git reset –hard commit_id</h2><p>Git允许我们在版本的历史之间穿梭，使用命令git reset –hard commit_id</p>
+<h2 id="去除对-已添加的文件或文件夹-的跟踪"><a href="#去除对-已添加的文件或文件夹-的跟踪" class="headerlink" title="去除对　已添加的文件或文件夹　的跟踪"></a>去除对　已添加的文件或文件夹　的跟踪</h2><pre><code>git rm -r --cached -- .idea/
+</code></pre><p>这样呢，文件夹里 .idea/　的修改，git都不跟踪了。</p>
+<pre><code>git rm -r --cached -- node_modules/
+</code></pre>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/19/git-1git系列之从外部复制一个.git文件，如何使用/">
+  <time datetime="2016-11-19T10:05:00.000Z">
+    2016-11-19
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/19/git-1git系列之从外部复制一个.git文件，如何使用/">git系列之从外部复制一个.git文件，如何使用</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>从外部复制一个.git文件，如何使用</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>有.git 文件　 ，直接使用，报错如下：</p>
+<pre><code>fatal: &apos;/srv/OpenX.git&apos; does not appear to be a git repository
+fatal: Could not read from remote repository.
+</code></pre><p>现在有一个新来的.git文件, 如：OpenX.git</p>
+<ol>
+<li><p>放到本机的git仓库目录</p>
+<pre><code>[tom@check repositories]$ sudo cp -a OpenX.git/ /srv/
+</code></pre></li>
+<li><p>建立新的下传使用目录</p>
+<pre><code>[tom@check repositories]$ cd ../testgit/
+[tom@check testgit]$ mkdir testgit2
+[tom@check testgit]$ ls
+OpenXtest  testgit2
+[tom@check testgit]$ cd testgit2/
+[tom@check testgit2]$ git init
+Initialized empty Git repository in /home/tom/in/testgit/testgit2/.git/
+</code></pre></li>
+<li><p>下传pull</p>
+<ol>
+<li><p>remote报错啦</p>
+<pre><code>[tom@check testgit2]$ git remote add checkgit git@192.168.31.181:/srv/OpenX.git
+[tom@check testgit2]$ git pull checkgit master
+git@192.168.31.181&apos;s password:
+fatal: &apos;/srv/OpenX.git&apos; does not appear to be a git repository
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+[tom@check testgit2]$
+</code></pre></li>
+<li><p>clone也是会报错哟</p>
+<pre><code>[tom@check testgit2]$ git clone git@192.168.31.181:/srv/OpenX.git
+Cloning into &apos;OpenX&apos;...
+git@192.168.31.181&apos;s password:
+fatal: &apos;/srv/OpenX.git&apos; does not appear to be a git repository
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+[tom@check testgit2]$
+</code></pre></li>
+</ol>
+</li>
+</ol>
+<h2 id="解决"><a href="#解决" class="headerlink" title="解决　"></a>解决　</h2><p>查看文件属性</p>
+<pre><code>[tom@check testgit2]$ ll /srv/
+total 0
+drwxr-xr-x 7 git git 111 Jan 19 18:13 conan.git
+drwxr-xr-x 7 git git 111 Jan 11 10:52 crawler.git
+drwxr-xr-x 7 git git 111 Jan  8 16:19 eastmoney.git
+drwx------ 7 tom tom 107 Feb 28 08:59 OpenX.git
+drwxr-xr-x 7 git git 111 Jan 19 11:18 qlw.git
+drwxr-xr-x 7 git git 111 Jan  6 15:03 sample.git
+[tom@check testgit2]$
+</code></pre><p>发现OpenX.git 属性不对.</p>
+<p>检查是否安装git,并有git用户。如果没有，则建立git账户和密码<br>修改 OpenX.git 属性</p>
+<pre><code>[tom@check testgit2]$ sudo chown -R git:git /srv/OpenX.git/
+[tom@check testgit2]$ sudo chmod -R 755 /srv/OpenX.git/
+[tom@check testgit2]$ ll /srv/
+total 0
+drwxr-xr-x 7 git git 111 Jan 19 18:13 conan.git
+drwxr-xr-x 7 git git 111 Jan 11 10:52 crawler.git
+drwxr-xr-x 7 git git 111 Jan  8 16:19 eastmoney.git
+drwxr-xr-x 7 git git 107 Feb 28 08:59 OpenX.git
+drwxr-xr-x 7 git git 111 Jan 19 11:18 qlw.git
+drwxr-xr-x 7 git git 111 Jan  6 15:03 sample.git
+[tom@check testgit2]$
+</code></pre><p>验收</p>
+<pre><code>[tom@check testgit2]$ git remote add checkgit git@192.168.31.181:/srv/OpenX.git
+fatal: remote checkgit already exists.
+[tom@check testgit2]$ git pull checkgit master
+git@192.168.31.181&apos;s password:
+remote: Counting objects: 1673, done.
+remote: Compressing objects: 100% (1637/1637), done.
+remote: Total 1673 (delta 928), reused 76 (delta 32)
+Receiving objects: 100% (1673/1673), 6.90 MiB | 7.48 MiB/s, done.
+Resolving deltas: 100% (928/928), done.
+From 192.168.31.181:/srv/OpenX
+ * branch            master     -&gt; FETCH_HEAD
+[tom@check testgit2]$ ls
+lib  OpenInfo  OpenQuote
+[tom@check testgit2]$
+</code></pre>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/19/git/">
+  <time datetime="2016-11-19T10:04:56.000Z">
+    2016-11-19
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/19/git/">git系列之目录</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>git系列之目录</p>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
       <a href="/2016/11/19/hexo-1/">
   <time datetime="2016-11-19T09:39:24.000Z">
     2016-11-19
@@ -1104,388 +1291,13 @@ Thanks for using MariaDB!
 
 
   
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/15/mysql-1mysql系列之集群 MariaDB-Galera-server 安装/">
-  <time datetime="2016-11-15T10:29:59.000Z">
-    2016-11-15
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/15/mysql-1mysql系列之集群 MariaDB-Galera-server 安装/">mysql系列之集群 MariaDB-Galera-server 安装</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <p>MariaDB Galera Cluster 部署</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.linuxidc.com/Linux/2015-07/119512.htm" target="_blank" rel="external">http://www.linuxidc.com/Linux/2015-07/119512.htm</a></p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h5 id="安装mariadb10-0"><a href="#安装mariadb10-0" class="headerlink" title="安装mariadb10.0"></a>安装mariadb10.0</h5><blockquote>
-<p>官方的<a href="https://mariadb.com/kb/zh-cn/installing-mariadb-with-yum/" target="_blank" rel="external">通过yum安装</a>教程</p>
-<p>根据不同的系统来下载repo吧，更多的<a href="https://downloads.mariadb.org/mariadb/repositories/#mirror=marty-anstey&amp;distro=CentOS&amp;distro_release=centos7-amd64--centos7&amp;version=10.1" target="_blank" rel="external">MariaDB.repo</a></p>
-</blockquote>
-<p>或者，查看之前的 mariadb安装教程，就可以了。</p>
-<p>具体，我的是这样的。</p>
-<ol>
-<li><p>MariaDB.repo</p>
-<p> [cdn@test_240 yum.repos.d]$ cat /etc/yum.repos.d/MariaDB.repo</p>
-<h1 id="MariaDB-10-0-CentOS-repository-list-created-2016-11-16-02-27-UTC"><a href="#MariaDB-10-0-CentOS-repository-list-created-2016-11-16-02-27-UTC" class="headerlink" title="MariaDB 10.0 CentOS repository list - created 2016-11-16 02:27 UTC"></a>MariaDB 10.0 CentOS repository list - created 2016-11-16 02:27 UTC</h1><h1 id="http-downloads-mariadb-org-mariadb-repositories"><a href="#http-downloads-mariadb-org-mariadb-repositories" class="headerlink" title="http://downloads.mariadb.org/mariadb/repositories/"></a><a href="http://downloads.mariadb.org/mariadb/repositories/" target="_blank" rel="external">http://downloads.mariadb.org/mariadb/repositories/</a></h1><p> [mariadb]<br> name = MariaDB<br> baseurl = <a href="http://yum.mariadb.org/10.0/centos7-amd64" target="_blank" rel="external">http://yum.mariadb.org/10.0/centos7-amd64</a><br> gpgkey=<a href="https://yum.mariadb.org/RPM-GPG-KEY-MariaDB" target="_blank" rel="external">https://yum.mariadb.org/RPM-GPG-KEY-MariaDB</a><br> gpgcheck=1</p>
-</li>
-</ol>
-<h3 id="2-安装数据库"><a href="#2-安装数据库" class="headerlink" title="2. 安装数据库"></a>2. 安装数据库</h3><pre><code>sudo yum clean all
-sudo yum install MariaDB-Galera-server MariaDB-client galera -y
-</code></pre><p>卸载<br>    sudo yum remove MariaDB-server MariaDB-client<br>    sudo yum remove MariaDB-common -y</p>
-<p>如果要删除旧的数据库可以使用remove, 参数 -y 是确认，不用提示。此处，安装的是服务器和客户端，一般来说安装这两个就可以了。</p>
-<h3 id="3-启动数据库"><a href="#3-启动数据库" class="headerlink" title="3. 启动数据库"></a>3. 启动数据库</h3><p>如果不用进行其他的操作，则现在就可以直接启动数据库，并进行测试了。</p>
-<p>查看mysql状态;关闭数据库  </p>
-<pre><code># service mysql status
-# sudo /etc/init.d/mysql status
-# service mysql stop  
-# sudo /etc/init.d/mysql stop
-</code></pre><p>启动数据库</p>
-<pre><code># service mysql start
-# sudo /etc/init.d/mysql start  
-</code></pre><p>开机自启动</p>
-<pre><code># sudo chkconfig mysql on
-</code></pre><p><em><code>sudo systemctl start mariadb.service</code>类似这种的方式，在这已失效</em></p>
-<pre><code>[cdn@test_240 ~]$ sudo systemctl start mariadb.service
-[sudo] password for cdn:
-Failed to start mariadb.service: Unit mariadb.service failed to load: No such file or directory.
-[cdn@test_240 ~]$ sudo /etc/init.d/mysql start
-Starting MySQL.161116 13:34:03 mysqld_safe Logging to &apos;/var/lib/mysql/test_240.err&apos;.
-.. SUCCESS!
-[cdn@test_240 ~]$ sudo chkconfig mysql on
-[cdn@test_240 ~]$ sudo /etc/init.d/mysql status
- SUCCESS! MySQL running (13959)
-[cdn@test_240 ~]$ sudo /etc/init.d/mysql stop
-Shutting down MySQL... SUCCESS!
-[cdn@test_240 ~]$
-</code></pre><h3 id="4-修改root密码"><a href="#4-修改root密码" class="headerlink" title="4. 修改root密码"></a>4. 修改root密码</h3><pre><code>#  修改root密码  
-mysqladmin -u root password &apos;root&apos;  
-</code></pre><p>因为安装好以后的root密码是空,所以需要设置; 如果是测试服务器,那么你可以直接使用root,不重要的密码很多时候可以设置为和用户名一致，以免忘记了又想不起来。<br>如果是重要的服务器，请使用复杂密码，例如邮箱，各种自由组合的规则的字符等。</p>
-<h3 id="5-登录数据库"><a href="#5-登录数据库" class="headerlink" title="5. 登录数据库"></a>5. 登录数据库</h3><pre><code>mysql -u root -p  
-</code></pre><p>如果是本机,那可以直接使用上面的命令登录，当然，需要输入密码. 如果是其他机器，那么可能需要如下的形式:</p>
-<pre><code>mysql -h 127.0.0.1 -P 3306 -u root -p  
-</code></pre><h3 id="6-简单SQL测试"><a href="#6-简单SQL测试" class="headerlink" title="6. 简单SQL测试"></a>6. 简单SQL测试</h3><pre><code>&gt;  
--- 查看MySQL的状态
-status;  
--- 显示支持的引擎
-show engines;  
--- 显示所有数据库
-show databases;  
--- 切换数据库上下文,即设置当前会话的默认数据库
-use test;  
--- 显示本数据库所有的表
-show tables;  
--- 创建一个表
-CREATETABLE t_test (  
-  id int(11) UNSIGNED NOTNULL AUTO_INCREMENT,  
-  userId char(36),  
-  lastLoginTime timestamp,  
-PRIMARYKEY (id)  
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
--- 插入测试数据
-insertinto t_test(userId)  
-values
-(&apos;admin&apos;)  
-,(&apos;haha&apos;)  
-;  
--- 简单查询
-select * from t_test;  
-select id,userId from t_test  where userId=&apos;admin&apos; ;  
-</code></pre><h3 id="7-修改数据存放目录"><a href="#7-修改数据存放目录" class="headerlink" title="7.  修改数据存放目录"></a>7.  修改数据存放目录</h3><p>mysql, MariaDB 的默认数据存放在 /var/lib/mysql/ 目录下,如果不想放到此处,或者是想要程序和数据分离，或者是磁盘原因,需要切换到其他路径,则可以通过修改 datadir系统变量来达成目的.</p>
-<pre><code># 停止数据库  
-service mysql stop
-# 创建目录,假设没有的话  
-mkdir /usr/local/ieternal/mysql_data  
-# 拷贝默认数据库到新的位置  
-# -a 命令是将文件属性一起拷贝,否则各种问题  
-cp -a /var/lib/mysql /usr/local/ieternal/mysql_data  
-# 备份原来的数据  
-cp -a /etc/my.cnf /etc/my.cnf_original  
-# 其实查看 /etc/my.cnf 文件可以发现  
-# MariaDB 的此文件之中只有一个包含语句  
-# 所以需要修改的配置文件为 /etc/my.cnf.d/server.cnf  
-cp /etc/my.cnf.d/server.cnf /etc/my.cnf.d/server.cnf_original  
-vim /etc/my.cnf.d/server.cnf    
-</code></pre><p>然后 按 i 进入编辑模式,可以插入相关内容.使用键盘的上下左右键可以移动光标, 编辑完成以后，按 ESC 退出编辑模式(进入命令模式), 然后输入命令:wq 保存并退出</p>
-<pre><code># 在文件的 mysqld 节下添加内容  
-[mysqld]  
-datadir=/usr/local/ieternal/mysql_data/mysql  
-socket=/var/lib/mysql/mysql.sock  
-#default-character-set=utf8  
-character_set_server=utf8  
-slow_query_log=on
-slow_query_log_file=/usr/local/ieternal/mysql_data/slow_query_log.log  
-long_query_time=2  
-</code></pre><p>其中,也只有 datadir 和 socket 比较重要; 而 default-character-set 是 mysql 自己认识的,而 mariadb5.5 就不认识,相当于变成了 character_set_server</p>
-<h5 id="7-1-创建慢查询日志文件"><a href="#7-1-创建慢查询日志文件" class="headerlink" title="7.1 创建慢查询日志文件"></a>7.1 创建慢查询日志文件</h5><p>既然上面指定了慢查询日志文件，我后来看了下MariaDB的err日志，发现MariaDB不会自己创建该文件，所以我们需要自己创建,并修改相应的文件权限(比如 MySQL 采用 mysql用户，可能我们使用 root用户创建的文件,此时要求慢查询日志文件对mysql用户可读可写就行。)</p>
-<pre><code>touch /usr/local/ieternal/mysql_data/slow_query_log.log  
-chmod 666 /usr/local/ieternal/mysql_data/slow_query_log.log  
-</code></pre><p>然后重新启动MySQL.</p>
-<pre><code>service mysql start  
-</code></pre><h2 id="综合命令"><a href="#综合命令" class="headerlink" title="综合命令"></a>综合命令</h2><p>方便大家ctrl+c, ctrl+v</p>
-<pre><code>sudo service mysql status
-sudo service mysql stop
-cd /data/
-ls
-sudo mkdir ./mariadb/mysql/ -p
-ls
-cd mariadb/mysql/
-ls
-sudo cp -a /var/lib/mysql /data/mariadb/
-ls
-cd ../
-ls
-cd mysql/
-ls
-sudo cp -a /etc/my.cnf /etc/my.cnf_original
-sudo cp /etc/my.cnf.d/server.cnf /etc/my.cnf.d/server.cnf_original
-sudo vim /etc/my.cnf.d/server.cnf
-sudo touch /data/mariadb/mysql/slow_query_log.log
-sudo chmod 666 /data/mariadb/mysql/slow_query_log.log
-sudo systemctl restart mariadb.service
-</code></pre><p>其中 vim /etc/my.cnf.d/server.cnf</p>
-<pre><code>#
-# These groups are read by MariaDB server.
-# Use it for options that only the server (but not clients) should see
-#
-# See the examples of server my.cnf files in /usr/share/mysql/
-#
-
-# this is read by the standalone daemon and embedded servers
-[server]
-
-# this is only for the mysqld standalone daemon
-[mysqld]
-datadir=/data/mariadb/mysql  
-socket=/var/lib/mysql/mysql.sock  
-#default-character-set=utf8  
-character_set_server=utf8  
-slow_query_log=on  
-slow_query_log_file=/data/mariadb/mysql/slow_query_log.log  
-long_query_time=2
-
-
-# this is only for embedded server
-[embedded]
-
-# This group is only read by MariaDB-5.5 servers.
-# If you use the same .cnf file for MariaDB of different versions,
-# use this group for options that older servers don&apos;t understand
-[mysqld-5.5]
-
-# These two groups are only read by MariaDB servers, not by MySQL.
-# If you use the same .cnf file for MySQL and MariaDB,
-# you can put MariaDB-only options here
-[mariadb]
-
-[mariadb-5.5]
-</code></pre><h2 id="安装报错"><a href="#安装报错" class="headerlink" title="安装报错"></a>安装报错</h2><h3 id="报错1"><a href="#报错1" class="headerlink" title="报错1"></a>报错1</h3><p>报错：</p>
-<pre><code>MariaDB-client-10.1.19-1.el7.centos.x86_64: [Errno 256] No more mirrors to try.
-</code></pre><p>出错原因：</p>
-<p> 之前已经在 /etc/yum.repos.d/MariaDB.repo 中设置过 <code>baseurl = http://yum.mariadb.org/10.1/centos6-amd64</code>, 而后又觉得不对，要降低为<code>baseurl = http://yum.mariadb.org/10.0/centos6-amd64</code>, 导致之前的缓存没有清除。</p>
-<p>解决：</p>
-<p>运行<code>sudo yum clean all</code>，然后再次运行<code>sudo yum install MariaDB-Galera-server MariaDB-client galera -y</code></p>
-<p>具体报错如下：</p>
-<pre><code>[tom@kube-node-13 ~]$ ll /etc/yum.repos.d/
-总用量 44
--rw-r--r--. 1 root root 1664 12月  9 2015 CentOS-Base.repo
--rw-r--r--. 1 root root 1309 12月  9 2015 CentOS-CR.repo
--rw-r--r--. 1 root root  649 12月  9 2015 CentOS-Debuginfo.repo
--rw-r--r--. 1 root root  290 12月  9 2015 CentOS-fasttrack.repo
--rw-r--r--. 1 root root  630 12月  9 2015 CentOS-Media.repo
--rw-r--r--. 1 root root 1331 12月  9 2015 CentOS-Sources.repo
--rw-r--r--. 1 root root 1952 12月  9 2015 CentOS-Vault.repo
--rw-r--r--. 1 root root  957 3月  31 2016 epel.repo
--rw-r--r--. 1 root root 1056 3月  31 2016 epel-testing.repo
--rw-r--r--. 1 root root  261 11月 16 10:28 MariaDB.repo
--rw-r--r--. 1 root root  401 2月  15 2016 zabbix.repo
-[tom@kube-node-13 ~]$ sudo yum install  MariaDB-client galera -y
-已加载插件：fastestmirror, langpacks
-Loading mirror speeds from cached hostfile
- * base: ftp.sjtu.edu.cn
- * epel: free.nchc.org.tw
- * extras: ftp.sjtu.edu.cn
- * updates: ftp.sjtu.edu.cn
-正在解决依赖关系
---&gt; 正在检查事务
----&gt; 软件包 MariaDB-client.x86_64.0.10.1.19-1.el7.centos 将被 安装
---&gt; 正在处理依赖关系 MariaDB-common，它被软件包 MariaDB-client-10.1.19-1.el7.centos.x86_64 需要
----&gt; 软件包 galera.x86_64.0.25.3.18-1.rhel7.el7.centos 将被 安装
---&gt; 正在处理依赖关系 libboost_program_options.so.1.53.0()(64bit)，它被软件包 galera-25.3.18-1.rhel7.el7.centos.x86_64 需要
---&gt; 正在检查事务
----&gt; 软件包 MariaDB-common.x86_64.0.10.1.19-1.el7.centos 将被 安装
----&gt; 软件包 boost-program-options.x86_64.0.1.53.0-25.el7 将被 安装
---&gt; 处理 MariaDB-common-10.1.19-1.el7.centos.x86_64 与 mariadb-libs &lt; 1:10.1.19-1.el7.centos 的冲突
---&gt; 正在使用新的信息重新解决依赖关系
---&gt; 正在检查事务
----&gt; 软件包 MariaDB-shared.x86_64.0.10.1.19-1.el7.centos 将被 舍弃
----&gt; 软件包 mariadb-libs.x86_64.1.5.5.50-1.el7_2 将被 取代
---&gt; 解决依赖关系完成
-
-依赖关系解决
-
-====================================================================================================================================================================================================================
- Package                                                  架构                                      版本                                                           源                                          大小
-====================================================================================================================================================================================================================
-正在安装:
- MariaDB-client                                           x86_64                                    10.1.19-1.el7.centos                                           mariadb                                     39 M
- MariaDB-shared                                           x86_64                                    10.1.19-1.el7.centos                                           mariadb                                    1.3 M
-      替换  mariadb-libs.x86_64 1:5.5.50-1.el7_2
- galera                                                   x86_64                                    25.3.18-1.rhel7.el7.centos                                     mariadb                                    7.8 M
-为依赖而安装:
- MariaDB-common                                           x86_64                                    10.1.19-1.el7.centos                                           mariadb                                     43 k
- boost-program-options                                    x86_64                                    1.53.0-25.el7                                                  base                                       155 k
-
-事务概要
-====================================================================================================================================================================================================================
-安装  3 软件包 (+2 依赖软件包)
-
-总计：48 M
-总下载量：40 M
-Downloading packages:
-MariaDB-10.1.19-centos7-x86_64 FAILED                                          
-http://yum.mariadb.org/10.0/centos7-amd64/rpms/MariaDB-10.1.19-centos7-x86_64-client.rpm: [Errno 14] HTTP Error 404 - Not Found                                                   ]  0.0 B/s |    0 B  --:--:-- ETA
-正在尝试其它镜像。
-To address this issue please refer to the below knowledge base article
-
-https://access.redhat.com/articles/1320623
-
-If above article doesn&apos;t help to resolve this issue please create a bug on https://bugs.centos.org/
-
-MariaDB-10.1.19-centos7-x86_64 FAILED                                          
-http://yum.mariadb.org/10.0/centos7-amd64/rpms/MariaDB-10.1.19-centos7-x86_64-common.rpm: [Errno 14] HTTP Error 404 - Not Found                                                   ]  0.0 B/s |    0 B  --:--:-- ETA
-正在尝试其它镜像。
-MariaDB-10.1.19-centos7-x86_64 FAILED                                          
-http://yum.mariadb.org/10.0/centos7-amd64/rpms/MariaDB-10.1.19-centos7-x86_64-shared.rpm: [Errno 14] HTTP Error 404 - Not Found                                                   ]  0.0 B/s |    0 B  --:--:-- ETA
-正在尝试其它镜像。
-
-
-Error downloading packages:
-  MariaDB-client-10.1.19-1.el7.centos.x86_64: [Errno 256] No more mirrors to try.
-  MariaDB-shared-10.1.19-1.el7.centos.x86_64: [Errno 256] No more mirrors to try.
-  MariaDB-common-10.1.19-1.el7.centos.x86_64: [Errno 256] No more mirrors to try.
-
-[tom@kube-node-13 ~]$
-</code></pre><h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/15/mysql/">
-  <time datetime="2016-11-15T10:29:52.000Z">
-    2016-11-15
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/15/mysql/">mysql系列之目录</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <p>mysql系列之目录</p>
-<ul>
-<li>mysql7, mysql系列之navicat</li>
-<li>mysql8, mysql系列之MySQL查看用户权限</li>
-</ul>
-
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/15/mysql-3mysql系列之mysql使用规范/">
-  <time datetime="2016-11-15T10:29:52.000Z">
-    2016-11-15
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/15/mysql-3mysql系列之mysql使用规范/">mysql系列之mysql使用规范</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <p>mysql使用规范</p>
-<h2 id="级别说明"><a href="#级别说明" class="headerlink" title="级别说明"></a>级别说明</h2><p>所有级别：</p>
-<ul>
-<li>级别1，必须做到</li>
-<li>级别2，优先做到</li>
-</ul>
-<p>级别：1</p>
-<ol>
-<li>库名，表名，字段名：使用小写</li>
-<li>字符：utf8</li>
-<li>表：不使用删除表（<code>drop</code>），而使用清空表（<code>truncate</code>，或者<code>delete from</code>）</li>
-<li>表：记录数超过10000的情况下，加索引</li>
-</ol>
-<p>级别：2</p>
-<ol>
-<li>库名，表名，字段名：使用下划线分割。如：<code>day_stocka_wind</code></li>
-<li>表：加主键</li>
-<li>清空表：优先使用<code>truncate</code>（命令：<code>truncate table tbl_name;</code>），其次使用<code>delete from</code>(命令：<code>delete from tbl_name;</code>）</li>
-</ol>
-<h2 id="关于删除表"><a href="#关于删除表" class="headerlink" title="关于删除表"></a>关于删除表</h2><p>删除表：使用<code>DROP TABLE tbl_name;</code>， 或者<code>DROP TABLE IF EXISTS tbl_name;</code></p>
-<p>若有业务确实需要删除表的，请联系小鱼。</p>
-<h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
 
   <nav id="pagination">
   
-    <a href="/page/3/" class="prev">上一页</a>
+    <a href="/page/3/" class="prev">Prev</a>
   
   
-    <a href="/page/5/" class="next">下一页</a>
+    <a href="/page/5/" class="next">Next</a>
   
   <div class="clearfix"></div>
 </nav>

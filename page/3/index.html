@@ -68,6 +68,126 @@
   <header>
     
       <div class="icon"></div>
+      <a href="/2016/11/28/git-3/">
+  <time datetime="2016-11-28T07:55:34.000Z">
+    2016-11-28
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/28/git-3/">git系列之gitlab安装</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://gitlab.com/gitlab-org/gitlab-ce/tree/master" target="_blank" rel="external">https://gitlab.com/gitlab-org/gitlab-ce/tree/master</a></p>
+<h2 id="哈哈"><a href="#哈哈" class="headerlink" title="哈哈"></a>哈哈</h2>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/25/mysql-8/">
+  <time datetime="2016-11-25T05:44:05.000Z">
+    2016-11-25
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/25/mysql-8/">mysql系列之MySQL查看用户权限</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><p><a href="http://www.oschina.net/code/snippet_222150_12541" target="_blank" rel="external">http://www.oschina.net/code/snippet_222150_12541</a></p>
+<p>##</p>
+<p>show grants for 你的用户;<br>show grants for root@’localhost’;<br>show grants for webgametest@10.3.18.158;<br>show create database dbname;  这个可以看到创建数据库时用到的一些参数。<br>show create table tickets;    可以看到创建表时用到的一些参数</p>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/25/mysql-7/">
+  <time datetime="2016-11-25T05:44:03.000Z">
+    2016-11-25
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/25/mysql-7/">mysql系列之navicat</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><p><a href="http://blog.csdn.net/lwei_998/article/details/45560483" target="_blank" rel="external">http://blog.csdn.net/lwei_998/article/details/45560483</a></p>
+<p><a href="http://blog.csdn.net/moneyshi/article/details/50906650" target="_blank" rel="external">http://blog.csdn.net/moneyshi/article/details/50906650</a></p>
+<p><a href="http://mt.sohu.com/20160324/n441844650.shtml" target="_blank" rel="external">http://mt.sohu.com/20160324/n441844650.shtml</a></p>
+<h2 id="导出连接设置"><a href="#导出连接设置" class="headerlink" title="导出连接设置"></a>导出连接设置</h2><p>Navicat 版本 8<br>1.选择文件 -&gt; 导出登录数据文件。导出的文件（.reg）包含你的全部连接设置。<br>2.备份已导出的文件（.reg）。<br>3.在现有的计算机解除安装 Navicat。<br>4.在新的计算机重新安装 Navicat。<br>5.在新的计算机运行已导出的文件（.reg）。</p>
+<p>Navicat 版本 9 或以上<br>1.在 Navicat，选择文件 -&gt; 导出连接。导出的文件（.ncx）包含你的全部连接设置。<br>2.备份已导出的文件（.ncx）。<br>3.在现有的计算机解除安装 Navicat。**<br>4.在新的计算机重新安装 Navicat。<br>5.在新的计算机打开 Navicat 和选择文件 -&gt; 导入连接。</p>
+<p>** 如果你使用版本 11 或以上，请在解除安装 Navicat 前取消激活注册码。</p>
+<p> 当创建一个新的连接，Navicat 将创建一个子文件夾（名为各数据库的名）在设置保存路径內。所有备份（.psc、.psb）、报表（.rtm）、查询（.sql）、导入/导出设置文件等都是保存在该子文件夾。要查找路径，你可以右击连接，然后选择连接属性 -&gt; 高级 -&gt; 设置保存路径/设置位置。</p>
+<p> 此外，全部已保存的设置文件（批处理作业设置文件）会保存在 profiles 文件夾。要查找路径，选择工具 -&gt; 选项 -&gt; 其他 -&gt; 设置文件保存路径/设置文件位置。</p>
+<h2 id="异常收集之：navicatdesignquery-sql-bak-系统找不到指定路径"><a href="#异常收集之：navicatdesignquery-sql-bak-系统找不到指定路径" class="headerlink" title="异常收集之：navicatdesignquery.sql.bak 系统找不到指定路径"></a>异常收集之：navicatdesignquery.sql.bak 系统找不到指定路径</h2><p>今天使用Navicat ，其他功能都正常，但是新建查询的时候，出现一个很奇葩的问题</p>
+<p><code>C:\Program Files (x86)\PremiumSoft\Navicat for MySQL8.1/_NAVICAT_DESIGNQUERY.sql.bak</code>  系统找不到指定路径</p>
+<p>找了半天找不到解决办法，下载navicat 11都没用， 更改版本也没用。</p>
+<p>最后发现，navicat 的每个连接，有个连接属性</p>
+<p>具体操作：<br>在连接—属性—高级。修改一下路径，改成你现在安装的navicat目录就好了</p>
+<h2 id="如何迁移-Navicat-到新的计算机"><a href="#如何迁移-Navicat-到新的计算机" class="headerlink" title="如何迁移 Navicat 到新的计算机"></a>如何迁移 Navicat 到新的计算机</h2><p>迁移Navicat到新的计算机的步骤：</p>
+<p>　　1. 选择文件-&gt;导出连接。导出的文件（.ncx）包含了全部连接设置内容。<br>　　2. 备份已导出的文件（.ncx）。<br>　　3. 在Navicat，选择帮助-&gt;注册，并点击“取消激活”来在线取消激活Navicat注册码。<br>　　4. 在现有的计算机解除安装Navicat。<br>　　5. 在新的计算机重新安装Navicat。<br>　　6. 在新的计算机中，打开Navicat，选择文件-&gt;导入连接。</p>
+<p>当创建一个新的连接，Navicat将在设置位置创建一个子文件夹。大多数文件都保存在该子文件夹，右击选择属性-&gt;打开文件位置可查找路径。</p>
+<p>此外，全部已保存的设置文件会保存在Profiles文件夹，选择工具-&gt;选项-&gt;其他-&gt;文件位置，即可查找存储路径。</p>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
       <a href="/2016/11/25/mongodb-2/">
   <time datetime="2016-11-25T02:03:51.000Z">
     2016-11-25
@@ -606,200 +726,13 @@ console.timeEnd(&quot;toFixed1&quot;);
 
 
   
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/19/git-2/">
-  <time datetime="2016-11-19T10:56:10.000Z">
-    2016-11-19
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/19/git-2/">git系列之使用</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <h2 id="git-reset-–hard-commit-id"><a href="#git-reset-–hard-commit-id" class="headerlink" title="git reset –hard commit_id"></a>git reset –hard commit_id</h2><p>Git允许我们在版本的历史之间穿梭，使用命令git reset –hard commit_id</p>
-<h2 id="去除对-已添加的文件或文件夹-的跟踪"><a href="#去除对-已添加的文件或文件夹-的跟踪" class="headerlink" title="去除对　已添加的文件或文件夹　的跟踪"></a>去除对　已添加的文件或文件夹　的跟踪</h2><pre><code>git rm -r --cached -- .idea/
-</code></pre><p>这样呢，文件夹里 .idea/　的修改，git都不跟踪了。</p>
-<pre><code>git rm -r --cached -- node_modules/
-</code></pre>
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/19/git-1git系列之从外部复制一个.git文件，如何使用/">
-  <time datetime="2016-11-19T10:05:00.000Z">
-    2016-11-19
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/19/git-1git系列之从外部复制一个.git文件，如何使用/">git系列之从外部复制一个.git文件，如何使用</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <p>从外部复制一个.git文件，如何使用</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>有.git 文件　 ，直接使用，报错如下：</p>
-<pre><code>fatal: &apos;/srv/OpenX.git&apos; does not appear to be a git repository
-fatal: Could not read from remote repository.
-</code></pre><p>现在有一个新来的.git文件, 如：OpenX.git</p>
-<ol>
-<li><p>放到本机的git仓库目录</p>
-<pre><code>[tom@check repositories]$ sudo cp -a OpenX.git/ /srv/
-</code></pre></li>
-<li><p>建立新的下传使用目录</p>
-<pre><code>[tom@check repositories]$ cd ../testgit/
-[tom@check testgit]$ mkdir testgit2
-[tom@check testgit]$ ls
-OpenXtest  testgit2
-[tom@check testgit]$ cd testgit2/
-[tom@check testgit2]$ git init
-Initialized empty Git repository in /home/tom/in/testgit/testgit2/.git/
-</code></pre></li>
-<li><p>下传pull</p>
-<ol>
-<li><p>remote报错啦</p>
-<pre><code>[tom@check testgit2]$ git remote add checkgit git@192.168.31.181:/srv/OpenX.git
-[tom@check testgit2]$ git pull checkgit master
-git@192.168.31.181&apos;s password:
-fatal: &apos;/srv/OpenX.git&apos; does not appear to be a git repository
-fatal: Could not read from remote repository.
-
-Please make sure you have the correct access rights
-and the repository exists.
-[tom@check testgit2]$
-</code></pre></li>
-<li><p>clone也是会报错哟</p>
-<pre><code>[tom@check testgit2]$ git clone git@192.168.31.181:/srv/OpenX.git
-Cloning into &apos;OpenX&apos;...
-git@192.168.31.181&apos;s password:
-fatal: &apos;/srv/OpenX.git&apos; does not appear to be a git repository
-fatal: Could not read from remote repository.
-
-Please make sure you have the correct access rights
-and the repository exists.
-[tom@check testgit2]$
-</code></pre></li>
-</ol>
-</li>
-</ol>
-<h2 id="解决"><a href="#解决" class="headerlink" title="解决　"></a>解决　</h2><p>查看文件属性</p>
-<pre><code>[tom@check testgit2]$ ll /srv/
-total 0
-drwxr-xr-x 7 git git 111 Jan 19 18:13 conan.git
-drwxr-xr-x 7 git git 111 Jan 11 10:52 crawler.git
-drwxr-xr-x 7 git git 111 Jan  8 16:19 eastmoney.git
-drwx------ 7 tom tom 107 Feb 28 08:59 OpenX.git
-drwxr-xr-x 7 git git 111 Jan 19 11:18 qlw.git
-drwxr-xr-x 7 git git 111 Jan  6 15:03 sample.git
-[tom@check testgit2]$
-</code></pre><p>发现OpenX.git 属性不对.</p>
-<p>检查是否安装git,并有git用户。如果没有，则建立git账户和密码<br>修改 OpenX.git 属性</p>
-<pre><code>[tom@check testgit2]$ sudo chown -R git:git /srv/OpenX.git/
-[tom@check testgit2]$ sudo chmod -R 755 /srv/OpenX.git/
-[tom@check testgit2]$ ll /srv/
-total 0
-drwxr-xr-x 7 git git 111 Jan 19 18:13 conan.git
-drwxr-xr-x 7 git git 111 Jan 11 10:52 crawler.git
-drwxr-xr-x 7 git git 111 Jan  8 16:19 eastmoney.git
-drwxr-xr-x 7 git git 107 Feb 28 08:59 OpenX.git
-drwxr-xr-x 7 git git 111 Jan 19 11:18 qlw.git
-drwxr-xr-x 7 git git 111 Jan  6 15:03 sample.git
-[tom@check testgit2]$
-</code></pre><p>验收</p>
-<pre><code>[tom@check testgit2]$ git remote add checkgit git@192.168.31.181:/srv/OpenX.git
-fatal: remote checkgit already exists.
-[tom@check testgit2]$ git pull checkgit master
-git@192.168.31.181&apos;s password:
-remote: Counting objects: 1673, done.
-remote: Compressing objects: 100% (1637/1637), done.
-remote: Total 1673 (delta 928), reused 76 (delta 32)
-Receiving objects: 100% (1673/1673), 6.90 MiB | 7.48 MiB/s, done.
-Resolving deltas: 100% (928/928), done.
-From 192.168.31.181:/srv/OpenX
- * branch            master     -&gt; FETCH_HEAD
-[tom@check testgit2]$ ls
-lib  OpenInfo  OpenQuote
-[tom@check testgit2]$
-</code></pre>
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/19/git/">
-  <time datetime="2016-11-19T10:04:56.000Z">
-    2016-11-19
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/19/git/">git系列之目录</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <p>git系列之目录</p>
-
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
 
   <nav id="pagination">
   
-    <a href="/page/2/" class="prev">上一页</a>
+    <a href="/page/2/" class="prev">Prev</a>
   
   
-    <a href="/page/4/" class="next">下一页</a>
+    <a href="/page/4/" class="next">Next</a>
   
   <div class="clearfix"></div>
 </nav>

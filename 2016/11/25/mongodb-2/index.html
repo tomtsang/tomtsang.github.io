@@ -10,30 +10,38 @@
     <meta name="author" content="Tom Tsang">
   
   
-    <meta name="description" content="referencehttp://www.jb51.net/article/65929.htm
-destinctMongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.
-mongodb的distinct的语句： db.users.distinct(‘last_name’）;
-等同于 SQL 语句: select DISTINCT last_nam">
+    <meta name="description" content="referencehttps://docs.mongodb.com/manual/reference/method/db.collection.distinct/
+http://www.jb51.net/article/65929.htm
+destinct
+MongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.
+
+mongodb的distin">
   
-  <meta name="description" content="referencehttp://www.jb51.net/article/65929.htm
-destinctMongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.
-mongodb的distinct的语句： db.users.distinct(‘last_name’）;
-等同于 SQL 语句: select DISTINCT last_nam">
+  <meta name="description" content="referencehttps://docs.mongodb.com/manual/reference/method/db.collection.distinct/
+http://www.jb51.net/article/65929.htm
+destinct
+MongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.
+
+mongodb的distin">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mongodb系列之distinct">
 <meta property="og:url" content="http://tomtsang.github.io/2016/11/25/mongodb-2/index.html">
 <meta property="og:site_name" content="美好生活, 共享快乐">
-<meta property="og:description" content="referencehttp://www.jb51.net/article/65929.htm
-destinctMongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.
-mongodb的distinct的语句： db.users.distinct(‘last_name’）;
-等同于 SQL 语句: select DISTINCT last_nam">
-<meta property="og:updated_time" content="2016-11-25T02:08:11.687Z">
+<meta property="og:description" content="referencehttps://docs.mongodb.com/manual/reference/method/db.collection.distinct/
+http://www.jb51.net/article/65929.htm
+destinct
+MongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.
+
+mongodb的distin">
+<meta property="og:updated_time" content="2016-12-14T07:19:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mongodb系列之distinct">
-<meta name="twitter:description" content="referencehttp://www.jb51.net/article/65929.htm
-destinctMongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.
-mongodb的distinct的语句： db.users.distinct(‘last_name’）;
-等同于 SQL 语句: select DISTINCT last_nam">
+<meta name="twitter:description" content="referencehttps://docs.mongodb.com/manual/reference/method/db.collection.distinct/
+http://www.jb51.net/article/65929.htm
+destinct
+MongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.
+
+mongodb的distin">
   
     <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
   
@@ -92,15 +100,29 @@ mongodb的distinct的语句： db.users.distinct(‘last_name’）;
   
   <div class="entry">
     
-      <h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><p><a href="http://www.jb51.net/article/65929.htm" target="_blank" rel="external">http://www.jb51.net/article/65929.htm</a></p>
-<h2 id="destinct"><a href="#destinct" class="headerlink" title="destinct"></a>destinct</h2><p>MongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.</p>
+      <h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><p><a href="https://docs.mongodb.com/manual/reference/method/db.collection.distinct/" target="_blank" rel="external">https://docs.mongodb.com/manual/reference/method/db.collection.distinct/</a></p>
+<p><a href="http://www.jb51.net/article/65929.htm" target="_blank" rel="external">http://www.jb51.net/article/65929.htm</a></p>
+<h2 id="destinct"><a href="#destinct" class="headerlink" title="destinct"></a>destinct</h2><ul>
+<li>MongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.</li>
+</ul>
 <p>mongodb的distinct的语句： db.users.distinct(‘last_name’）;</p>
 <p>等同于 SQL 语句: select DISTINCT last_name from users;</p>
 <p>表示的是根据指定的字段返回不同的记录集。</p>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><pre><code>&gt; db.KLine_1Min.distinct(&quot;ID&quot;).length
-114
-&gt; db.KLine_1Min.distinct(&quot;ID&quot;)
-</code></pre>
+<ul>
+<li><p>如果，有相关的查询，则放在后面。</p>
+<p>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“LastPx”, {“TrdDt”:20161101, “ID”: “600650.SH”})<br>  [</p>
+<pre><code>25.88,
+25.89,
+25.87,
+25.86
+</code></pre><p>  ]<br>  testrs:PRIMARY&gt;</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><blockquote>
+<p>db.KLine_1Min.distinct(“ID”).length<br>  114<br>db.KLine_1Min.distinct(“ID”)</p>
+</blockquote>
+<p>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“ID”, {“TrdDt”:20161102, “ID”: /^60.<em>SH/, “TrdTm”:1441}).length<br>  1081<br>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“ID”, {“TrdDt”:20161101, “ID”: /^60.</em>SH/, “TrdTm”:1441}).length<br>  1109<br>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“ID”, {“TrdDt”:20161103, “ID”: /^60.<em>SH/, “TrdTm”:1441}).length<br>  1083<br>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“ID”, {“TrdDt”:20161031, “ID”: /^60.</em>SH/, “TrdTm”:1441}).length<br>  1107<br>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“ID”, {“TrdDt”:20161025, “ID”: /^60.<em>SH/, “TrdTm”:1441}).length<br>  1077<br>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“ID”, {“TrdDt”:20161025, “ID”: /^00.</em>SZ/, “TrdTm”:1441}).length<br>  1168<br>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“ID”, {“TrdDt”:20161031, “ID”: /^00.<em>SZ/, “TrdTm”:1441}).length<br>  1271<br>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“ID”, {“TrdDt”:20161101, “ID”: /^00.</em>SZ/, “TrdTm”:1441}).length<br>  1271<br>  testrs:PRIMARY&gt; </p>
+</li>
+</ul>
+
     
   </div>
   <footer>
@@ -124,7 +146,7 @@ mongodb的distinct的语句： db.users.distinct(‘last_name’）;
   </div>
   <footer id="footer"><div class="copyright">
   
-  &copy; 2016 <a href="/">Tom Tsang</a>
+  &copy; 2017 <a href="/">Tom Tsang</a>
   
 </div>
 <div class="theme-copyright">

@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>docker | 美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+    <meta name="description" content="https://github.com/EgoAleSum/mariadb-cluster
+
+http://withblue.ink/2016/03/09/galera-cluster-mariadb-coreos-and-docker-part-1.html
+Coreos + any public cloud (Azure, AWS, Google, etc)
+## 
+开端口:
+sudo fir">
+  
+  <meta name="description" content="https://github.com/EgoAleSum/mariadb-cluster
+
+http://withblue.ink/2016/03/09/galera-cluster-mariadb-coreos-and-docker-part-1.html
+Coreos + any public cloud (Azure, AWS, Google, etc)
+## 
+开端口:
+sudo fir">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker">
+<meta property="og:url" content="http://tomtsang.github.io/2017/01/26/docker-4/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="https://github.com/EgoAleSum/mariadb-cluster
+
+http://withblue.ink/2016/03/09/galera-cluster-mariadb-coreos-and-docker-part-1.html
+Coreos + any public cloud (Azure, AWS, Google, etc)
+## 
+开端口:
+sudo fir">
+<meta property="og:updated_time" content="2017-01-26T07:26:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="docker">
+<meta name="twitter:description" content="https://github.com/EgoAleSum/mariadb-cluster
+
+http://withblue.ink/2016/03/09/galera-cluster-mariadb-coreos-and-docker-part-1.html
+Coreos + any public cloud (Azure, AWS, Google, etc)
+## 
+开端口:
+sudo fir">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2017/01/26/docker-4/">
+  <time datetime="2017-01-26T07:04:34.000Z">
+    2017-01-26
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">docker</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <ul>
+<li><a href="https://github.com/EgoAleSum/mariadb-cluster" target="_blank" rel="external">https://github.com/EgoAleSum/mariadb-cluster</a></li>
+</ul>
+<p><a href="http://withblue.ink/2016/03/09/galera-cluster-mariadb-coreos-and-docker-part-1.html" target="_blank" rel="external">http://withblue.ink/2016/03/09/galera-cluster-mariadb-coreos-and-docker-part-1.html</a></p>
+<p>Coreos + any public cloud (Azure, AWS, Google, etc)</p>
+<p>## </p>
+<p>开端口:</p>
+<pre><code>sudo firewall-cmd --permanent --add-port=4567/udp;
+sudo firewall-cmd --permanent --add-port=4567/tcp;
+sudo firewall-cmd --permanent --add-port=4568/tcp;
+sudo firewall-cmd --permanent --add-port=4444/tcp;
+sudo firewall-cmd --permanent --add-port=3306/tcp;
+sudo firewall-cmd --reload; sudo firewall-cmd --permanent --list-port
+</code></pre><p>检查mysql 是不是起来了:</p>
+<p>sudo yum install -y telnet<br>telnet 127.0.0.1 22<br>Telnet 127.0.0.1 3306</p>
+<p>检查日志</p>
+<p>docker logs -f mariadb-container-0</p>
+<p>单独启动</p>
+<p>docker run \<br>          –name mariadb-container-0 \<br>      -d \<br>          -v /opt/mysql.conf.d:/etc/mysql/conf.d \<br>          -v /data/mariadb_galera/data:/var/lib/mysql \<br>          -e MYSQL_INITDB_SKIP_TZINFO=yes \<br>          -e MYSQL_ROOT_PASSWORD=my-secret-pw \<br>          -p 3306:3306 \<br>          -p 4567:4567/udp \<br>          -p 4567-4568:4567-4568 \<br>          -p 4444:4444 \<br>          mariadb:10.1 \<br>          –wsrep-new-cluster \<br>          –wsrep_node_address=10.10.12.17</p>
+<p>docker run \<br>          –name mariadb-container-1 \<br>     -d \<br>          -v /opt/mysql.conf.d:/etc/mysql/conf.d \<br>          -v /data/mariadb_galera/data:/var/lib/mysql \<br>          -p 3306:3306 \<br>          -p 4567:4567/udp \<br>          -p 4567-4568:4567-4568 \<br>          -p 4444:4444 \<br>          mariadb:10.1 \<br>          –wsrep_node_address=10.10.12.18</p>
+<h2 id="df"><a href="#df" class="headerlink" title="df"></a>df</h2>
+    
+  </div>
+  <footer>
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2017 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

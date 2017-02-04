@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>mongodb系列之update | 美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+    <meta name="description" content="只要是批量，后头加 {multi: true} 吧。
+批量，新增一个k-vdb.Signals_Day.update({TrdDt:20161129}, {$set: {“Real”: true}}, {multi: true})
+testrs:PRIMARY&amp;gt; db.Signals_Day.update({TrdDt:20161129}, {$set: {&amp;quot;Real&amp;quot;:">
+  
+  <meta name="description" content="只要是批量，后头加 {multi: true} 吧。
+批量，新增一个k-vdb.Signals_Day.update({TrdDt:20161129}, {$set: {“Real”: true}}, {multi: true})
+testrs:PRIMARY&amp;gt; db.Signals_Day.update({TrdDt:20161129}, {$set: {&amp;quot;Real&amp;quot;:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mongodb系列之update">
+<meta property="og:url" content="http://tomtsang.github.io/2016/11/29/mongodb-3/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="只要是批量，后头加 {multi: true} 吧。
+批量，新增一个k-vdb.Signals_Day.update({TrdDt:20161129}, {$set: {“Real”: true}}, {multi: true})
+testrs:PRIMARY&amp;gt; db.Signals_Day.update({TrdDt:20161129}, {$set: {&amp;quot;Real&amp;quot;:">
+<meta property="og:updated_time" content="2016-12-14T07:19:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mongodb系列之update">
+<meta name="twitter:description" content="只要是批量，后头加 {multi: true} 吧。
+批量，新增一个k-vdb.Signals_Day.update({TrdDt:20161129}, {$set: {“Real”: true}}, {multi: true})
+testrs:PRIMARY&amp;gt; db.Signals_Day.update({TrdDt:20161129}, {$set: {&amp;quot;Real&amp;quot;:">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/29/mongodb-3/">
+  <time datetime="2016-11-29T10:22:28.000Z">
+    2016-11-29
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">mongodb系列之update</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>只要是批量，后头加 <code>{multi: true}</code> 吧。</p>
+<h2 id="批量，新增一个k-v"><a href="#批量，新增一个k-v" class="headerlink" title="批量，新增一个k-v"></a>批量，新增一个k-v</h2><p>db.Signals_Day.update({TrdDt:20161129}, {$set: {“Real”: true}}, {multi: true})</p>
+<pre><code>testrs:PRIMARY&gt; db.Signals_Day.update({TrdDt:20161129}, {$set: {&quot;Real&quot;: true}}, {multi: true})
+WriteResult({ &quot;nMatched&quot; : 8935, &quot;nUpserted&quot; : 0, &quot;nModified&quot; : 8933 })
+testrs:PRIMARY&gt; db.Signals_Day.find({TrdDt:20161129})
+{ &quot;_id&quot; : ObjectId(&quot;583d27735868c24cb078e925&quot;), &quot;Type&quot; : &quot;NewHighLow&quot;, &quot;Sign&quot; : -1, &quot;ID&quot; : &quot;000785.SZ&quot;, &quot;TrdDt&quot; : 20161129, &quot;TrdTm&quot; : 1500, &quot;PrevClsPx&quot; : 14.99, &quot;LastPx&quot; : 14.4, &quot;Real&quot; : true }
+{ &quot;_id&quot; : ObjectId(&quot;583d27735868c24cb078e92a&quot;), &quot;Type&quot; : &quot;RSI&quot;, &quot;Sign&quot; : -1, &quot;ID&quot; : &quot;002117.SZ&quot;, &quot;TrdDt&quot; : 20161129, &quot;TrdTm&quot; : 1500, &quot;PrevClsPx&quot; : 29.88, &quot;LastPx&quot; : 29.84, &quot;Real&quot; : true }
+Type &quot;it&quot; for more
+testrs:PRIMARY&gt;_
+</code></pre><h2 id="批量，修改一个key的value-原value乘以100"><a href="#批量，修改一个key的value-原value乘以100" class="headerlink" title="批量，修改一个key的value, 原value乘以100"></a>批量，修改一个key的value, 原value乘以100</h2><p>db.Signals_Day.update({TrdDt:20161129}, {$mul: {“TrdTm”:100}}, {multi: true} )</p>
+<pre><code>testrs:PRIMARY&gt; db.Signals_Day.update({TrdDt:20161129}, {$mul: {&quot;TrdTm&quot;:100}}, {multi: true} )
+WriteResult({ &quot;nMatched&quot; : 8935, &quot;nUpserted&quot; : 0, &quot;nModified&quot; : 8935 })
+testrs:PRIMARY&gt; db.Signals_Day.find({TrdDt:20161129})
+</code></pre><p>##</p>
+
+    
+  </div>
+  <footer>
+    
+      
+  <div class="categories">
+    <a class="categories-link" href="/categories/mongodb/">mongodb</a>
+  </div>
+
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/mongodb/">mongodb</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2017 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

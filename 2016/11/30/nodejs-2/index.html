@@ -1,0 +1,257 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>nodejs系列之npm报错 | 美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+    <meta name="description" content="报错报错1，permission denied, open &amp;#39;/usr/local/lib/node_modules/npm/lib/tom@adata:~/in/ttt$ npm i
+npm ERR! Linux 4.4.0-47-generic
+npm ERR! argv &amp;quot;/usr/local/bin/node&amp;quot; &amp;quot;/usr/local/bin/npm&amp;">
+  
+  <meta name="description" content="报错报错1，permission denied, open &amp;#39;/usr/local/lib/node_modules/npm/lib/tom@adata:~/in/ttt$ npm i
+npm ERR! Linux 4.4.0-47-generic
+npm ERR! argv &amp;quot;/usr/local/bin/node&amp;quot; &amp;quot;/usr/local/bin/npm&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nodejs系列之npm报错">
+<meta property="og:url" content="http://tomtsang.github.io/2016/11/30/nodejs-2/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="报错报错1，permission denied, open &amp;#39;/usr/local/lib/node_modules/npm/lib/tom@adata:~/in/ttt$ npm i
+npm ERR! Linux 4.4.0-47-generic
+npm ERR! argv &amp;quot;/usr/local/bin/node&amp;quot; &amp;quot;/usr/local/bin/npm&amp;">
+<meta property="og:updated_time" content="2016-12-14T07:19:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="nodejs系列之npm报错">
+<meta name="twitter:description" content="报错报错1，permission denied, open &amp;#39;/usr/local/lib/node_modules/npm/lib/tom@adata:~/in/ttt$ npm i
+npm ERR! Linux 4.4.0-47-generic
+npm ERR! argv &amp;quot;/usr/local/bin/node&amp;quot; &amp;quot;/usr/local/bin/npm&amp;">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/30/nodejs-2/">
+  <time datetime="2016-11-30T06:18:32.000Z">
+    2016-11-30
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">nodejs系列之npm报错</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="报错"><a href="#报错" class="headerlink" title="报错"></a>报错</h2><h4 id="报错1，permission-denied-open-39-usr-local-lib-node-modules-npm-lib"><a href="#报错1，permission-denied-open-39-usr-local-lib-node-modules-npm-lib" class="headerlink" title="报错1，permission denied, open &#39;/usr/local/lib/node_modules/npm/lib/"></a>报错1，<code>permission denied, open &#39;/usr/local/lib/node_modules/npm/lib/</code></h4><pre><code>tom@adata:~/in/ttt$ npm i
+npm ERR! Linux 4.4.0-47-generic
+npm ERR! argv &quot;/usr/local/bin/node&quot; &quot;/usr/local/bin/npm&quot; &quot;i&quot;
+npm ERR! node v6.9.1
+npm ERR! npm  v3.10.8
+npm ERR! path /usr/local/lib/node_modules/npm/lib/fetch-package-metadata.js
+npm ERR! code EACCES
+npm ERR! errno -13
+npm ERR! syscall open
+
+npm ERR! Error: EACCES: permission denied, open &apos;/usr/local/lib/node_modules/npm/lib/fetch-package-metadata.js&apos;
+npm ERR!     at Error (native)
+npm ERR!     at Object.fs.openSync (fs.js:640:18)
+npm ERR!     at Object.fs.readFileSync (fs.js:508:33)
+npm ERR!     at Object.Module._extensions..js (module.js:578:20)
+npm ERR!     at Module.load (module.js:487:32)
+npm ERR!     at tryModuleLoad (module.js:446:12)
+npm ERR!     at Function.Module._load (module.js:438:3)
+npm ERR!     at Module.require (module.js:497:17)
+npm ERR!     at require (internal/module.js:20:19)
+npm ERR!     at Object.&lt;anonymous&gt; (/usr/local/lib/node_modules/npm/lib/install/deps.js:15:28)
+npm ERR!  { Error: EACCES: permission denied, open &apos;/usr/local/lib/node_modules/npm/lib/fetch-package-metadata.js&apos;
+npm ERR!     at Error (native)
+npm ERR!     at Object.fs.openSync (fs.js:640:18)
+npm ERR!     at Object.fs.readFileSync (fs.js:508:33)
+npm ERR!     at Object.Module._extensions..js (module.js:578:20)
+npm ERR!     at Module.load (module.js:487:32)
+npm ERR!     at tryModuleLoad (module.js:446:12)
+npm ERR!     at Function.Module._load (module.js:438:3)
+npm ERR!     at Module.require (module.js:497:17)
+npm ERR!     at require (internal/module.js:20:19)
+npm ERR!     at Object.&lt;anonymous&gt; (/usr/local/lib/node_modules/npm/lib/install/deps.js:15:28)
+npm ERR!   errno: -13,
+npm ERR!   code: &apos;EACCES&apos;,
+npm ERR!   syscall: &apos;open&apos;,
+npm ERR!   path: &apos;/usr/local/lib/node_modules/npm/lib/fetch-package-metadata.js&apos; }
+npm ERR!
+npm ERR! Please try running this command again as root/Administrator.
+
+npm ERR! Please include the following file with any support request:
+npm ERR!     /home/tom/in/ttt/npm-debug.log
+tom@adata:~/in/ttt$_
+</code></pre><p>解决：</p>
+<p>先查node，npm版本</p>
+<pre><code>tom@adata:~/in/ttt$ node -v
+v6.9.1
+tom@adata:~/in/ttt$ ls -l /usr/local/sbin/bin/n*
+ls: cannot access &apos;/usr/local/sbin/bin/n*&apos;: No such file or directory
+tom@adata:~/in/ttt$ which node
+/usr/local/bin/node
+tom@adata:~/in/ttt$ ls -l /usr/local/bin/n*
+-rwxr-xr-x 1 root root 30194989 11月 24 09:45 /usr/local/bin/node
+lrwxrwxrwx 1 root root       38 11月 24 09:45 /usr/local/bin/npm -&gt; ../lib/node_modules/npm/bin/npm-cli.js
+tom@adata:~/in/ttt$
+</code></pre><p>发现，npm是一个软链接，所以，可能问题出在这里，这样呢，我们更新一下 npm 本身吧。<code>sudo npm i npm -g</code>。走起。</p>
+<pre><code>tom@adata:~/in/ttt$ sudo npm i npm -g
+[sudo] password for tom:
+/usr/local/bin/npm -&gt; /usr/local/lib/node_modules/npm/bin/npm-cli.js
+- retry@0.10.0 node_modules/npm/node_modules/npm-registry-client/node_modules/retry
+- core-util-is@1.0.2 node_modules/npm/node_modules/request/node_modules/bl/node_modules/readable-stream/node_modules/core-util-is
+- isarray@1.0.0 node_modules/npm/node_modules/request/node_modules/bl/node_modules/readable-stream/node_modules/isarray
+- process-nextick-args@1.0.7 node_modules/npm/node_modules/request/node_modules/bl/node_modules/readable-stream/node_modules/process-nextick-args
+- string_decoder@0.10.31 node_modules/npm/node_modules/request/node_modules/bl/node_modules/readable-stream/node_modules/string_decoder
+- util-deprecate@1.0.2 node_modules/npm/node_modules/request/node_modules/bl/node_modules/readable-stream/node_modules/util-deprecate
+- readable-stream@2.0.6 node_modules/npm/node_modules/request/node_modules/bl/node_modules/readable-stream
+- bl@1.1.2 node_modules/npm/node_modules/request/node_modules/bl
+- async@1.5.2 node_modules/npm/node_modules/request/node_modules/form-data/node_modules/async
+/usr/local/lib
+└─┬ npm@4.0.2
+  ├── asap@2.0.5
+  ├── config-chain@1.1.11
+...
+...
+...
+tom@adata:~/in/ttt$
+</code></pre><p>我们重新再尝试吧。</p>
+<pre><code>tom@adata:~/in/ttt$ ls
+package.json
+tom@adata:~/in/ttt$ npm i
+openQuote2@2.0.0 /home/tom/in/ttt
+├── async@1.5.2
+├─┬ mongodb@2.2.12
+│ ├── es6-promise@3.2.1
+│ ├─┬ mongodb-core@2.0.14
+│ │ ├── bson@0.5.7
+│ │ └─┬ require_optional@1.0.0
+│ │   ├── resolve-from@2.0.0
+│ │   └── semver@5.3.0
+│ └─┬ readable-stream@2.1.5
+│   ├── buffer-shims@1.0.0
+│   ├── core-util-is@1.0.2
+│   ├── inherits@2.0.3
+│   ├── isarray@1.0.0
+│   ├── process-nextick-args@1.0.7
+│   ├── string_decoder@0.10.31
+│   └── util-deprecate@1.0.2
+└─┬ mysql@2.12.0
+  ├── bignumber.js@2.4.0
+  ├─┬ readable-stream@1.1.14
+  │ └── isarray@0.0.1
+  └── sqlstring@2.2.0
+
+tom@adata:~/in/ttt$
+</code></pre><p>好了，成功了。<br>但是，我重新再去查</p>
+<pre><code>tom@adata:~/in/ttt$ which npm
+/usr/local/bin/npm
+tom@adata:~/in/ttt$ which node
+/usr/local/bin/node
+tom@adata:~/in/ttt$ ls -l /usr/local/bin/n*
+-rwxr-xr-x 1 root root 30194989 11月 24 09:45 /usr/local/bin/node
+lrwxrwxrwx 1 root root       38 11月 24 09:45 /usr/local/bin/npm -&gt; ../lib/node_modules/npm/bin/npm-cli.js
+tom@adata:~/in/ttt$
+tom@adata:~/in/ttt$ npm -v
+4.0.2
+tom@adata:~/in/ttt$
+</code></pre><p>发现只更新了 npm 的版本，而已呀。看来，升级npm，才是解决这个问题的关键。</p>
+
+    
+  </div>
+  <footer>
+    
+      
+  <div class="categories">
+    <a class="categories-link" href="/categories/nodejs/">nodejs</a>
+  </div>
+
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/nodejs/">nodejs</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2017 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

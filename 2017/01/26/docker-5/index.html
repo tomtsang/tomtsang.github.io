@@ -1,0 +1,217 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>docker之registry搭建 | 美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+    <meta name="description" content="referencedocker-registry
+contextdocker版本大于1.6.0(docker -v)
+机器3台:
+
+registry server , IP: 10.10.12.17
+registry client a(docker push), IP: 10.10.12.18
+registry client b(docker pull), IP: 10.10.13.10
+
+ste">
+  
+  <meta name="description" content="referencedocker-registry
+contextdocker版本大于1.6.0(docker -v)
+机器3台:
+
+registry server , IP: 10.10.12.17
+registry client a(docker push), IP: 10.10.12.18
+registry client b(docker pull), IP: 10.10.13.10
+
+ste">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker之registry搭建">
+<meta property="og:url" content="http://tomtsang.github.io/2017/01/26/docker-5/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="referencedocker-registry
+contextdocker版本大于1.6.0(docker -v)
+机器3台:
+
+registry server , IP: 10.10.12.17
+registry client a(docker push), IP: 10.10.12.18
+registry client b(docker pull), IP: 10.10.13.10
+
+ste">
+<meta property="og:updated_time" content="2017-02-04T03:10:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="docker之registry搭建">
+<meta name="twitter:description" content="referencedocker-registry
+contextdocker版本大于1.6.0(docker -v)
+机器3台:
+
+registry server , IP: 10.10.12.17
+registry client a(docker push), IP: 10.10.12.18
+registry client b(docker pull), IP: 10.10.13.10
+
+ste">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2017/01/26/docker-5/">
+  <time datetime="2017-01-26T07:04:37.000Z">
+    2017-01-26
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">docker之registry搭建</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><p><a href="1">docker-registry</a></p>
+<h2 id="context"><a href="#context" class="headerlink" title="context"></a>context</h2><p>docker版本大于1.6.0(<code>docker -v</code>)</p>
+<p>机器3台:</p>
+<ul>
+<li>registry server , IP: 10.10.12.17</li>
+<li>registry client a(docker push), IP: 10.10.12.18</li>
+<li>registry client b(docker pull), IP: 10.10.13.10</li>
+</ul>
+<h2 id="step"><a href="#step" class="headerlink" title="step"></a>step</h2><h3 id="1-创建registry-server端"><a href="#1-创建registry-server端" class="headerlink" title="1. 创建registry server端"></a>1. 创建registry server端</h3><p>下载镜像</p>
+<pre><code>docker pull registry:2
+</code></pre><p>生成自签名证书</p>
+<pre><code>cd ~/;mkdir registry &amp;&amp; cd registry &amp;&amp; mkdir certs &amp;&amp; cd certs;openssl req -x509 -days 3650 -subj &apos;/CN=reg.zimug.com/&apos; -nodes -newkey rsa:2048 -keyout registry.key -out registry.crt;
+</code></pre><p>生成用户和密码</p>
+<pre><code>cd ~/registry&amp;&amp; mkdir auth;docker run --entrypoint htpasswd registry:2.2 -Bbn zimug zimug_password &gt; auth/htpasswd;
+</code></pre><p>用户：zimug 密码：zimug_password 可随便填写自己想填写的</p>
+<p>启动registry server</p>
+<p>脚本 <code>start_registry.sh</code> 放在~/registry目录下</p>
+<pre><code>docker run -d -p 5000:5000 --restart=always --name registry \
+-v `pwd`/auth:/auth \
+-e &quot;REGISTRY_AUTH=htpasswd&quot; \
+-e &quot;REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm&quot; \
+-e &quot;REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd&quot; \
+-v `pwd`/certs:/certs \
+-e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.crt \
+-e REGISTRY_HTTP_TLS_KEY=/certs/registry.key \
+-v ~/data/registry2:/var/lib/registry \
+registry:2
+</code></pre><p>确认registry server是UP状态，<code>docker ps -a | grep registry</code></p>
+<h3 id="2-配置docker-server端"><a href="#2-配置docker-server端" class="headerlink" title="2. 配置docker server端"></a>2. 配置docker server端</h3><p>同registry server在同一台服务器上配置：</p>
+<p>创建证书目录(没有此目录自己创建，注意端口号)</p>
+<pre><code>sudo mkdir -p /etc/docker/certs.d/reg.zimug.com:5000
+</code></pre><p>下载证书</p>
+<pre><code>sudo cp ~/registry/certs/registry.crt /etc/docker/certs.d/reg.zimug.com:5000
+</code></pre><p>域名解析,如果有DNS解析无需做此步骤（registry-server-ip=10.10.12.17）</p>
+<pre><code>sudo echo 10.10.12.17 reg.zimug.com   &gt;&gt; /etc/hosts
+</code></pre><h3 id="3-配置-registry-client-a-和-registry-client-b"><a href="#3-配置-registry-client-a-和-registry-client-b" class="headerlink" title="3. 配置 registry client a 和 registry client b"></a>3. 配置 <code>registry client a</code> 和 <code>registry client b</code></h3><p>其他主机(<code>registry client a</code> 和 <code>registry client b</code>)配置：</p>
+<p>创建证书目录(没有此目录自己创建，注意端口号)</p>
+<pre><code>sudo mkdir -p /etc/docker/certs.d/reg.zimug.com:5000
+</code></pre><p>下载证书</p>
+<pre><code>sudo scp -r zimug@10.10.12.17:~/registry/certs/registry.crt /etc/docker/certs.d/reg.zimug.com:5000
+</code></pre><p>域名解析,如果有DNS解析无需做此步骤（registry-server-ip=10.10.12.17）</p>
+<pre><code>echo 10.10.12.17 reg.zimug.com &gt;&gt; /etc/hosts
+</code></pre><p>验证测试</p>
+<p>登陆(注意加端口号)</p>
+<pre><code>docker login reg.zimug.com:5000
+</code></pre><p>输入用户zimug，密码zimug_password以及邮箱</p>
+<h3 id="完成-docker-push"><a href="#完成-docker-push" class="headerlink" title="完成 docker push"></a>完成 <code>docker push</code></h3><p>更改镜像tag</p>
+<pre><code>docker tag busybox reg.zimug.com:5000/busybox:1.0
+</code></pre><p>push镜像</p>
+<pre><code>docker push reg.zimug.com:5000/busybox:1.0
+</code></pre><h3 id="完成-docker-pull"><a href="#完成-docker-pull" class="headerlink" title="完成 docker pull"></a>完成 <code>docker pull</code></h3><p>pull镜像</p>
+<pre><code>docker pull reg.zimug.com:5000/busybox:1.0
+</code></pre>
+    
+  </div>
+  <footer>
+    
+      
+  <div class="categories">
+    <a class="categories-link" href="/categories/docker/">docker</a>
+  </div>
+
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/docker/">docker</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2017 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

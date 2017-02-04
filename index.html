@@ -68,30 +68,22 @@
   <header>
     
       <div class="icon"></div>
-      <a href="/2016/11/25/mongodb-2/">
-  <time datetime="2016-11-25T02:03:51.000Z">
-    2016-11-25
+      <a href="/2017/01/26/docker-6/">
+  <time datetime="2017-01-26T07:04:40.000Z">
+    2017-01-26
   </time>
 </a>
     
     
   
-    <h1 class="title"><a href="/2016/11/25/mongodb-2/">mongodb系列之distinct</a></h1>
+    <h1 class="title"><a href="/2017/01/26/docker-6/">docker</a></h1>
   
 
   </header>
   
   <div class="entry">
     
-      <h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><p><a href="http://www.jb51.net/article/65929.htm" target="_blank" rel="external">http://www.jb51.net/article/65929.htm</a></p>
-<h2 id="destinct"><a href="#destinct" class="headerlink" title="destinct"></a>destinct</h2><p>MongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.</p>
-<p>mongodb的distinct的语句： db.users.distinct(‘last_name’）;</p>
-<p>等同于 SQL 语句: select DISTINCT last_name from users;</p>
-<p>表示的是根据指定的字段返回不同的记录集。</p>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><pre><code>&gt; db.KLine_1Min.distinct(&quot;ID&quot;).length
-114
-&gt; db.KLine_1Min.distinct(&quot;ID&quot;)
-</code></pre>
+      
     
   </div>
   <footer class="end-sep">
@@ -109,94 +101,74 @@
   <header>
     
       <div class="icon"></div>
-      <a href="/2016/11/24/mongodb-1/">
-  <time datetime="2016-11-24T02:42:00.000Z">
-    2016-11-24
+      <a href="/2017/01/26/docker-5/">
+  <time datetime="2017-01-26T07:04:37.000Z">
+    2017-01-26
   </time>
 </a>
     
     
   
-    <h1 class="title"><a href="/2016/11/24/mongodb-1/">mongodb系列之findOneAndUpdate</a></h1>
+    <h1 class="title"><a href="/2017/01/26/docker-5/">docker之registry搭建</a></h1>
   
 
   </header>
   
   <div class="entry">
     
-      <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#findOneAndUpdate" target="_blank" rel="external">http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#findOneAndUpdate</a></p>
-<p><a href="https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndUpdate/" target="_blank" rel="external">https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndUpdate/</a></p>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>修改键（字段）的值,修改了{b:2}</p>
-<pre><code>var MongoClient = require(&apos;mongodb&apos;).MongoClient;
-MongoClient.connect(&apos;mongodb://192.168.31.240:27017/test&apos;, function(err, db) {
-  // Get the collection
-  var col = db.collection(&apos;find_one_and_update&apos;);
-  col.insertMany([{a:1, b:1}], {w:1}, function(err, r) {
-    col.findOneAndUpdate({a:1}
-      , {$set: {b:2}}
-      , {  upsert: true
-        }
-      , function(err, r) {
-        db.close();
-    });
-  });
-});
-</code></pre><p>增加新的键，增加了{d:1}</p>
-<pre><code>var MongoClient = require(&apos;mongodb&apos;).MongoClient,
-  test = require(&apos;assert&apos;);
-MongoClient.connect(&apos;mongodb://192.168.31.240:27017/test&apos;, function(err, db) {
-  // Get the collection
-  var col = db.collection(&apos;find_one_and_update&apos;);
-  col.insertMany([{a:1, b:1}], {w:1}, function(err, r) {
-
-    col.findOneAndUpdate({a:1}
-      , {$set: {d:1}}
-      , {  upsert: true
-        }
-      , function(err, r) {
-
-        db.close();
-    });
-  });
-});
-</code></pre>
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/24/mongodb/">
-  <time datetime="2016-11-24T02:41:57.000Z">
-    2016-11-24
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/24/mongodb/">mongodb系列之目录</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <h2 id="mongodb系列之目录"><a href="#mongodb系列之目录" class="headerlink" title="mongodb系列之目录"></a>mongodb系列之目录</h2><ul>
-<li><a href="http://tomtsang.github.io/2016/11/25/mongodb-2/">mongodb系列之distinct</a></li>
-<li><a href="http://tomtsang.github.io/2016/11/24/mongodb-1/">mongodb系列之findOneAndUpdate</a></li>
+      <h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><p><a href="1">docker-registry</a></p>
+<h2 id="context"><a href="#context" class="headerlink" title="context"></a>context</h2><p>docker版本大于1.6.0(<code>docker -v</code>)</p>
+<p>机器3台:</p>
+<ul>
+<li>registry server , IP: 10.10.12.17</li>
+<li>registry client a(docker push), IP: 10.10.12.18</li>
+<li>registry client b(docker pull), IP: 10.10.13.10</li>
 </ul>
-
+<h2 id="step"><a href="#step" class="headerlink" title="step"></a>step</h2><h3 id="1-创建registry-server端"><a href="#1-创建registry-server端" class="headerlink" title="1. 创建registry server端"></a>1. 创建registry server端</h3><p>下载镜像</p>
+<pre><code>docker pull registry:2
+</code></pre><p>生成自签名证书</p>
+<pre><code>cd ~/;mkdir registry &amp;&amp; cd registry &amp;&amp; mkdir certs &amp;&amp; cd certs;openssl req -x509 -days 3650 -subj &apos;/CN=reg.zimug.com/&apos; -nodes -newkey rsa:2048 -keyout registry.key -out registry.crt;
+</code></pre><p>生成用户和密码</p>
+<pre><code>cd ~/registry&amp;&amp; mkdir auth;docker run --entrypoint htpasswd registry:2.2 -Bbn zimug zimug_password &gt; auth/htpasswd;
+</code></pre><p>用户：zimug 密码：zimug_password 可随便填写自己想填写的</p>
+<p>启动registry server</p>
+<p>脚本 <code>start_registry.sh</code> 放在~/registry目录下</p>
+<pre><code>docker run -d -p 5000:5000 --restart=always --name registry \
+-v `pwd`/auth:/auth \
+-e &quot;REGISTRY_AUTH=htpasswd&quot; \
+-e &quot;REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm&quot; \
+-e &quot;REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd&quot; \
+-v `pwd`/certs:/certs \
+-e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.crt \
+-e REGISTRY_HTTP_TLS_KEY=/certs/registry.key \
+-v ~/data/registry2:/var/lib/registry \
+registry:2
+</code></pre><p>确认registry server是UP状态，<code>docker ps -a | grep registry</code></p>
+<h3 id="2-配置docker-server端"><a href="#2-配置docker-server端" class="headerlink" title="2. 配置docker server端"></a>2. 配置docker server端</h3><p>同registry server在同一台服务器上配置：</p>
+<p>创建证书目录(没有此目录自己创建，注意端口号)</p>
+<pre><code>sudo mkdir -p /etc/docker/certs.d/reg.zimug.com:5000
+</code></pre><p>下载证书</p>
+<pre><code>sudo cp ~/registry/certs/registry.crt /etc/docker/certs.d/reg.zimug.com:5000
+</code></pre><p>域名解析,如果有DNS解析无需做此步骤（registry-server-ip=10.10.12.17）</p>
+<pre><code>sudo echo 10.10.12.17 reg.zimug.com   &gt;&gt; /etc/hosts
+</code></pre><h3 id="3-配置-registry-client-a-和-registry-client-b"><a href="#3-配置-registry-client-a-和-registry-client-b" class="headerlink" title="3. 配置 registry client a 和 registry client b"></a>3. 配置 <code>registry client a</code> 和 <code>registry client b</code></h3><p>其他主机(<code>registry client a</code> 和 <code>registry client b</code>)配置：</p>
+<p>创建证书目录(没有此目录自己创建，注意端口号)</p>
+<pre><code>sudo mkdir -p /etc/docker/certs.d/reg.zimug.com:5000
+</code></pre><p>下载证书</p>
+<pre><code>sudo scp -r zimug@10.10.12.17:~/registry/certs/registry.crt /etc/docker/certs.d/reg.zimug.com:5000
+</code></pre><p>域名解析,如果有DNS解析无需做此步骤（registry-server-ip=10.10.12.17）</p>
+<pre><code>echo 10.10.12.17 reg.zimug.com &gt;&gt; /etc/hosts
+</code></pre><p>验证测试</p>
+<p>登陆(注意加端口号)</p>
+<pre><code>docker login reg.zimug.com:5000
+</code></pre><p>输入用户zimug，密码zimug_password以及邮箱</p>
+<h3 id="完成-docker-push"><a href="#完成-docker-push" class="headerlink" title="完成 docker push"></a>完成 <code>docker push</code></h3><p>更改镜像tag</p>
+<pre><code>docker tag busybox reg.zimug.com:5000/busybox:1.0
+</code></pre><p>push镜像</p>
+<pre><code>docker push reg.zimug.com:5000/busybox:1.0
+</code></pre><h3 id="完成-docker-pull"><a href="#完成-docker-pull" class="headerlink" title="完成 docker pull"></a>完成 <code>docker pull</code></h3><p>pull镜像</p>
+<pre><code>docker pull reg.zimug.com:5000/busybox:1.0
+</code></pre>
     
   </div>
   <footer class="end-sep">
@@ -214,177 +186,42 @@ MongoClient.connect(&apos;mongodb://192.168.31.240:27017/test&apos;, function(er
   <header>
     
       <div class="icon"></div>
-      <a href="/2016/11/23/nodejs-3nodejs系列之npm的常用命令/">
-  <time datetime="2016-11-23T06:31:04.000Z">
-    2016-11-23
+      <a href="/2017/01/26/docker-4/">
+  <time datetime="2017-01-26T07:04:34.000Z">
+    2017-01-26
   </time>
 </a>
     
     
   
-    <h1 class="title"><a href="/2016/11/23/nodejs-3nodejs系列之npm的常用命令/">nodejs系列之npm的常用命令</a></h1>
+    <h1 class="title"><a href="/2017/01/26/docker-4/">docker</a></h1>
   
 
   </header>
   
   <div class="entry">
     
-      <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.jb51.net/article/52409.htm" target="_blank" rel="external">http://www.jb51.net/article/52409.htm</a></p>
-<h2 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h2><p>分享几个npm的常用命令</p>
-<p>npm -v          #显示版本，检查npm 是否正确安装。</p>
-<p>npm install express   #安装express模块</p>
-<p>npm install -g express  #全局安装express模块</p>
-<p>npm list         #列出已安装模块</p>
-<p>npm show express     #显示模块详情</p>
-<p>npm update        #升级当前目录下的项目的所有模块</p>
-<p>npm update express    #升级当前目录下的项目的指定模块</p>
-<p>npm update -g express  #升级全局安装的express模块</p>
-<p>npm uninstall express  #删除指定的模块</p>
-
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/23/nodejs-2nodejs系列之使用n管理nodejs版本/">
-  <time datetime="2016-11-23T06:20:28.000Z">
-    2016-11-23
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/23/nodejs-2nodejs系列之使用n管理nodejs版本/">nodejs系列之使用n管理nodejs版本</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://blog.csdn.net/jiangbo_phd/article/details/51476155" target="_blank" rel="external">http://blog.csdn.net/jiangbo_phd/article/details/51476155</a></p>
-<h2 id="主要点"><a href="#主要点" class="headerlink" title="主要点"></a>主要点</h2><p>npm -g XXX :安装的XXX软件，在linux下的目录 <code>/usr/lib/node_modules/</code></p>
-<p>sudo n :切换node版本</p>
-<p>n 切换之后的 node 默认装在 /usr/local/bin/node，你最好用 which node 检查一下当前使用的 node 是否是这个路径下的。</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><ul>
-<li><p>如果安装过程中因为某原因（主要是网络原因），未安装成功，则删除对应的目录，重新安装就可以了。</p>
-<p>  tom@adata:~/Projects/OpenX/lib$ sudo n latest<br>  [sudo] password for tom:</p>
-<pre><code>install : node-v7.2.0
-  mkdir : /usr/local/n/versions/node/7.2.0
-  fetch : https://nodejs.org/dist/v7.2.0/node-v7.2.0-linux-x64.tar.gz
-</code></pre><p>  ######################################################                    75.1%<br>  curl: (56) GnuTLS recv error (-54): Error in the pull function.</p>
-<p>  gzip: stdin: unexpected end of file<br>  tar: Unexpected EOF in archive<br>  tar: Unexpected EOF in archive<br>  tar: Error is not recoverable: exiting now<br>  cp: cannot stat ‘/usr/local/n/versions/node/7.2.0/lib’: No such file or directory<br>  cp: cannot stat ‘/usr/local/n/versions/node/7.2.0/include’: No such file or directory<br>  cp: cannot stat ‘/usr/local/n/versions/node/7.2.0/share’: No such file or directory</p>
-<pre><code>installed : v7.2.0
-</code></pre><p>  tom@adata:~/Projects/OpenX/lib$ ll /usr/local/n/versions/node/7.2.0/<br>  total 12<br>  drwxr-xr-x 3 root root 4096 11月 23 13:07 ./<br>  drwxr-xr-x 4 root root 4096 11月 23 13:00 ../<br>  drwxrwxr-x 2  500  500 4096 11月 23 06:35 bin/<br>  tom@adata:~/Projects/OpenX/lib$ sudo n latest<br>  [sudo] password for tom:<br>  tom@adata:~/Projects/OpenX/lib$ sudo n latest<br>  tom@adata:~/Projects/OpenX/lib$ sudo rm -rf /usr/local/n/versions/node/7.2.0/<br>  tom@adata:~/Projects/OpenX/lib$ sudo n latest</p>
-<pre><code>install : node-v7.2.0
-  mkdir : /usr/local/n/versions/node/7.2.0
-  fetch : https://nodejs.org/dist/v7.2.0/node-v7.2.0-linux-x64.tar.gz
-</code></pre><p>  ######################################################################## 100.0%</p>
-<pre><code>installed : v7.2.0
-</code></pre><p>  tom@adata:~/Projects/OpenX/lib$</p>
-</li>
-<li><p>安装完成后，不要直接看node版本，另开一个terminal，查看。</p>
-<p>  tom@adata:~/Projects/OpenX/lib$ node -v<br>  v6.7.0<br>  tom@adata:~/Projects/OpenX/lib$</p>
-</li>
+      <ul>
+<li><a href="https://github.com/EgoAleSum/mariadb-cluster" target="_blank" rel="external">https://github.com/EgoAleSum/mariadb-cluster</a></li>
 </ul>
-<p>看吧，上面这个明显还是老版本。另开一个terminal，查看就是新版本了。</p>
-<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><pre><code>[jlch@kube-node-15 ~]$ sudo npm i n -g
-[sudo] password for jlch:
-/usr/bin/n -&gt; /usr/lib/node_modules/n/bin/n
-n@2.1.4 /usr/lib/node_modules/n
-[jlch@kube-node-15 ~]$ ll /usr/lib/node_modules/  # 看一下，n是不是真的安装成功
-total 8
-drwxr-xr-x. 3 nobody jlch   66 11月 23 14:08 n
-drwxr-xr-x. 9 root   root 4096 6月   8 16:05 npm
-drwxr-xr-x. 5 nobody jlch 4096 6月   8 18:00 pm2
-[jlch@kube-node-15 ~]$ sudo n --help # 找帮助
-  Usage: n [options/env] [COMMAND] [args]
-
-  Environments:
-    n [COMMAND] [args]            Uses default env (node)
-    n io [COMMAND]                Sets env as io
-    n project [COMMAND]           Uses custom env-variables to use non-official sources
-
-  Commands:
-
-    n                              Output versions installed
-    n latest                       Install or activate the latest node release
-    n -a x86 latest                As above but force 32 bit architecture
-    n stable                       Install or activate the latest stable node release
-    n lts                          Install or activate the latest LTS node release
-    n &lt;version&gt;                    Install node &lt;version&gt;
-    n use &lt;version&gt; [args ...]     Execute node &lt;version&gt; with [args ...]
-    n bin &lt;version&gt;                Output bin path for &lt;version&gt;
-    n rm &lt;version ...&gt;             Remove the given version(s)
-    n --latest                     Output the latest node version available
-    n --stable                     Output the latest stable node version available
-    n --lts                        Output the latest LTS node version available
-    n ls                           Output the versions of node available
-
-  (iojs):
-    n io latest                    Install or activate the latest iojs release
-    n io -a x86 latest             As above but force 32 bit architecture
-    n io &lt;version&gt;                 Install iojs &lt;version&gt;
-    n io use &lt;version&gt; [args ...]  Execute iojs &lt;version&gt; with [args ...]
-    n io bin &lt;version&gt;             Output bin path for &lt;version&gt;
-    n io rm &lt;version ...&gt;          Remove the given version(s)
-    n io --latest                  Output the latest iojs version available
-    n io ls                        Output the versions of iojs available
-
-  Options:
-
-    -V, --version   Output current version of n
-    -h, --help      Display help information
-    -q, --quiet     Disable curl output (if available)
-    -d, --download  Download only
-    -a, --arch      Override system architecture
-
-  Aliases:
-
-    which   bin
-    use     as
-    list    ls
-    -       rm
-
-[jlch@kube-node-15 ~]$ sudo n --version
-2.1.3
-[jlch@kube-node-15 ~]$ node -v
-v4.4.5
-[jlch@kube-node-15 ~]$ sudo n 4.4.6
-
-     install : node-v4.4.6
-       mkdir : /usr/local/n/versions/node/4.4.6
-       fetch : https://nodejs.org/dist/v4.4.6/node-v4.4.6-linux-x64.tar.gz
-##################                                                        26.0%
-</code></pre><p>查一下，各自的路径</p>
-<pre><code>tom@adata:~/m6s/blogs/tomtsang$ which node
-/usr/local/bin/node
-tom@adata:~/m6s/blogs/tomtsang$ which n
-/usr/bin/n
-tom@adata:~/m6s/blogs/tomtsang$
-</code></pre><p>切换着玩一下。</p>
-<pre><code>tom@adata:~/Projects/OpenX/lib$ node -v
-v6.9.1
-tom@adata:~/Projects/OpenX/lib$ sudo n
-[sudo] password for tom:
-tom@adata:~/Projects/OpenX/lib$ node -v
-v7.2.0
-tom@adata:~/Projects/OpenX/lib$ sudo n
-tom@adata:~/Projects/OpenX/lib$ node -v
-v6.9.1
-tom@adata:~/Projects/OpenX/lib$
-</code></pre>
+<p><a href="http://withblue.ink/2016/03/09/galera-cluster-mariadb-coreos-and-docker-part-1.html" target="_blank" rel="external">http://withblue.ink/2016/03/09/galera-cluster-mariadb-coreos-and-docker-part-1.html</a></p>
+<p>Coreos + any public cloud (Azure, AWS, Google, etc)</p>
+<p>## </p>
+<p>开端口:</p>
+<pre><code>sudo firewall-cmd --permanent --add-port=4567/udp;
+sudo firewall-cmd --permanent --add-port=4567/tcp;
+sudo firewall-cmd --permanent --add-port=4568/tcp;
+sudo firewall-cmd --permanent --add-port=4444/tcp;
+sudo firewall-cmd --permanent --add-port=3306/tcp;
+sudo firewall-cmd --reload; sudo firewall-cmd --permanent --list-port
+</code></pre><p>检查mysql 是不是起来了:</p>
+<p>sudo yum install -y telnet<br>telnet 127.0.0.1 22<br>Telnet 127.0.0.1 3306</p>
+<p>检查日志</p>
+<p>docker logs -f mariadb-container-0</p>
+<p>单独启动</p>
+<p>docker run \<br>          –name mariadb-container-0 \<br>      -d \<br>          -v /opt/mysql.conf.d:/etc/mysql/conf.d \<br>          -v /data/mariadb_galera/data:/var/lib/mysql \<br>          -e MYSQL_INITDB_SKIP_TZINFO=yes \<br>          -e MYSQL_ROOT_PASSWORD=my-secret-pw \<br>          -p 3306:3306 \<br>          -p 4567:4567/udp \<br>          -p 4567-4568:4567-4568 \<br>          -p 4444:4444 \<br>          mariadb:10.1 \<br>          –wsrep-new-cluster \<br>          –wsrep_node_address=10.10.12.17</p>
+<p>docker run \<br>          –name mariadb-container-1 \<br>     -d \<br>          -v /opt/mysql.conf.d:/etc/mysql/conf.d \<br>          -v /data/mariadb_galera/data:/var/lib/mysql \<br>          -p 3306:3306 \<br>          -p 4567:4567/udp \<br>          -p 4567-4568:4567-4568 \<br>          -p 4444:4444 \<br>          mariadb:10.1 \<br>          –wsrep_node_address=10.10.12.18</p>
+<h2 id="df"><a href="#df" class="headerlink" title="df"></a>df</h2>
     
   </div>
   <footer class="end-sep">
@@ -402,336 +239,126 @@ tom@adata:~/Projects/OpenX/lib$
   <header>
     
       <div class="icon"></div>
-      <a href="/2016/11/23/nodejs-1nodejs系列之toFixed/">
-  <time datetime="2016-11-23T06:11:56.000Z">
-    2016-11-23
+      <a href="/2017/01/24/docker-3/">
+  <time datetime="2017-01-24T10:46:03.000Z">
+    2017-01-24
   </time>
 </a>
     
     
   
-    <h1 class="title"><a href="/2016/11/23/nodejs-1nodejs系列之toFixed/">nodejs系列之toFixed</a></h1>
+    <h1 class="title"><a href="/2017/01/24/docker-3/">docker之docker-mariadb-galera(panubo版)</a></h1>
   
 
   </header>
   
   <div class="entry">
     
-      <p>在遇到，4147.8015这样的浮点数时的，toFixed()的替代方案。</p>
-<p>通过下面这一段，应该知道，这里的toFixed2 中的 “9”（是可以设置成限定的位数的准确度的，不应该设置成“2”，“2”太小了，是有问题的，所以设置成大数“9”）。<br>    tom@adata:~/m6s/nodejs/module/toFixed$ node</p>
-<pre><code>&gt; var aux = Math.pow(0.1, 1 + 2)
-undefined
-&gt; var number = 14.44999
-undefined
-&gt; number + aux
-14.45099
-&gt; (number + aux).toFixed(1)
-&apos;14.5&apos;
-</code></pre><p>下面，直接上代码吧。共2个js文件。写法不同，意思相同。</p>
-<p>toFixedTest1.js</p>
-<pre><code>module.exports.MathHelper = MathHelper;
-
-var MathHelper = (function() {
-    this.round = function(number, numberOfDecimals) {
-        var aux = Math.pow(10, numberOfDecimals);
-        return Math.round(number * aux) / aux;
-    };
-    this.floor = function(number, numberOfDecimals) {
-        var aux = Math.pow(10, numberOfDecimals);
-        return Math.floor(number * aux) / aux;
-    };
-    this.ceil = function(number, numberOfDecimals) {
-        var aux = Math.pow(10, numberOfDecimals);
-        return Math.ceil(number * aux) / aux;
-    };
-    this.toFixed = function(number, numberOfDecimals) {
-        return (number + 0.000001).toFixed(numberOfDecimals);
-    };
-    this.toFixed2 = function(number, numberOfDecimals) {
-        var aux = Math.pow(0.1, numberOfDecimals + 9); // 这里的这个9,只是让它小一点，再小一点。
-        return (number + aux).toFixed(numberOfDecimals);
-    };
-    this.toFixed3 = function(number, numberOfDecimals) {
-        var aux = Math.pow(0.1, numberOfDecimals);
-        console.log(&quot;aux =&gt;&quot;, aux);
-        return (number + aux).toFixed(numberOfDecimals);
-    };
-    return {
-        round: round,
-        floor: floor,
-        ceil: ceil,
-        toFixed: toFixed,
-        toFixed2: toFixed2,
-        toFixed3: round
-    };
-})();
-
-var ToFixedHelper = (function() {
-    this.toFixed = function(number, numberOfDecimals) {
-        var aux = Math.pow(0.1, numberOfDecimals);
-        return (number + aux).toFixed(numberOfDecimals);
-    };
-    return {
-        toFixed: toFixed
-    }
-})();
-
-console.log(MathHelper.round(5.175, 2));
-console.log(MathHelper.toFixed(5.175, 2));
-console.log(MathHelper.toFixed(4147.8015, 3));
-console.log(MathHelper.toFixed2(4147.8015, 3));
-console.log(ToFixedHelper.toFixed(4147.8015, 3));
-
-var number = 4147.8015;
-var num = 10000;
-console.time(&quot;toFixed&quot;);
-for (var i = 0; i &lt; num; i++) {
-    number.toFixed(3);
-}
-console.timeEnd(&quot;toFixed&quot;);
-
-console.time(&quot;toFixed1&quot;);
-for (var i = 0; i &lt; num; i++) {
-    MathHelper.toFixed(number, 3);
-}
-console.timeEnd(&quot;toFixed1&quot;);
-
-console.time(&quot;toFixed2&quot;);
-for (var i = 0; i &lt; num; i++) {
-    MathHelper.toFixed2(number, 3);
-}
-console.timeEnd(&quot;toFixed2&quot;);
-</code></pre><p>toFixedTest2.js</p>
-<pre><code>var MathHelper = {
-    toFixed : function(number, numberOfDecimals) {
-        // var aux = Math.pow(0.1, numberOfDecimals + 2) + Math.pow(0.1, numberOfDecimals + 1);
-        var aux = 0.000001; // Math.pow(0.1, numberOfDecimals + 2);
-        return (number + aux).toFixed(numberOfDecimals);
-    },
-    toFixed2 : function(number, numberOfDecimals) {
-        // var aux = Math.pow(0.1, numberOfDecimals + 2) + Math.pow(0.1, numberOfDecimals + 1);
-        var aux = Math.pow(0.1, numberOfDecimals + 9);
-        return (number + aux).toFixed(numberOfDecimals);
-    }
-};
-
-console.log(MathHelper.toFixed(5.175, 2));
-console.log(5.175.toFixed(2));
-console.log(MathHelper.toFixed(4147.8015, 3));
-console.log(4147.8015.toFixed(3));
-console.log(MathHelper.toFixed(14.499, 1));
-console.log(14.499.toFixed(1));
-
-console.log(14.44999.toFixed(1));
-console.log(MathHelper.toFixed(14.44999, 1));
-console.log(MathHelper.toFixed2(14.44999, 1));
-
-var number = 4147.8015;
-var num = 10000;
-console.time(&quot;toFixed&quot;);
-for (var i = 0; i &lt; num; i++) {
-    number.toFixed(3);
-}
-console.timeEnd(&quot;toFixed&quot;);
-
-console.time(&quot;toFixed1&quot;);
-for (var i = 0; i &lt; num; i++) {
-    MathHelper.toFixed(number, 3);
-}
-console.timeEnd(&quot;toFixed1&quot;);
-
-console.time(&quot;toFixed1&quot;);
-for (var i = 0; i &lt; num; i++) {
-    MathHelper.toFixed(number, 3);
-}
-console.timeEnd(&quot;toFixed1&quot;);
-</code></pre>
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/23/nodejs/">
-  <time datetime="2016-11-23T06:11:55.000Z">
-    2016-11-23
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/23/nodejs/">nodejs系列之</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/19/git-2/">
-  <time datetime="2016-11-19T10:56:10.000Z">
-    2016-11-19
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/19/git-2/">git系列之使用</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <h2 id="git-reset-–hard-commit-id"><a href="#git-reset-–hard-commit-id" class="headerlink" title="git reset –hard commit_id"></a>git reset –hard commit_id</h2><p>Git允许我们在版本的历史之间穿梭，使用命令git reset –hard commit_id</p>
-<h2 id="去除对-已添加的文件或文件夹-的跟踪"><a href="#去除对-已添加的文件或文件夹-的跟踪" class="headerlink" title="去除对　已添加的文件或文件夹　的跟踪"></a>去除对　已添加的文件或文件夹　的跟踪</h2><pre><code>git rm -r --cached -- .idea/
-</code></pre><p>这样呢，文件夹里 .idea/　的修改，git都不跟踪了。</p>
-<pre><code>git rm -r --cached -- node_modules/
-</code></pre>
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/19/git-1git系列之从外部复制一个.git文件，如何使用/">
-  <time datetime="2016-11-19T10:05:00.000Z">
-    2016-11-19
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/19/git-1git系列之从外部复制一个.git文件，如何使用/">git系列之从外部复制一个.git文件，如何使用</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <p>从外部复制一个.git文件，如何使用</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>有.git 文件　 ，直接使用，报错如下：</p>
-<pre><code>fatal: &apos;/srv/OpenX.git&apos; does not appear to be a git repository
-fatal: Could not read from remote repository.
-</code></pre><p>现在有一个新来的.git文件, 如：OpenX.git</p>
+      <p><a href="https://github.com/panubo/docker-mariadb-galera" target="_blank" rel="external">https://github.com/panubo/docker-mariadb-galera</a></p>
+<p>node0, 10.10.12.17<br>node1, 10.10.12.18<br>node2, 10.10.13.10(这一台暂时没用上)</p>
 <ol>
-<li><p>放到本机的git仓库目录</p>
-<pre><code>[tom@check repositories]$ sudo cp -a OpenX.git/ /srv/
-</code></pre></li>
-<li><p>建立新的下传使用目录</p>
-<pre><code>[tom@check repositories]$ cd ../testgit/
-[tom@check testgit]$ mkdir testgit2
-[tom@check testgit]$ ls
-OpenXtest  testgit2
-[tom@check testgit]$ cd testgit2/
-[tom@check testgit2]$ git init
-Initialized empty Git repository in /home/tom/in/testgit/testgit2/.git/
-</code></pre></li>
-<li><p>下传pull</p>
-<ol>
-<li><p>remote报错啦</p>
-<pre><code>[tom@check testgit2]$ git remote add checkgit git@192.168.31.181:/srv/OpenX.git
-[tom@check testgit2]$ git pull checkgit master
-git@192.168.31.181&apos;s password:
-fatal: &apos;/srv/OpenX.git&apos; does not appear to be a git repository
-fatal: Could not read from remote repository.
-
-Please make sure you have the correct access rights
-and the repository exists.
-[tom@check testgit2]$
-</code></pre></li>
-<li><p>clone也是会报错哟</p>
-<pre><code>[tom@check testgit2]$ git clone git@192.168.31.181:/srv/OpenX.git
-Cloning into &apos;OpenX&apos;...
-git@192.168.31.181&apos;s password:
-fatal: &apos;/srv/OpenX.git&apos; does not appear to be a git repository
-fatal: Could not read from remote repository.
-
-Please make sure you have the correct access rights
-and the repository exists.
-[tom@check testgit2]$
-</code></pre></li>
+<li>设置环境变量</li>
 </ol>
+<p>在node0上:</p>
+<pre><code>cat &gt;&gt; ~/.bashrc &lt;&lt; EOF
+
+WSREP_NODE_ADDRESS=10.10.12.17
+WSREP_CLUSTER_ADDRESS=gcomm://10.10.12.17:4567,10.10.12.18:4567,10.10.13.10:4567
+EOF
+
+source ~/.bashrc
+</code></pre><p>在node1上:</p>
+<pre><code>cat &gt;&gt; ~/.bashrc &lt;&lt; EOF
+
+WSREP_NODE_ADDRESS=10.10.12.18
+WSREP_CLUSTER_ADDRESS=gcomm://10.10.12.17:4567,10.10.12.18:4567,10.10.13.10:4567
+EOF
+
+source ~/.bashrc
+</code></pre><ol>
+<li><p>Running Garbd</p>
+<p> docker run -d –net host –name galera-garbd \<br>   -e WSREP_CLUSTER_ADDRESS=$WSREP_CLUSTER_ADDRESS \<br>   panubo/mariadb-galera \</p>
+<pre><code>garbd
+</code></pre></li>
+<li><p>运行containe</p>
 </li>
 </ol>
-<h2 id="解决"><a href="#解决" class="headerlink" title="解决　"></a>解决　</h2><p>查看文件属性</p>
-<pre><code>[tom@check testgit2]$ ll /srv/
-total 0
-drwxr-xr-x 7 git git 111 Jan 19 18:13 conan.git
-drwxr-xr-x 7 git git 111 Jan 11 10:52 crawler.git
-drwxr-xr-x 7 git git 111 Jan  8 16:19 eastmoney.git
-drwx------ 7 tom tom 107 Feb 28 08:59 OpenX.git
-drwxr-xr-x 7 git git 111 Jan 19 11:18 qlw.git
-drwxr-xr-x 7 git git 111 Jan  6 15:03 sample.git
-[tom@check testgit2]$
-</code></pre><p>发现OpenX.git 属性不对.</p>
-<p>检查是否安装git,并有git用户。如果没有，则建立git账户和密码<br>修改 OpenX.git 属性</p>
-<pre><code>[tom@check testgit2]$ sudo chown -R git:git /srv/OpenX.git/
-[tom@check testgit2]$ sudo chmod -R 755 /srv/OpenX.git/
-[tom@check testgit2]$ ll /srv/
-total 0
-drwxr-xr-x 7 git git 111 Jan 19 18:13 conan.git
-drwxr-xr-x 7 git git 111 Jan 11 10:52 crawler.git
-drwxr-xr-x 7 git git 111 Jan  8 16:19 eastmoney.git
-drwxr-xr-x 7 git git 107 Feb 28 08:59 OpenX.git
-drwxr-xr-x 7 git git 111 Jan 19 11:18 qlw.git
-drwxr-xr-x 7 git git 111 Jan  6 15:03 sample.git
-[tom@check testgit2]$
-</code></pre><p>验收</p>
-<pre><code>[tom@check testgit2]$ git remote add checkgit git@192.168.31.181:/srv/OpenX.git
-fatal: remote checkgit already exists.
-[tom@check testgit2]$ git pull checkgit master
-git@192.168.31.181&apos;s password:
-remote: Counting objects: 1673, done.
-remote: Compressing objects: 100% (1637/1637), done.
-remote: Total 1673 (delta 928), reused 76 (delta 32)
-Receiving objects: 100% (1673/1673), 6.90 MiB | 7.48 MiB/s, done.
-Resolving deltas: 100% (928/928), done.
-From 192.168.31.181:/srv/OpenX
- * branch            master     -&gt; FETCH_HEAD
-[tom@check testgit2]$ ls
-lib  OpenInfo  OpenQuote
-[tom@check testgit2]$
-</code></pre>
+<p>在node0上:</p>
+<pre><code>mkdir -p /mnt/data/galera.service/mysql/mysql
+
+docker run -d --net host --name galera \
+  -e WSREP_NODE_ADDRESS=$WSREP_NODE_ADDRESS \
+  -e WSREP_CLUSTER_ADDRESS=$WSREP_CLUSTER_ADDRESS \
+  -e MYSQL_ROOT_PASSWORD={{mysql_root_password}} \
+  -p 3306:3306 \
+  -p 4567:4567/udp \
+  -p 4567-4568:4567-4568 \
+  -p 4444:4444 \
+  -v /mnt/data/galera.service/mysql:/var/lib/mysql:Z \
+  panubo/mariadb-galera \
+    mysqld \
+    --wsrep-new-clusterr
+</code></pre><p>在node1上:</p>
+<pre><code>mkdir -p /mnt/data/galera.service/mysql/mysql
+
+docker run -d --net host --name galera \
+-e WSREP_NODE_ADDRESS=$WSREP_NODE_ADDRESS \
+-e WSREP_CLUSTER_ADDRESS=$WSREP_CLUSTER_ADDRESS \
+-p 3306:3306 \
+-p 4567:4567/udp \
+-p 4567-4568:4567-4568 \
+-p 4444:4444 \
+-v /mnt/data/galera.service/mysql:/var/lib/mysql:Z \
+panubo/mariadb-galera \
+mysqld
+</code></pre><ol>
+<li>验收:</li>
+</ol>
+<p>验收1:</p>
+<p>在 node0, 运行 <code>docker exec -ti node11-container-sha1 mysql -p -e &#39;show status like &quot;wsrep_cluster_size&quot;&#39;</code>, 查看 集群的节点数.</p>
+<pre><code>[tom@mariadb-node-1 ~]$ docker ps
+CONTAINER ID        IMAGE                   COMMAND                  CREATED             STATUS              PORTS               NAMES
+c0c6fa26b49a        panubo/mariadb-galera   &quot;/galera-entrypoin...&quot;   41 hours ago        Up 7 hours                              galera
+[tom@mariadb-node-1 ~]$ docker exec -ti c0c6fa26b49a mysql -p -e &apos;show status like &quot;wsrep_cluster_size&quot;&apos;
+Enter password:
++--------------------+-------+
+| Variable_name      | Value |
++--------------------+-------+
+| wsrep_cluster_size | 2     |
++--------------------+-------+
+[tom@mariadb-node-1 ~]$
+</code></pre><p>验收2:</p>
+<p>去 node0, 进入container, 新建立一个库,</p>
+<pre><code>[tom@mariadb-node-0 ~]$ docker exec -it 1de01ad721ad /bin/bash
+root@mariadb-node-0:/# mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 5
+Server version: 10.1.21-MariaDB-1~jessie mariadb.org binary distribution
+
+Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.
+
+Type &apos;help;&apos; or &apos;\h&apos; for help. Type &apos;\c&apos; to clear the current input statement.
+
+MariaDB [(none)]&gt;
+
+CREATE DATABASE IF NOT EXISTS my_db default character set utf8 COLLATE utf8_general_ci;
+</code></pre><p>去 node1, 进入container, 检查, 是否有</p>
+<pre><code>show databases;
+</code></pre><p>ok, 现在说明, galera已经建立好了.</p>
+<ol>
+<li>怎么让其它机器访问 galera</li>
+</ol>
+<p>登陆其它机器</p>
+<p>mysql -h 10.10.12.17 -u root -pmysql_root_password</p>
+<p>这样, 就可以访问到 node0 上的mysql 啦.</p>
+<ol>
+<li>尝试 TODO</li>
+</ol>
+<p>Q: 把 node1 的container <code>docker restart</code> , 是否 mysql 正常<br>A: 正常</p>
+<p>Q: 把 node0 的container <code>docker restart</code> , 是否mysql 正常<br>A: container, 不正常. 重启后, 起不来了. 原因: 可能是因为, node0, 的安装过程中, 有<code>--wsrep-new-clusterr</code>参数, 重启, 则意味着, 在原来的文件夹上建立一个新的<code>--wsrep-new-clusterr</code>(相同的directory, 当然是不允许的), 所以报错.<br>如果不小心, 重启了 node0上的主container, 那怎么办?<br>方法1(适用于, 不要数据的情况)</p>
+<p>Q: 把端口号, 分别设置成<code>node0:3306, node1:4406</code>, <code>node0:4406, node1:3306</code>, <code>node0:4406, node1:4406</code>, 会有什么效果<br>A: TODO</p>
+
     
   </div>
   <footer class="end-sep">
@@ -749,23 +376,292 @@ lib  OpenInfo  OpenQuote
   <header>
     
       <div class="icon"></div>
-      <a href="/2016/11/19/git/">
-  <time datetime="2016-11-19T10:04:56.000Z">
-    2016-11-19
+      <a href="/2017/01/24/docker-2/">
+  <time datetime="2017-01-24T10:45:59.000Z">
+    2017-01-24
   </time>
 </a>
     
     
   
-    <h1 class="title"><a href="/2016/11/19/git/">git系列之目录</a></h1>
+    <h1 class="title"><a href="/2017/01/24/docker-2/">docker之docker-mariadb-galera各种策略汇总</a></h1>
   
 
   </header>
   
   <div class="entry">
     
-      <p>git系列之目录</p>
+      <h2 id="使用-FROM-mariadb-10-1-的几个docker"><a href="#使用-FROM-mariadb-10-1-的几个docker" class="headerlink" title="使用 FROM mariadb:10.1 的几个docker"></a>使用 <code>FROM mariadb:10.1</code> 的几个docker</h2><ul>
+<li><a href="https://github.com/EgoAleSum/mariadb-cluster" target="_blank" rel="external">https://github.com/EgoAleSum/mariadb-cluster</a></li>
+</ul>
+<p><a href="http://withblue.ink/2016/03/09/galera-cluster-mariadb-coreos-and-docker-part-1.html" target="_blank" rel="external">http://withblue.ink/2016/03/09/galera-cluster-mariadb-coreos-and-docker-part-1.html</a></p>
+<p>Coreos + any public cloud (Azure, AWS, Google, etc)</p>
+<ul>
+<li><a href="https://github.com/dial-once/docker-mariadb-galera" target="_blank" rel="external">https://github.com/dial-once/docker-mariadb-galera</a></li>
+</ul>
+<p>使用 Docker Cloud/Docker Compose YML</p>
+<ul>
+<li><a href="https://github.com/toughIQ/docker-mariadb-cluster" target="_blank" rel="external">https://github.com/toughIQ/docker-mariadb-cluster</a></li>
+</ul>
+<p>Swarm</p>
+<p>Consider this a POC and not a production ready system!</p>
+<p>Built for use with Docker 1.12.1+ in Swarm Mode</p>
+<ul>
+<li><a href="https://github.com/panubo/docker-mariadb-galera" target="_blank" rel="external">https://github.com/panubo/docker-mariadb-galera</a></li>
+</ul>
+<p>Galera Arbitrator (aka garbd)</p>
+<h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
 
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2017/01/15/mac-1/">
+  <time datetime="2017-01-15T04:41:19.000Z">
+    2017-01-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2017/01/15/mac-1/">mac下运行.exe文件</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2017/01/15/mac/">
+  <time datetime="2017-01-15T04:41:12.000Z">
+    2017-01-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2017/01/15/mac/">mac</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/12/14/hello-world/">
+  <time datetime="2016-12-14T07:19:50.000Z">
+    2016-12-14
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/12/14/hello-world/">Hello World</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/12/12/mysql-9/">
+  <time datetime="2016-12-12T08:43:19.000Z">
+    2016-12-12
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/12/12/mysql-9/">mysql系列之</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/12/12/docker-1/">
+  <time datetime="2016-12-12T03:05:21.000Z">
+    2016-12-12
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/12/12/docker-1/">docker系列之安装（centos）</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://docs.docker.com/engine/installation/linux/centos/" target="_blank" rel="external">https://docs.docker.com/engine/installation/linux/centos/</a></p>
+<h2 id="practice"><a href="#practice" class="headerlink" title="practice"></a>practice</h2><pre><code>[tom@mysql1 ~]$ sudo tee /etc/yum.repos.d/docker.repo &lt;&lt;-&apos;EOF&apos;
+&gt; [dockerrepo]
+&gt; name=Docker Repository
+&gt; baseurl=https://yum.dockerproject.org/repo/main/centos/7/
+&gt; enabled=1
+&gt; gpgcheck=1
+&gt; gpgkey=https://yum.dockerproject.org/gpg
+&gt; EOF
+[dockerrepo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/centos/7/
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+[tom@mysql1 ~]$ sudo yum install docker-engine -y
+...
+Installed:
+  docker-engine.x86_64 0:1.12.3-1.el7.centos                                                                                                          
+
+Dependency Installed:
+  docker-engine-selinux.noarch 0:1.12.3-1.el7.centos                                                                                                  
+
+Complete!
+[tom@mysql1 ~]$ sudo systemctl enable docker.service
+Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service to /usr/lib/systemd/system/docker.service.
+[tom@mysql1 ~]$ sudo systemctl start docker
+[tom@mysql1 ~]$ sudo docker run --rm hello-world
+Unable to find image &apos;hello-world:latest&apos; locally
+latest: Pulling from library/hello-world
+c04b14da8d14: Pull complete
+Digest: sha256:0256e8a36e2070f7bf2d0b0763dbabdd67798512411de4cdcf9431a1feb60fd9
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the &quot;hello-world&quot; image from the Docker Hub.
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker Hub account:
+ https://hub.docker.com
+
+For more examples and ideas, visit:
+ https://docs.docker.com/engine/userguide/
+
+[tom@mysql1 ~]$ sudo groupadd docker
+groupadd: group &apos;docker&apos; already exists
+[tom@mysql1 ~]$ sudo usermod -aG docker tom
+</code></pre><h4 id="ctrl-v"><a href="#ctrl-v" class="headerlink" title="ctrl + v"></a>ctrl + v</h4><pre><code>[tom@mysql1 ~]$ sudo tee /etc/yum.repos.d/docker.repo &lt;&lt;-&apos;EOF&apos;
+&gt; [dockerrepo]
+&gt; name=Docker Repository
+&gt; baseurl=https://yum.dockerproject.org/repo/main/centos/7/
+&gt; enabled=1
+&gt; gpgcheck=1
+&gt; gpgkey=https://yum.dockerproject.org/gpg
+&gt; EOF
+[dockerrepo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/centos/7/
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+[tom@mysql1 ~]$ sudo yum install docker-engine -y
+[tom@mysql1 ~]$ sudo systemctl enable docker.service
+[tom@mysql1 ~]$ sudo systemctl start docker
+[tom@mysql1 ~]$ sudo docker run --rm hello-world
+[tom@mysql1 ~]$ sudo groupadd docker
+[tom@mysql1 ~]$ sudo usermod -aG docker tom
+</code></pre>
     
   </div>
   <footer class="end-sep">
@@ -783,7 +679,7 @@ lib  OpenInfo  OpenQuote
   <nav id="pagination">
   
   
-    <a href="/page/2/" class="next">Next</a>
+    <a href="/page/2/" class="next">下一页</a>
   
   <div class="clearfix"></div>
 </nav>
@@ -792,7 +688,7 @@ lib  OpenInfo  OpenQuote
   </div>
   <footer id="footer"><div class="copyright">
   
-  &copy; 2016 <a href="/">Tom Tsang</a>
+  &copy; 2017 <a href="/">Tom Tsang</a>
   
 </div>
 <div class="theme-copyright">

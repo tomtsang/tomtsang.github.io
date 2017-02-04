@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>linux系列之端口与进程 | 美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+    <meta name="description" content="linux如何查看端口被哪个进程占用使用netstat 和lsof命令，并用grep来过滤你需要查看的端口。例如查看tcp有哪些端口打开了：
+netstat -a| grep tcp
+然后查看哪个进程占用了这些端口：
+lsof -i
+如果要查看某个端口，比如80端口是哪个进程：
+lsof -i | grep :80
+如果说，tom用户查到了一些端口号被占用，但是，用lsof却查不到。怎么办？则要考">
+  
+  <meta name="description" content="linux如何查看端口被哪个进程占用使用netstat 和lsof命令，并用grep来过滤你需要查看的端口。例如查看tcp有哪些端口打开了：
+netstat -a| grep tcp
+然后查看哪个进程占用了这些端口：
+lsof -i
+如果要查看某个端口，比如80端口是哪个进程：
+lsof -i | grep :80
+如果说，tom用户查到了一些端口号被占用，但是，用lsof却查不到。怎么办？则要考">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux系列之端口与进程">
+<meta property="og:url" content="http://tomtsang.github.io/2016/11/29/linux-2/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="linux如何查看端口被哪个进程占用使用netstat 和lsof命令，并用grep来过滤你需要查看的端口。例如查看tcp有哪些端口打开了：
+netstat -a| grep tcp
+然后查看哪个进程占用了这些端口：
+lsof -i
+如果要查看某个端口，比如80端口是哪个进程：
+lsof -i | grep :80
+如果说，tom用户查到了一些端口号被占用，但是，用lsof却查不到。怎么办？则要考">
+<meta property="og:updated_time" content="2016-12-14T07:19:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux系列之端口与进程">
+<meta name="twitter:description" content="linux如何查看端口被哪个进程占用使用netstat 和lsof命令，并用grep来过滤你需要查看的端口。例如查看tcp有哪些端口打开了：
+netstat -a| grep tcp
+然后查看哪个进程占用了这些端口：
+lsof -i
+如果要查看某个端口，比如80端口是哪个进程：
+lsof -i | grep :80
+如果说，tom用户查到了一些端口号被占用，但是，用lsof却查不到。怎么办？则要考">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/29/linux-2/">
+  <time datetime="2016-11-29T03:13:01.000Z">
+    2016-11-29
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">linux系列之端口与进程</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="linux如何查看端口被哪个进程占用"><a href="#linux如何查看端口被哪个进程占用" class="headerlink" title="linux如何查看端口被哪个进程占用"></a>linux如何查看端口被哪个进程占用</h2><p>使用netstat 和lsof命令，并用grep来过滤你需要查看的端口。<br>例如查看tcp有哪些端口打开了：</p>
+<pre><code>netstat -a| grep tcp
+</code></pre><p>然后查看哪个进程占用了这些端口：</p>
+<pre><code>lsof -i
+</code></pre><p>如果要查看某个端口，比如80端口是哪个进程：</p>
+<pre><code>lsof -i | grep :80
+</code></pre><p>如果说，tom用户查到了一些端口号被占用，但是，用lsof却查不到。怎么办？<br>则要考虑，是不是端口被root用户占用，没有权限。所以要再一次用sudo lsof来查一查。</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><pre><code>netstat -ant | grep 8060
+ps -aux | grep node
+lsof -i:8060
+man lsof
+lsof  -i
+lsof  -i -n
+lsof -iTCP
+sudo lsof -i
+</code></pre>
+    
+  </div>
+  <footer>
+    
+      
+  <div class="categories">
+    <a class="categories-link" href="/categories/linux/">linux</a>
+  </div>
+
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/linux/">linux</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2017 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

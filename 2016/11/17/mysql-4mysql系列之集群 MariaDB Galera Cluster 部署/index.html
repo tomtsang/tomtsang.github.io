@@ -21,7 +21,7 @@
 <meta property="og:site_name" content="美好生活, 共享快乐">
 <meta property="og:description" content="参考How To Setup MariaDB Galera Cluster 10.0 On CentOShttp://www.unixmen.com/setup-mariadb-galera-cluster-10-0-centos/
 安装 过程MariaDB is a relational database management system (RDBMS) and  MariaDB Galera">
-<meta property="og:updated_time" content="2016-11-19T07:55:14.175Z">
+<meta property="og:updated_time" content="2017-01-25T02:45:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql系列之集群 MariaDB Galera Cluster 部署">
 <meta name="twitter:description" content="参考How To Setup MariaDB Galera Cluster 10.0 On CentOShttp://www.unixmen.com/setup-mariadb-galera-cluster-10-0-centos/
@@ -132,6 +132,7 @@ mysql&gt; quit
 </code></pre><p>Next, We are going to create the MariaDB Galera Cluster configuration by the following command on all nodes (go through the IMPORTANT NOTE after the config and make required changes for db2, and db3):</p>
 <pre><code>sudo cat &gt;&gt; /etc/my.cnf.d/server.cnf &lt;&lt; EOF
 
+[mariadb-10.0]
 binlog_format=ROW
 default-storage-engine=innodb
 innodb_autoinc_lock_mode=2
@@ -305,7 +306,7 @@ mysql -u root -p -e &apos;SELECT * FROM clustertest.mycluster;&apos;
   </div>
   <footer id="footer"><div class="copyright">
   
-  &copy; 2016 <a href="/">Tom Tsang</a>
+  &copy; 2017 <a href="/">Tom Tsang</a>
   
 </div>
 <div class="theme-copyright">

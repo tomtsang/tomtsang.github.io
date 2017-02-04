@@ -68,40 +68,111 @@
   <header>
     
       <div class="icon"></div>
-      <a href="/2016/11/15/nginx-2txt,json文件 中文乱码.txt,json文件 中文乱码/">
-  <time datetime="2016-11-15T08:47:05.000Z">
-    2016-11-15
+      <a href="/2016/11/25/mongodb-2/">
+  <time datetime="2016-11-25T02:03:51.000Z">
+    2016-11-25
   </time>
 </a>
     
     
   
-    <h1 class="title"><a href="/2016/11/15/nginx-2txt,json文件 中文乱码.txt,json文件 中文乱码/">nginx txt,json文件 中文乱码</a></h1>
+    <h1 class="title"><a href="/2016/11/25/mongodb-2/">mongodb系列之distinct</a></h1>
   
 
   </header>
   
   <div class="entry">
     
-      <h2 id="nginx-中-txt-json文件-中文乱码"><a href="#nginx-中-txt-json文件-中文乱码" class="headerlink" title="nginx 中 txt,json文件 中文乱码"></a>nginx 中 txt,json文件 中文乱码</h2><p>在 /etc/nginx/conf.d/default.conf 中找到 <code>location / {</code> ,然后加入</p>
-<pre><code>charset utf-8;
-charset_types text/html
-</code></pre><p>如：</p>
-<pre><code>server {
-    listen       8000;
-    server_name  localhost;
+      <h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><p><a href="https://docs.mongodb.com/manual/reference/method/db.collection.distinct/" target="_blank" rel="external">https://docs.mongodb.com/manual/reference/method/db.collection.distinct/</a></p>
+<p><a href="http://www.jb51.net/article/65929.htm" target="_blank" rel="external">http://www.jb51.net/article/65929.htm</a></p>
+<h2 id="destinct"><a href="#destinct" class="headerlink" title="destinct"></a>destinct</h2><ul>
+<li>MongoDB的destinct命令是获取特定字段中不同值列表。该命令适用于普通字段，数组字段和数组内嵌文档.</li>
+</ul>
+<p>mongodb的distinct的语句： db.users.distinct(‘last_name’）;</p>
+<p>等同于 SQL 语句: select DISTINCT last_name from users;</p>
+<p>表示的是根据指定的字段返回不同的记录集。</p>
+<ul>
+<li><p>如果，有相关的查询，则放在后面。</p>
+<p>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“LastPx”, {“TrdDt”:20161101, “ID”: “600650.SH”})<br>  [</p>
+<pre><code>25.88,
+25.89,
+25.87,
+25.86
+</code></pre><p>  ]<br>  testrs:PRIMARY&gt;</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><blockquote>
+<p>db.KLine_1Min.distinct(“ID”).length<br>  114<br>db.KLine_1Min.distinct(“ID”)</p>
+</blockquote>
+<p>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“ID”, {“TrdDt”:20161102, “ID”: /^60.<em>SH/, “TrdTm”:1441}).length<br>  1081<br>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“ID”, {“TrdDt”:20161101, “ID”: /^60.</em>SH/, “TrdTm”:1441}).length<br>  1109<br>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“ID”, {“TrdDt”:20161103, “ID”: /^60.<em>SH/, “TrdTm”:1441}).length<br>  1083<br>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“ID”, {“TrdDt”:20161031, “ID”: /^60.</em>SH/, “TrdTm”:1441}).length<br>  1107<br>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“ID”, {“TrdDt”:20161025, “ID”: /^60.<em>SH/, “TrdTm”:1441}).length<br>  1077<br>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“ID”, {“TrdDt”:20161025, “ID”: /^00.</em>SZ/, “TrdTm”:1441}).length<br>  1168<br>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“ID”, {“TrdDt”:20161031, “ID”: /^00.<em>SZ/, “TrdTm”:1441}).length<br>  1271<br>  testrs:PRIMARY&gt; db.KLine_1Min.distinct(“ID”, {“TrdDt”:20161101, “ID”: /^00.</em>SZ/, “TrdTm”:1441}).length<br>  1271<br>  testrs:PRIMARY&gt; </p>
+</li>
+</ul>
 
-    #default_type &apos;text/html&apos;;
-    #charset utf-8;
-    #charset koi8-r;
-    #access_log  /var/log/nginx/log/host.access.log  main;
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
 
-    location / {
-        charset utf-8;
-        charset_types text/html application/json;
-        add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;;
-        add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;
-        add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/24/mongodb-1/">
+  <time datetime="2016-11-24T02:42:00.000Z">
+    2016-11-24
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/24/mongodb-1/">mongodb系列之findOneAndUpdate</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#findOneAndUpdate" target="_blank" rel="external">http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#findOneAndUpdate</a></p>
+<p><a href="https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndUpdate/" target="_blank" rel="external">https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndUpdate/</a></p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>修改键（字段）的值,修改了{b:2}</p>
+<pre><code>var MongoClient = require(&apos;mongodb&apos;).MongoClient;
+MongoClient.connect(&apos;mongodb://192.168.31.240:27017/test&apos;, function(err, db) {
+  // Get the collection
+  var col = db.collection(&apos;find_one_and_update&apos;);
+  col.insertMany([{a:1, b:1}], {w:1}, function(err, r) {
+    col.findOneAndUpdate({a:1}
+      , {$set: {b:2}}
+      , {  upsert: true
+        }
+      , function(err, r) {
+        db.close();
+    });
+  });
+});
+</code></pre><p>增加新的键，增加了{d:1}</p>
+<pre><code>var MongoClient = require(&apos;mongodb&apos;).MongoClient,
+  test = require(&apos;assert&apos;);
+MongoClient.connect(&apos;mongodb://192.168.31.240:27017/test&apos;, function(err, db) {
+  // Get the collection
+  var col = db.collection(&apos;find_one_and_update&apos;);
+  col.insertMany([{a:1, b:1}], {w:1}, function(err, r) {
+
+    col.findOneAndUpdate({a:1}
+      , {$set: {d:1}}
+      , {  upsert: true
+        }
+      , function(err, r) {
+
+        db.close();
+    });
+  });
+});
 </code></pre>
     
   </div>
@@ -120,93 +191,375 @@ charset_types text/html
   <header>
     
       <div class="icon"></div>
-      <a href="/2016/11/15/nginx-1nginx 跨域访问/">
-  <time datetime="2016-11-15T08:44:04.000Z">
-    2016-11-15
+      <a href="/2016/11/24/mongodb/">
+  <time datetime="2016-11-24T02:41:57.000Z">
+    2016-11-24
   </time>
 </a>
     
     
   
-    <h1 class="title"><a href="/2016/11/15/nginx-1nginx 跨域访问/">nginx 跨域访问</a></h1>
+    <h1 class="title"><a href="/2016/11/24/mongodb/">mongodb系列之目录</a></h1>
   
 
   </header>
   
   <div class="entry">
     
-      <ul>
-<li>nginx 解决跨域访问的问题</li>
-<li>跨域造成session丢失</li>
+      <h2 id="mongodb系列之目录"><a href="#mongodb系列之目录" class="headerlink" title="mongodb系列之目录"></a>mongodb系列之目录</h2><ul>
+<li><a href="http://tomtsang.github.io/2016/11/25/mongodb-2/">mongodb系列之distinct</a></li>
+<li><a href="http://tomtsang.github.io/2016/11/24/mongodb-1/">mongodb系列之findOneAndUpdate</a></li>
 </ul>
-<h2 id="nginx-解决跨域访问的问题。"><a href="#nginx-解决跨域访问的问题。" class="headerlink" title="nginx 解决跨域访问的问题。"></a>nginx 解决跨域访问的问题。</h2><p><a href="https://michielkalkman.com/snippets/nginx-cors-open-configuration.html" target="_blank" rel="external">https://michielkalkman.com/snippets/nginx-cors-open-configuration.html</a></p>
-<p><a href="http://enable-cors.org/server_nginx.html" target="_blank" rel="external">http://enable-cors.org/server_nginx.html</a></p>
-<ol>
-<li>所有网页都实现跨域</li>
-</ol>
-<p>把下面的代码，放到 ，配置文件 /etc/nginx/conf.d/default.conf 中的 location / { 内</p>
-<pre><code>add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;;
-add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;
-add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;
-</code></pre><ol>
-<li>部分url（下以 /ok 为例） 请求实现跨域访问</li>
-</ol>
-<p>把下面的代码，放到 ，配置文件 /etc/nginx/conf.d/default.conf 中 的 location /ok { 内</p>
-<pre><code>#
-# Wide-open CORS config for nginx
-#
-location / {
-     if ($request_method = &apos;OPTIONS&apos;) {
-        add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;;
-        #
-        # Om nom nom cookies
-        #
-        add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;
-        add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;
-        #
-        # Custom headers and headers various browsers *should* be OK with but aren&apos;t
-        #
-        add_header &apos;Access-Control-Allow-Headers&apos; &apos;DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type&apos;;
-        #
-        # Tell client that this pre-flight info is valid for 20 days
-        #
-        add_header &apos;Access-Control-Max-Age&apos; 1728000;
-        add_header &apos;Content-Type&apos; &apos;text/plain charset=UTF-8&apos;;
-        add_header &apos;Content-Length&apos; 0;
-        return 204;
-     }
-     if ($request_method = &apos;POST&apos;) {
-        add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;;
-        add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;
-        add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;
-        add_header &apos;Access-Control-Allow-Headers&apos; &apos;DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type&apos;;
-     }
-     if ($request_method = &apos;GET&apos;) {
-        add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;;
-        add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;
-        add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;
-        add_header &apos;Access-Control-Allow-Headers&apos; &apos;DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type&apos;;
-     }
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/23/nodejs-3nodejs系列之npm的常用命令/">
+  <time datetime="2016-11-23T06:31:04.000Z">
+    2016-11-23
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/23/nodejs-3nodejs系列之npm的常用命令/">nodejs系列之npm的常用命令</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.jb51.net/article/52409.htm" target="_blank" rel="external">http://www.jb51.net/article/52409.htm</a></p>
+<h2 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h2><p>分享几个npm的常用命令</p>
+<p>npm -v          #显示版本，检查npm 是否正确安装。</p>
+<p>npm install express   #安装express模块</p>
+<p>npm install -g express  #全局安装express模块</p>
+<p>npm list         #列出已安装模块</p>
+<p>npm show express     #显示模块详情</p>
+<p>npm update        #升级当前目录下的项目的所有模块</p>
+<p>npm update express    #升级当前目录下的项目的指定模块</p>
+<p>npm update -g express  #升级全局安装的express模块</p>
+<p>npm uninstall express  #删除指定的模块</p>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/23/nodejs-2nodejs系列之使用n管理nodejs版本/">
+  <time datetime="2016-11-23T06:20:28.000Z">
+    2016-11-23
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/23/nodejs-2nodejs系列之使用n管理nodejs版本/">nodejs系列之使用n管理nodejs版本</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://blog.csdn.net/jiangbo_phd/article/details/51476155" target="_blank" rel="external">http://blog.csdn.net/jiangbo_phd/article/details/51476155</a></p>
+<h2 id="主要点"><a href="#主要点" class="headerlink" title="主要点"></a>主要点</h2><p>npm -g XXX :安装的XXX软件，在linux下的目录 <code>/usr/lib/node_modules/</code></p>
+<p>sudo n :切换node版本</p>
+<p>n 切换之后的 node 默认装在 /usr/local/bin/node，你最好用 which node 检查一下当前使用的 node 是否是这个路径下的。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><ul>
+<li><p>如果安装过程中因为某原因（主要是网络原因），未安装成功，则删除对应的目录，重新安装就可以了。</p>
+<p>  tom@adata:~/Projects/OpenX/lib$ sudo n latest<br>  [sudo] password for tom:</p>
+<pre><code>install : node-v7.2.0
+  mkdir : /usr/local/n/versions/node/7.2.0
+  fetch : https://nodejs.org/dist/v7.2.0/node-v7.2.0-linux-x64.tar.gz
+</code></pre><p>  ######################################################                    75.1%<br>  curl: (56) GnuTLS recv error (-54): Error in the pull function.</p>
+<p>  gzip: stdin: unexpected end of file<br>  tar: Unexpected EOF in archive<br>  tar: Unexpected EOF in archive<br>  tar: Error is not recoverable: exiting now<br>  cp: cannot stat ‘/usr/local/n/versions/node/7.2.0/lib’: No such file or directory<br>  cp: cannot stat ‘/usr/local/n/versions/node/7.2.0/include’: No such file or directory<br>  cp: cannot stat ‘/usr/local/n/versions/node/7.2.0/share’: No such file or directory</p>
+<pre><code>installed : v7.2.0
+</code></pre><p>  tom@adata:~/Projects/OpenX/lib$ ll /usr/local/n/versions/node/7.2.0/<br>  total 12<br>  drwxr-xr-x 3 root root 4096 11月 23 13:07 ./<br>  drwxr-xr-x 4 root root 4096 11月 23 13:00 ../<br>  drwxrwxr-x 2  500  500 4096 11月 23 06:35 bin/<br>  tom@adata:~/Projects/OpenX/lib$ sudo n latest<br>  [sudo] password for tom:<br>  tom@adata:~/Projects/OpenX/lib$ sudo n latest<br>  tom@adata:~/Projects/OpenX/lib$ sudo rm -rf /usr/local/n/versions/node/7.2.0/<br>  tom@adata:~/Projects/OpenX/lib$ sudo n latest</p>
+<pre><code>install : node-v7.2.0
+  mkdir : /usr/local/n/versions/node/7.2.0
+  fetch : https://nodejs.org/dist/v7.2.0/node-v7.2.0-linux-x64.tar.gz
+</code></pre><p>  ######################################################################## 100.0%</p>
+<pre><code>installed : v7.2.0
+</code></pre><p>  tom@adata:~/Projects/OpenX/lib$</p>
+</li>
+<li><p>安装完成后，不要直接看node版本，另开一个terminal，查看。</p>
+<p>  tom@adata:~/Projects/OpenX/lib$ node -v<br>  v6.7.0<br>  tom@adata:~/Projects/OpenX/lib$</p>
+</li>
+</ul>
+<p>看吧，上面这个明显还是老版本。另开一个terminal，查看就是新版本了。</p>
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><pre><code>[jlch@kube-node-15 ~]$ sudo npm i n -g
+[sudo] password for jlch:
+/usr/bin/n -&gt; /usr/lib/node_modules/n/bin/n
+n@2.1.4 /usr/lib/node_modules/n
+[jlch@kube-node-15 ~]$ ll /usr/lib/node_modules/  # 看一下，n是不是真的安装成功
+total 8
+drwxr-xr-x. 3 nobody jlch   66 11月 23 14:08 n
+drwxr-xr-x. 9 root   root 4096 6月   8 16:05 npm
+drwxr-xr-x. 5 nobody jlch 4096 6月   8 18:00 pm2
+[jlch@kube-node-15 ~]$ sudo n --help # 找帮助
+  Usage: n [options/env] [COMMAND] [args]
+
+  Environments:
+    n [COMMAND] [args]            Uses default env (node)
+    n io [COMMAND]                Sets env as io
+    n project [COMMAND]           Uses custom env-variables to use non-official sources
+
+  Commands:
+
+    n                              Output versions installed
+    n latest                       Install or activate the latest node release
+    n -a x86 latest                As above but force 32 bit architecture
+    n stable                       Install or activate the latest stable node release
+    n lts                          Install or activate the latest LTS node release
+    n &lt;version&gt;                    Install node &lt;version&gt;
+    n use &lt;version&gt; [args ...]     Execute node &lt;version&gt; with [args ...]
+    n bin &lt;version&gt;                Output bin path for &lt;version&gt;
+    n rm &lt;version ...&gt;             Remove the given version(s)
+    n --latest                     Output the latest node version available
+    n --stable                     Output the latest stable node version available
+    n --lts                        Output the latest LTS node version available
+    n ls                           Output the versions of node available
+
+  (iojs):
+    n io latest                    Install or activate the latest iojs release
+    n io -a x86 latest             As above but force 32 bit architecture
+    n io &lt;version&gt;                 Install iojs &lt;version&gt;
+    n io use &lt;version&gt; [args ...]  Execute iojs &lt;version&gt; with [args ...]
+    n io bin &lt;version&gt;             Output bin path for &lt;version&gt;
+    n io rm &lt;version ...&gt;          Remove the given version(s)
+    n io --latest                  Output the latest iojs version available
+    n io ls                        Output the versions of iojs available
+
+  Options:
+
+    -V, --version   Output current version of n
+    -h, --help      Display help information
+    -q, --quiet     Disable curl output (if available)
+    -d, --download  Download only
+    -a, --arch      Override system architecture
+
+  Aliases:
+
+    which   bin
+    use     as
+    list    ls
+    -       rm
+
+[jlch@kube-node-15 ~]$ sudo n --version
+2.1.3
+[jlch@kube-node-15 ~]$ node -v
+v4.4.5
+[jlch@kube-node-15 ~]$ sudo n 4.4.6
+
+     install : node-v4.4.6
+       mkdir : /usr/local/n/versions/node/4.4.6
+       fetch : https://nodejs.org/dist/v4.4.6/node-v4.4.6-linux-x64.tar.gz
+##################                                                        26.0%
+</code></pre><p>查一下，各自的路径</p>
+<pre><code>tom@adata:~/m6s/blogs/tomtsang$ which node
+/usr/local/bin/node
+tom@adata:~/m6s/blogs/tomtsang$ which n
+/usr/bin/n
+tom@adata:~/m6s/blogs/tomtsang$
+</code></pre><p>切换着玩一下。</p>
+<pre><code>tom@adata:~/Projects/OpenX/lib$ node -v
+v6.9.1
+tom@adata:~/Projects/OpenX/lib$ sudo n
+[sudo] password for tom:
+tom@adata:~/Projects/OpenX/lib$ node -v
+v7.2.0
+tom@adata:~/Projects/OpenX/lib$ sudo n
+tom@adata:~/Projects/OpenX/lib$ node -v
+v6.9.1
+tom@adata:~/Projects/OpenX/lib$
+</code></pre>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/23/nodejs-1nodejs系列之toFixed/">
+  <time datetime="2016-11-23T06:11:56.000Z">
+    2016-11-23
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/23/nodejs-1nodejs系列之toFixed/">nodejs系列之toFixed</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>在遇到，4147.8015这样的浮点数时的，toFixed()的替代方案。</p>
+<p>通过下面这一段，应该知道，这里的toFixed2 中的 “9”（是可以设置成限定的位数的准确度的，不应该设置成“2”，“2”太小了，是有问题的，所以设置成大数“9”）。<br>    tom@adata:~/m6s/nodejs/module/toFixed$ node</p>
+<pre><code>&gt; var aux = Math.pow(0.1, 1 + 2)
+undefined
+&gt; var number = 14.44999
+undefined
+&gt; number + aux
+14.45099
+&gt; (number + aux).toFixed(1)
+&apos;14.5&apos;
+</code></pre><p>下面，直接上代码吧。共2个js文件。写法不同，意思相同。</p>
+<p>toFixedTest1.js</p>
+<pre><code>module.exports.MathHelper = MathHelper;
+
+var MathHelper = (function() {
+    this.round = function(number, numberOfDecimals) {
+        var aux = Math.pow(10, numberOfDecimals);
+        return Math.round(number * aux) / aux;
+    };
+    this.floor = function(number, numberOfDecimals) {
+        var aux = Math.pow(10, numberOfDecimals);
+        return Math.floor(number * aux) / aux;
+    };
+    this.ceil = function(number, numberOfDecimals) {
+        var aux = Math.pow(10, numberOfDecimals);
+        return Math.ceil(number * aux) / aux;
+    };
+    this.toFixed = function(number, numberOfDecimals) {
+        return (number + 0.000001).toFixed(numberOfDecimals);
+    };
+    this.toFixed2 = function(number, numberOfDecimals) {
+        var aux = Math.pow(0.1, numberOfDecimals + 9); // 这里的这个9,只是让它小一点，再小一点。
+        return (number + aux).toFixed(numberOfDecimals);
+    };
+    this.toFixed3 = function(number, numberOfDecimals) {
+        var aux = Math.pow(0.1, numberOfDecimals);
+        console.log(&quot;aux =&gt;&quot;, aux);
+        return (number + aux).toFixed(numberOfDecimals);
+    };
+    return {
+        round: round,
+        floor: floor,
+        ceil: ceil,
+        toFixed: toFixed,
+        toFixed2: toFixed2,
+        toFixed3: round
+    };
+})();
+
+var ToFixedHelper = (function() {
+    this.toFixed = function(number, numberOfDecimals) {
+        var aux = Math.pow(0.1, numberOfDecimals);
+        return (number + aux).toFixed(numberOfDecimals);
+    };
+    return {
+        toFixed: toFixed
+    }
+})();
+
+console.log(MathHelper.round(5.175, 2));
+console.log(MathHelper.toFixed(5.175, 2));
+console.log(MathHelper.toFixed(4147.8015, 3));
+console.log(MathHelper.toFixed2(4147.8015, 3));
+console.log(ToFixedHelper.toFixed(4147.8015, 3));
+
+var number = 4147.8015;
+var num = 10000;
+console.time(&quot;toFixed&quot;);
+for (var i = 0; i &lt; num; i++) {
+    number.toFixed(3);
 }
-</code></pre><h2 id="跨域造成session丢失"><a href="#跨域造成session丢失" class="headerlink" title="跨域造成session丢失"></a>跨域造成session丢失</h2><p><a href="https://segmentfault.com/q/1010000002905817" target="_blank" rel="external">https://segmentfault.com/q/1010000002905817</a></p>
-<p>重点参考下面这个地方：</p>
-<pre><code>这个配置在不少地方应该都能找到，不同的主要是两点：
-1。response.setHeader(&quot;Access-Control-Allow-Credentials&quot;,&quot;true&quot;); //是否支持cookie跨域
-2。response.setHeader(&quot;Access-Control-Allow-Origin&quot;, request.getHeader(&quot;Origin&quot;));
+console.timeEnd(&quot;toFixed&quot;);
 
-首先，配置了allow-credentials之后，如果allow-origin设为*，跨域时会报错说因为允许credentials，origin不能设为通配*，那所以设为简单的某个domain也是可以的，这种写法应该就是达到了任意domain都可以的效果吧。
+console.time(&quot;toFixed1&quot;);
+for (var i = 0; i &lt; num; i++) {
+    MathHelper.toFixed(number, 3);
+}
+console.timeEnd(&quot;toFixed1&quot;);
 
-然后angular部分也要设定个东西，举个栗子~
-</code></pre><p>解决方法：</p>
-<p>填加下面的代码到 服务端代码 如：limitup/route/index.js中。</p>
-<pre><code>app.all(&apos;*&apos;, function(req, res, next) {
-    res.header(&apos;Access-Control-Allow-Origin&apos;, req.headers.origin);
-    res.header(&apos;Access-Control-Allow-Methods&apos;, &apos;GET, POST&apos;);
-    res.header(&apos;Access-Control-Allow-Headers&apos;, &apos;Content-Type&apos;);
-    res.header(&apos;Access-Control-Allow-Credentials&apos;, &apos;true&apos;);
-    next();
-});
-</code></pre><h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
+console.time(&quot;toFixed2&quot;);
+for (var i = 0; i &lt; num; i++) {
+    MathHelper.toFixed2(number, 3);
+}
+console.timeEnd(&quot;toFixed2&quot;);
+</code></pre><p>toFixedTest2.js</p>
+<pre><code>var MathHelper = {
+    toFixed : function(number, numberOfDecimals) {
+        // var aux = Math.pow(0.1, numberOfDecimals + 2) + Math.pow(0.1, numberOfDecimals + 1);
+        var aux = 0.000001; // Math.pow(0.1, numberOfDecimals + 2);
+        return (number + aux).toFixed(numberOfDecimals);
+    },
+    toFixed2 : function(number, numberOfDecimals) {
+        // var aux = Math.pow(0.1, numberOfDecimals + 2) + Math.pow(0.1, numberOfDecimals + 1);
+        var aux = Math.pow(0.1, numberOfDecimals + 9);
+        return (number + aux).toFixed(numberOfDecimals);
+    }
+};
+
+console.log(MathHelper.toFixed(5.175, 2));
+console.log(5.175.toFixed(2));
+console.log(MathHelper.toFixed(4147.8015, 3));
+console.log(4147.8015.toFixed(3));
+console.log(MathHelper.toFixed(14.499, 1));
+console.log(14.499.toFixed(1));
+
+console.log(14.44999.toFixed(1));
+console.log(MathHelper.toFixed(14.44999, 1));
+console.log(MathHelper.toFixed2(14.44999, 1));
+
+var number = 4147.8015;
+var num = 10000;
+console.time(&quot;toFixed&quot;);
+for (var i = 0; i &lt; num; i++) {
+    number.toFixed(3);
+}
+console.timeEnd(&quot;toFixed&quot;);
+
+console.time(&quot;toFixed1&quot;);
+for (var i = 0; i &lt; num; i++) {
+    MathHelper.toFixed(number, 3);
+}
+console.timeEnd(&quot;toFixed1&quot;);
+
+console.time(&quot;toFixed1&quot;);
+for (var i = 0; i &lt; num; i++) {
+    MathHelper.toFixed(number, 3);
+}
+console.timeEnd(&quot;toFixed1&quot;);
+</code></pre>
     
   </div>
   <footer class="end-sep">
@@ -224,23 +577,22 @@ location / {
   <header>
     
       <div class="icon"></div>
-      <a href="/2016/11/15/nginx/">
-  <time datetime="2016-11-15T08:44:02.000Z">
-    2016-11-15
+      <a href="/2016/11/23/nodejs/">
+  <time datetime="2016-11-23T06:11:55.000Z">
+    2016-11-23
   </time>
 </a>
     
     
   
-    <h1 class="title"><a href="/2016/11/15/nginx/">nginx</a></h1>
+    <h1 class="title"><a href="/2016/11/23/nodejs/">nodejs系列之</a></h1>
   
 
   </header>
   
   <div class="entry">
     
-      <p>nginx 系列</p>
-
+      
     
   </div>
   <footer class="end-sep">
@@ -258,174 +610,26 @@ location / {
   <header>
     
       <div class="icon"></div>
-      <a href="/2016/11/15/mysql-0mysql系列之mariadb-install/">
-  <time datetime="2016-11-15T06:03:52.000Z">
-    2016-11-15
+      <a href="/2016/11/19/git-2/">
+  <time datetime="2016-11-19T10:56:10.000Z">
+    2016-11-19
   </time>
 </a>
     
     
   
-    <h1 class="title"><a href="/2016/11/15/mysql-0mysql系列之mariadb-install/">mysql系列之mysql-install</a></h1>
+    <h1 class="title"><a href="/2016/11/19/git-2/">git系列之使用</a></h1>
   
 
   </header>
   
   <div class="entry">
     
-      <h2 id="主要参考："><a href="#主要参考：" class="headerlink" title="主要参考："></a>主要参考：</h2><p><a href="http://blog.csdn.net/renfufei/article/details/17616549" target="_blank" rel="external">http://blog.csdn.net/renfufei/article/details/17616549</a></p>
-<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>说明: 首先必须能链接外网. 如果不能直接访问,那也可以设置代理,请参考: 在内网机器上设置yum代理<br>使用 yum 的权限要求是 root 用户,如果你不是,那么可以需要 在 shell命令之前加上 sudo, 或者 su root  切换到 super 管理员进行操作. 并可能需要输入密码.</p>
-<h3 id="1-添加-yum-数据源"><a href="#1-添加-yum-数据源" class="headerlink" title="1. 添加 yum 数据源"></a>1. 添加 yum 数据源</h3><blockquote>
-<h5 id="安装mariadb10-1"><a href="#安装mariadb10-1" class="headerlink" title="安装mariadb10.1"></a>安装mariadb10.1</h5><p>官方的<a href="https://mariadb.com/kb/zh-cn/installing-mariadb-with-yum/" target="_blank" rel="external">通过yum安装</a>教程</p>
-<p>根据不同的系统来下载repo吧，更多的<a href="https://downloads.mariadb.org/mariadb/repositories/#mirror=marty-anstey&amp;distro=CentOS&amp;distro_release=centos7-amd64--centos7&amp;version=10.1" target="_blank" rel="external">MariaDB.repo</a></p>
-</blockquote>
-<p>建议命名为 MariaDB.repo 类似的名字：</p>
-<pre><code>cd /etc/yum.repos.d/  
-vim /etc/yum.repos.d/MariaDB.repo  
-</code></pre><p>然后,写入文件内容:(建议使用 10.0)</p>
-<pre><code># MariaDB 10.0 CentOS repository list - created 2015-08-12 10:59 UTC  
-# http://mariadb.org/mariadb/repositories/  
-[mariadb]  
-name = MariaDB  
-baseurl = http://yum.mariadb.org/10.0/centos6-amd64  
-gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB  
-gpgcheck=1  
-</code></pre><p><em>这个baseurl可以通过浏览器打开，然后在 <a href="http://yum.mariadb.org/10.0/centos7-amd64/rpms/" target="_blank" rel="external">http://yum.mariadb.org/10.0/centos7-amd64/rpms/</a> 中<br>可以看到这里面有些什么 .rpm 文件。</em></p>
-<p>该文件的内容是参考官网,并从官网上生成的，设置安装源仓库的 具体的地址为:  <a href="https://downloads.mariadb.org/mariadb/repositories/" target="_blank" rel="external">https://downloads.mariadb.org/mariadb/repositories/</a><br>选择好操作系统版本之后既可以查看，其他操作系统的安装源也可以在此处查看并设置。<br>如果服务器不支持https协议，或者gpgkey 保错，确保没问题的话，可以将 gpgcheck=1 修改为 gpgcheck=0,则不进行校验.</p>
-<h3 id="2-安装数据库"><a href="#2-安装数据库" class="headerlink" title="2. 安装数据库"></a>2. 安装数据库</h3><pre><code>yum remove MariaDB-server MariaDB-client  
-yum -y install MariaDB-server MariaDB-client  
-</code></pre><p>如果要删除旧的数据库可以使用remove, 参数 -y 是确认，不用提示。此处，安装的是服务器和客户端，一般来说安装这两个就可以了。</p>
-<h3 id="3-启动数据库"><a href="#3-启动数据库" class="headerlink" title="3. 启动数据库"></a>3. 启动数据库</h3><p>如果不用进行其他的操作，则现在就可以直接启动数据库，并进行测试了。</p>
-<p>查看mysql状态;关闭数据库  </p>
-<pre><code># service mysql status  
-# service mysql stop  
-</code></pre><p>启动数据库  </p>
-<pre><code># service mysql start  
-</code></pre><h3 id="4-修改root密码"><a href="#4-修改root密码" class="headerlink" title="4. 修改root密码"></a>4. 修改root密码</h3><pre><code>#  修改root密码  
-mysqladmin -u root password &apos;root&apos;  
-</code></pre><p>因为安装好以后的root密码是空,所以需要设置; 如果是测试服务器,那么你可以直接使用root,不重要的密码很多时候可以设置为和用户名一致，以免忘记了又想不起来。<br>如果是重要的服务器，请使用复杂密码，例如邮箱，各种自由组合的规则的字符等。</p>
-<h3 id="5-登录数据库"><a href="#5-登录数据库" class="headerlink" title="5. 登录数据库"></a>5. 登录数据库</h3><pre><code>mysql -u root -p  
-</code></pre><p>如果是本机,那可以直接使用上面的命令登录，当然，需要输入密码. 如果是其他机器，那么可能需要如下的形式:</p>
-<pre><code>mysql -h 127.0.0.1 -P 3306 -u root -p  
-</code></pre><h3 id="6-简单SQL测试"><a href="#6-简单SQL测试" class="headerlink" title="6. 简单SQL测试"></a>6. 简单SQL测试</h3><pre><code>&gt;  
--- 查看MySQL的状态
-status;  
--- 显示支持的引擎
-show engines;  
--- 显示所有数据库
-show databases;  
--- 切换数据库上下文,即设置当前会话的默认数据库
-use test;  
--- 显示本数据库所有的表
-show tables;  
--- 创建一个表
-CREATETABLE t_test (  
-  id int(11) UNSIGNED NOTNULL AUTO_INCREMENT,  
-  userId char(36),  
-  lastLoginTime timestamp,  
-PRIMARYKEY (id)  
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
--- 插入测试数据
-insertinto t_test(userId)  
-values
-(&apos;admin&apos;)  
-,(&apos;haha&apos;)  
-;  
--- 简单查询
-select * from t_test;  
-select id,userId from t_test  where userId=&apos;admin&apos; ;  
-</code></pre><h3 id="7-修改数据存放目录"><a href="#7-修改数据存放目录" class="headerlink" title="7.  修改数据存放目录"></a>7.  修改数据存放目录</h3><p>mysql, MariaDB 的默认数据存放在 /var/lib/mysql/ 目录下,如果不想放到此处,或者是想要程序和数据分离，或者是磁盘原因,需要切换到其他路径,则可以通过修改 datadir系统变量来达成目的.</p>
-<pre><code># 停止数据库  
-service mysql stop
-# 创建目录,假设没有的话  
-mkdir /usr/local/ieternal/mysql_data  
-# 拷贝默认数据库到新的位置  
-# -a 命令是将文件属性一起拷贝,否则各种问题  
-cp -a /var/lib/mysql /usr/local/ieternal/mysql_data  
-# 备份原来的数据  
-cp -a /etc/my.cnf /etc/my.cnf_original  
-# 其实查看 /etc/my.cnf 文件可以发现  
-# MariaDB 的此文件之中只有一个包含语句  
-# 所以需要修改的配置文件为 /etc/my.cnf.d/server.cnf  
-cp /etc/my.cnf.d/server.cnf /etc/my.cnf.d/server.cnf_original  
-vim /etc/my.cnf.d/server.cnf    
-</code></pre><p>然后 按 i 进入编辑模式,可以插入相关内容.使用键盘的上下左右键可以移动光标, 编辑完成以后，按 ESC 退出编辑模式(进入命令模式), 然后输入命令:wq 保存并退出</p>
-<pre><code># 在文件的 mysqld 节下添加内容  
-[mysqld]  
-datadir=/usr/local/ieternal/mysql_data/mysql  
-socket=/var/lib/mysql/mysql.sock  
-#default-character-set=utf8  
-character_set_server=utf8  
-slow_query_log=on
-slow_query_log_file=/usr/local/ieternal/mysql_data/slow_query_log.log  
-long_query_time=2  
-</code></pre><p>其中,也只有 datadir 和 socket 比较重要; 而 default-character-set 是 mysql 自己认识的,而 mariadb5.5 就不认识,相当于变成了 character_set_server</p>
-<h5 id="7-1-创建慢查询日志文件"><a href="#7-1-创建慢查询日志文件" class="headerlink" title="7.1 创建慢查询日志文件"></a>7.1 创建慢查询日志文件</h5><p>既然上面指定了慢查询日志文件，我后来看了下MariaDB的err日志，发现MariaDB不会自己创建该文件，所以我们需要自己创建,并修改相应的文件权限(比如 MySQL 采用 mysql用户，可能我们使用 root用户创建的文件,此时要求慢查询日志文件对mysql用户可读可写就行。)</p>
-<pre><code>touch /usr/local/ieternal/mysql_data/slow_query_log.log  
-chmod 666 /usr/local/ieternal/mysql_data/slow_query_log.log  
-</code></pre><p>然后重新启动MySQL.</p>
-<pre><code>service mysql start  
-</code></pre><h2 id="综合命令"><a href="#综合命令" class="headerlink" title="综合命令"></a>综合命令</h2><p>方便大家ctrl+c, ctrl+v</p>
-<pre><code>sudo systemctl status mariadb.service
-sudo systemctl stop mariadb.service
-cd /data/
-ls
-sudo mkdir ./mariadb/mysql/ -p
-ls
-cd mariadb/mysql/
-ls
-sudo cp -a /var/lib/mysql /data/mariadb/
-ls
-cd ../
-ls
-cd mysql/
-ls
-sudo cp -a /etc/my.cnf /etc/my.cnf_original
-sudo cp /etc/my.cnf.d/server.cnf /etc/my.cnf.d/server.cnf_original
-sudo vim /etc/my.cnf.d/server.cnf
-sudo touch /data/mariadb/mysql/slow_query_log.log
-sudo chmod 666 /data/mariadb/mysql/slow_query_log.log
-sudo systemctl restart mariadb.service
-</code></pre><p>其中 vim /etc/my.cnf.d/server.cnf</p>
-<pre><code>#
-# These groups are read by MariaDB server.
-# Use it for options that only the server (but not clients) should see
-#
-# See the examples of server my.cnf files in /usr/share/mysql/
-#
-
-# this is read by the standalone daemon and embedded servers
-[server]
-
-# this is only for the mysqld standalone daemon
-[mysqld]
-datadir=/data/mariadb/mysql  
-socket=/var/lib/mysql/mysql.sock  
-#default-character-set=utf8  
-character_set_server=utf8  
-slow_query_log=on  
-slow_query_log_file=/data/mariadb/mysql/slow_query_log.log  
-long_query_time=2
-
-
-# this is only for embedded server
-[embedded]
-
-# This group is only read by MariaDB-5.5 servers.
-# If you use the same .cnf file for MariaDB of different versions,
-# use this group for options that older servers don&apos;t understand
-[mysqld-5.5]
-
-# These two groups are only read by MariaDB servers, not by MySQL.
-# If you use the same .cnf file for MySQL and MariaDB,
-# you can put MariaDB-only options here
-[mariadb]
-
-[mariadb-5.5]
-</code></pre><h2 id="卸载"><a href="#卸载" class="headerlink" title="卸载"></a>卸载</h2><pre><code>sudo yum remove MariaDB-server -y
-sudo yum remove MariaDB-client -y
-sudo yum remove MariaDB-common -y
-</code></pre><h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
+      <h2 id="git-reset-–hard-commit-id"><a href="#git-reset-–hard-commit-id" class="headerlink" title="git reset –hard commit_id"></a>git reset –hard commit_id</h2><p>Git允许我们在版本的历史之间穿梭，使用命令git reset –hard commit_id</p>
+<h2 id="去除对-已添加的文件或文件夹-的跟踪"><a href="#去除对-已添加的文件或文件夹-的跟踪" class="headerlink" title="去除对　已添加的文件或文件夹　的跟踪"></a>去除对　已添加的文件或文件夹　的跟踪</h2><pre><code>git rm -r --cached -- .idea/
+</code></pre><p>这样呢，文件夹里 .idea/　的修改，git都不跟踪了。</p>
+<pre><code>git rm -r --cached -- node_modules/
+</code></pre>
     
   </div>
   <footer class="end-sep">
@@ -443,124 +647,105 @@ sudo yum remove MariaDB-common -y
   <header>
     
       <div class="icon"></div>
-      <a href="/2016/11/15/linux-1/">
-  <time datetime="2016-11-15T04:53:44.000Z">
-    2016-11-15
+      <a href="/2016/11/19/git-1git系列之从外部复制一个.git文件，如何使用/">
+  <time datetime="2016-11-19T10:05:00.000Z">
+    2016-11-19
   </time>
 </a>
     
     
   
-    <h1 class="title"><a href="/2016/11/15/linux-1/">linux系列之yum</a></h1>
+    <h1 class="title"><a href="/2016/11/19/git-1git系列之从外部复制一个.git文件，如何使用/">git系列之从外部复制一个.git文件，如何使用</a></h1>
   
 
   </header>
   
   <div class="entry">
     
-      <h2 id="yum安装的软件在哪-linux下如何查看某个软件-是否安装？安装路径在哪"><a href="#yum安装的软件在哪-linux下如何查看某个软件-是否安装？安装路径在哪" class="headerlink" title="yum安装的软件在哪? linux下如何查看某个软件 是否安装？安装路径在哪?"></a>yum安装的软件在哪? linux下如何查看某个软件 是否安装？安装路径在哪?</h2><p><a href="https://zhidao.baidu.com/question/752680403805026404.html" target="_blank" rel="external">linux下如何查看某个软件 是否安装？安装路径在哪</a></p>
-<p>使用<code>sudo rpm -qa</code>来查看通过 yum安装的软件</p>
-<pre><code>[tom@kube-node-11 ~]$ sudo rpm -qa | grep Maria
-MariaDB-client-10.1.19-1.el7.centos.x86_64
-MariaDB-common-10.1.19-1.el7.centos.x86_64
-MariaDB-Galera-server-10.0.28-1.el7.centos.x86_64
-MariaDB-shared-10.1.19-1.el7.centos.x86_64
-</code></pre><h2 id="linux-通过-yum-search-得到，在当前情况下，能安装哪些软件，哪些软件安装不了。"><a href="#linux-通过-yum-search-得到，在当前情况下，能安装哪些软件，哪些软件安装不了。" class="headerlink" title="linux 通过 yum search 得到，在当前情况下，能安装哪些软件，哪些软件安装不了。"></a>linux 通过 yum search 得到，在当前情况下，能安装哪些软件，哪些软件安装不了。</h2><p>如下面 这个地方，显示 MariaDB-Galera-server 找不到。</p>
-<pre><code>[cdn@test_240 ~]$ sudo yum install MariaDB-Galera-server MariaDB-client galera -y
-Loaded plugins: fastestmirror, langpacks
-Loading mirror speeds from cached hostfile
- * base: mirrors.cn99.com
- * extras: mirrors.cn99.com
- * updates: mirrors.cn99.com
-No package MariaDB-Galera-server available.
-Package MariaDB-client-10.1.19-1.el7.centos.x86_64 already installed and latest version
-Package galera-25.3.18-1.rhel7.el7.centos.x86_64 already installed and latest version
-Nothing to do
-[cdn@test_240 ~]$
-</code></pre><p>那么，我们怎么办呢？<br>用<code>yum search</code>吧</p>
+      <p>从外部复制一个.git文件，如何使用</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>有.git 文件　 ，直接使用，报错如下：</p>
+<pre><code>fatal: &apos;/srv/OpenX.git&apos; does not appear to be a git repository
+fatal: Could not read from remote repository.
+</code></pre><p>现在有一个新来的.git文件, 如：OpenX.git</p>
 <ol>
-<li><p>确保 MariaDB.repo 存在</p>
-<p> [cdn@test_240 ~]$ ll /etc/yum.repos.d/<br> [cdn@test_240 ~]$ cat /etc/yum.repos.d/MariaDB.repo</p>
-<h1 id="MariaDB-10-1-CentOS-repository-list-created-2016-11-15-02-38-UTC"><a href="#MariaDB-10-1-CentOS-repository-list-created-2016-11-15-02-38-UTC" class="headerlink" title="MariaDB 10.1 CentOS repository list - created 2016-11-15 02:38 UTC"></a>MariaDB 10.1 CentOS repository list - created 2016-11-15 02:38 UTC</h1><h1 id="http-downloads-mariadb-org-mariadb-repositories"><a href="#http-downloads-mariadb-org-mariadb-repositories" class="headerlink" title="http://downloads.mariadb.org/mariadb/repositories/"></a><a href="http://downloads.mariadb.org/mariadb/repositories/" target="_blank" rel="external">http://downloads.mariadb.org/mariadb/repositories/</a></h1><p> [mariadb]<br> name = MariaDB<br> baseurl = <a href="http://yum.mariadb.org/10.0/centos7-amd64" target="_blank" rel="external">http://yum.mariadb.org/10.0/centos7-amd64</a><br> gpgkey=<a href="https://yum.mariadb.org/RPM-GPG-KEY-MariaDB" target="_blank" rel="external">https://yum.mariadb.org/RPM-GPG-KEY-MariaDB</a><br> gpgcheck=1<br> [cdn@test_240 ~]$</p>
-</li>
-<li><p>确保 MariaDB.repo 生效</p>
-</li>
-</ol>
-<p>先查是否能ping到baseurl</p>
-<pre><code>[cdn@test_240 ~]$ cat /etc/yum.repos.d/MariaDB.repo
-# MariaDB 10.0 CentOS repository list - created 2016-11-16 02:27 UTC
-# http://downloads.mariadb.org/mariadb/repositories/
-[mariadb]
-name = MariaDB
-baseurl = http://yum.mariadb.org/10.0/centos7-amd64
-gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
-gpgcheck=1
-[cdn@test_240 ~]$ ping yum.mariabdb.org
-^C
-[cdn@test_240 ~]$ ping yum.mariadb.org
-PING yum.mariadb.org (142.4.217.28) 56(84) bytes of data.
-64 bytes from bb02.mariadb.net (142.4.217.28): icmp_seq=1 ttl=47 time=272 ms
-64 bytes from bb02.mariadb.net (142.4.217.28): icmp_seq=2 ttl=47 time=272 ms
-64 bytes from bb02.mariadb.net (142.4.217.28): icmp_seq=3 ttl=47 time=272 ms
-^C
---- yum.mariadb.org ping statistics ---
-3 packets transmitted, 3 received, 0% packet loss, time 2001ms
-rtt min/avg/max/mdev = 272.301/272.492/272.588/0.135 ms
-</code></pre><p>说明可以<code>ping yum.mariadb.org</code>。</p>
-<p>用 <code>yum search</code>查，有MariaDB.repo VS 没有MariaDB.repo情况下，得到的软件列表是否相同。</p>
-<p>先走一个 <code>sudo yum search MariaDB</code></p>
-<pre><code>[cdn@test_240 ~]$ sudo yum search MariaDB
-Loaded plugins: fastestmirror, langpacks
-Loading mirror speeds from cached hostfile
- * base: mirrors.nwsuaf.edu.cn
- * epel: ftp.cuhk.edu.hk
- * extras: mirrors.cn99.com
- * updates: mirrors.cn99.com
-=============================================================================================== N/S matched: MariaDB ===============================================================================================
-MariaDB-client.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-common.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-compat.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-connect-engine.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-cracklib-password-check.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-devel.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-gssapi-client.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-gssapi-server.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-oqgraph-engine.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-server.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-shared.x86_64 : MariaDB: a very fast and robust SQL database server
-MariaDB-test.x86_64 : MariaDB: a very fast and robust SQL database server
-mariadb-bench.x86_64 : MariaDB benchmark scripts and data
-mariadb-devel.i686 : Files for development of MariaDB/MySQL applications
-mariadb-devel.x86_64 : Files for development of MariaDB/MySQL applications
-mariadb-embedded.i686 : MariaDB as an embeddable library
-mariadb-embedded.x86_64 : MariaDB as an embeddable library
-mariadb-embedded-devel.i686 : Development files for MariaDB as an embeddable library
-mariadb-embedded-devel.x86_64 : Development files for MariaDB as an embeddable library
-mariadb-libs.i686 : The shared libraries required for MariaDB/MySQL clients
-mariadb-libs.x86_64 : The shared libraries required for MariaDB/MySQL clients
-mariadb-server.x86_64 : The MariaDB server and related files
-mariadb.x86_64 : A community developed branch of MySQL
-mariadb-test.x86_64 : The test suite distributed with MariaD
-percona-xtrabackup.x86_64 : Online backup for InnoDB/XtraDB in MySQL, Percona Server and MariaDB
-
-  Name and summary matches only, use &quot;search all&quot; for everything.
-[cdn@test_240 ~]$
-</code></pre><p>两2种方法（2种用其1就可以了）：</p>
+<li><p>放到本机的git仓库目录</p>
+<pre><code>[tom@check repositories]$ sudo cp -a OpenX.git/ /srv/
+</code></pre></li>
+<li><p>建立新的下传使用目录</p>
+<pre><code>[tom@check repositories]$ cd ../testgit/
+[tom@check testgit]$ mkdir testgit2
+[tom@check testgit]$ ls
+OpenXtest  testgit2
+[tom@check testgit]$ cd testgit2/
+[tom@check testgit2]$ git init
+Initialized empty Git repository in /home/tom/in/testgit/testgit2/.git/
+</code></pre></li>
+<li><p>下传pull</p>
 <ol>
-<li><p>方法1, 把<code>MariaDB.repo</code>移除。<br> 不<code>MariaDB.repo</code> 移除，再运行 <code>sudo yum search MariaDB</code>。<br> 把<code>MariaDB.repo</code> 移除，再运行 <code>sudo yum search MariaDB</code>。</p>
+<li><p>remote报错啦</p>
+<pre><code>[tom@check testgit2]$ git remote add checkgit git@192.168.31.181:/srv/OpenX.git
+[tom@check testgit2]$ git pull checkgit master
+git@192.168.31.181&apos;s password:
+fatal: &apos;/srv/OpenX.git&apos; does not appear to be a git repository
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+[tom@check testgit2]$
+</code></pre></li>
+<li><p>clone也是会报错哟</p>
+<pre><code>[tom@check testgit2]$ git clone git@192.168.31.181:/srv/OpenX.git
+Cloning into &apos;OpenX&apos;...
+git@192.168.31.181&apos;s password:
+fatal: &apos;/srv/OpenX.git&apos; does not appear to be a git repository
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+[tom@check testgit2]$
+</code></pre></li>
+</ol>
 </li>
-<li><p>方法2, 用<code>yum search --disablerepo=</code>。</p>
-<p> 先 <code>sudo yum search MariaDB</code>。<br> 再运行 <code>sudo yum search MariaDB --disablerepo=base,extras,updates,epel</code>。</p>
-</li>
 </ol>
-<p>对比结果。最后，可知，列表不同。说明本<code>MariaDB.repo</code> 已生效。</p>
-<p><em>所以，以后每次安装软件前，可以先用<code>yum search</code>一下，这样，确保我们想要安装的，就是实际安装的</em></p>
-<h2 id="yum-install-之前要做的事"><a href="#yum-install-之前要做的事" class="headerlink" title="yum install 之前要做的事"></a>yum install 之前要做的事</h2><ol>
-<li>sudo yum makecache</li>
-<li>sudo yum clean all</li>
-<li>sudo yum search XXX</li>
-</ol>
-<h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
+<h2 id="解决"><a href="#解决" class="headerlink" title="解决　"></a>解决　</h2><p>查看文件属性</p>
+<pre><code>[tom@check testgit2]$ ll /srv/
+total 0
+drwxr-xr-x 7 git git 111 Jan 19 18:13 conan.git
+drwxr-xr-x 7 git git 111 Jan 11 10:52 crawler.git
+drwxr-xr-x 7 git git 111 Jan  8 16:19 eastmoney.git
+drwx------ 7 tom tom 107 Feb 28 08:59 OpenX.git
+drwxr-xr-x 7 git git 111 Jan 19 11:18 qlw.git
+drwxr-xr-x 7 git git 111 Jan  6 15:03 sample.git
+[tom@check testgit2]$
+</code></pre><p>发现OpenX.git 属性不对.</p>
+<p>检查是否安装git,并有git用户。如果没有，则建立git账户和密码<br>修改 OpenX.git 属性</p>
+<pre><code>[tom@check testgit2]$ sudo chown -R git:git /srv/OpenX.git/
+[tom@check testgit2]$ sudo chmod -R 755 /srv/OpenX.git/
+[tom@check testgit2]$ ll /srv/
+total 0
+drwxr-xr-x 7 git git 111 Jan 19 18:13 conan.git
+drwxr-xr-x 7 git git 111 Jan 11 10:52 crawler.git
+drwxr-xr-x 7 git git 111 Jan  8 16:19 eastmoney.git
+drwxr-xr-x 7 git git 107 Feb 28 08:59 OpenX.git
+drwxr-xr-x 7 git git 111 Jan 19 11:18 qlw.git
+drwxr-xr-x 7 git git 111 Jan  6 15:03 sample.git
+[tom@check testgit2]$
+</code></pre><p>验收</p>
+<pre><code>[tom@check testgit2]$ git remote add checkgit git@192.168.31.181:/srv/OpenX.git
+fatal: remote checkgit already exists.
+[tom@check testgit2]$ git pull checkgit master
+git@192.168.31.181&apos;s password:
+remote: Counting objects: 1673, done.
+remote: Compressing objects: 100% (1637/1637), done.
+remote: Total 1673 (delta 928), reused 76 (delta 32)
+Receiving objects: 100% (1673/1673), 6.90 MiB | 7.48 MiB/s, done.
+Resolving deltas: 100% (928/928), done.
+From 192.168.31.181:/srv/OpenX
+ * branch            master     -&gt; FETCH_HEAD
+[tom@check testgit2]$ ls
+lib  OpenInfo  OpenQuote
+[tom@check testgit2]$
+</code></pre>
     
   </div>
   <footer class="end-sep">
@@ -578,284 +763,22 @@ percona-xtrabackup.x86_64 : Online backup for InnoDB/XtraDB in MySQL, Percona Se
   <header>
     
       <div class="icon"></div>
-      <a href="/2016/11/15/mysql-6mysql系列之mariadb-cluster/">
-  <time datetime="2016-11-15T02:41:02.000Z">
-    2016-11-15
+      <a href="/2016/11/19/git/">
+  <time datetime="2016-11-19T10:04:56.000Z">
+    2016-11-19
   </time>
 </a>
     
     
   
-    <h1 class="title"><a href="/2016/11/15/mysql-6mysql系列之mariadb-cluster/">mysql系列之mysql-cluster</a></h1>
+    <h1 class="title"><a href="/2016/11/19/git/">git系列之目录</a></h1>
   
 
   </header>
   
   <div class="entry">
     
-      <p>mysql-cluster</p>
-<h2 id="主要参考"><a href="#主要参考" class="headerlink" title="主要参考"></a>主要参考</h2><p><a href="http://mariadb.org/" target="_blank" rel="external">http://mariadb.org/</a></p>
-<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><ol>
-<li>centos7-amd64</li>
-<li>mariadb10.1（IP:10.10.13.110） + mariadb5.5(IP:192.168.31.240)</li>
-</ol>
-<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><h3 id="准备2台机器"><a href="#准备2台机器" class="headerlink" title="准备2台机器"></a>准备2台机器</h3><p>安装mariadb10.1</p>
-<p><a href="http://localhost:4000/2016/11/15/mysql-install/" target="_blank" rel="external">参考这里</a></p>
-<h3 id="把-mariadb5-5-的数据，导出后，导入到-mariadb10-1"><a href="#把-mariadb5-5-的数据，导出后，导入到-mariadb10-1" class="headerlink" title="把 mariadb5.5 的数据，导出后，导入到 mariadb10.1"></a>把 mariadb5.5 的数据，导出后，导入到 mariadb10.1</h3><h5 id="导出"><a href="#导出" class="headerlink" title="导出"></a>导出</h5><h5 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h5><p>mysql主从复制<br>    第一步，就要看这几个参考<br>依次看<br>        <a href="http://blog.csdn.net/gaowenhui2008/article/details/46698321" target="_blank" rel="external">http://blog.csdn.net/gaowenhui2008/article/details/46698321</a><br>        <a href="http://blog.csdn.net/hguisu/article/details/7325124" target="_blank" rel="external">http://blog.csdn.net/hguisu/article/details/7325124</a><br>        <a href="http://blog.jobbole.com/94595/" target="_blank" rel="external">http://blog.jobbole.com/94595/</a><br>        <a href="http://www.xuejiehome.com/blread-1664.html" target="_blank" rel="external">http://www.xuejiehome.com/blread-1664.html</a><br>    MYSQL主从同步的管理<br>        参考<br>            <a href="http://blog.csdn.net/gaowenhui2008/article/details/46698321" target="_blank" rel="external">http://blog.csdn.net/gaowenhui2008/article/details/46698321</a></p>
-<pre><code>    1.  停止MYSQL同步
-1.  停止MYSQL同步
-    STOP SLAVE IO_THREAD;    #停止IO进程
-    STOP SLAVE SQL_THREAD;    #停止SQL进程
-    STOP SLAVE;                               #停止IO和SQL进程
-2.  启动MYSQL同步
-    START SLAVE IO_THREAD;    #启动IO进程
-    START SLAVE SQL_THREAD;  #启动SQL进程
-    START SLAVE;                             #启动IO和SQL进程
-3.   重置MYSQL同步
-    RESET SLAVE;
-    用于让从属服务器忘记其在主服务器的二进制日志中的复制位置, 它会删除master.info和relay-log.info文件，以及所有的中继日志，并启动一个新的中继日志,当你不需要主从的时候可以在从上执行这个操作。不然以后还会同步，可能会覆盖掉你的数据库，我以前就遇到过这样傻叉的事情。哈哈！
-4.   查看MYSQL同步状态
-    SHOW SLAVE STATUS;
-    这个命令主要查看Slave_IO_Running、Slave_SQL_Running、Seconds_Behind_Master、Last_IO_Error、Last_SQL_Error这些值来把握复制的状态。
-5.  临时跳过MYSQL同步错误
-    经常会朋友mysql主从同步遇到错误的时候，比如一个主键冲突等，那么我就需要在确保那一行数据一致的情况下临时的跳过这个错误，那就需要使用SQL_SLAVE_SKIP_COUNTER = n命令了，n是表示跳过后面的n个事件,比如我跳过一个事件的操作如下：
-    STOP SLAVE;
-    SET GLOBAL SQL_SLAVE_SKIP_COUNTER=1;
-    START SLAVE;
-6.  从指定位置重新同步
-    有的时候主从同步有问题了以后，需要从log位置的下一个位置进行同步，相当于跳过那个错误，这时候也可以使用CHANGE MASTER命令来处理，只要找到对应的LOG位置就可以,比如：
-    CHANGE MASTER TO MASTER_HOST=&apos;10.1.1.75&apos;,MASTER_USER=&apos;replication&apos;,MASTER_PASSWORD=&apos;123456&apos;,MASTER_LOG_FILE=&apos;mysql-bin.000006&apos;, MASTER_LOG_POS=106;
-    START SLAVE;
-MYSQL主从同步的管理经验介绍
-    1.   不要乱使用SQL_SLAVE_SKIP_COUNTER命令。
-        这个命令跳过之后很可能会导致你的主从数据不一致，一定要先将指定的错误记录下来，然后再去检查数据是否一致，尤其是核心的业务数据。
-    2.   结合percona-toolkit工具pt-table-checksum定期查看数据是否一致
-        这个是DBA必须要定期做的事情，呵呵，有合适的工具何乐而不为呢？另外percona-toolkit还提供了对数据库不一致的解决方案，可以采用pt-table-sync，这个工具不会更改主的数据。还可以使用pt-heartbeat来查看从服务器的复制落后情况。
-        具体的请查看：http://blog.chinaunix.net/uid-20639775-id-3229211.html。
-    3.   使用replicate-wild-ignore-table选项而不要使用replicate-do-db或者replicate-ignore-db。
-        原因已经在上面做了说明。
-    4.   将主服务器的日志模式调整成mixed。
-    5.   每个表都加上主键，主键对数据库的同步会有影响尤其是居于ROW复制模式。
-　mysql主从复制
-</code></pre><p>情况１：主从mysql，之前都无数据<br>        参考<br>            <a href="http://blog.jobbole.com/94595/" target="_blank" rel="external">http://blog.jobbole.com/94595/</a><br>            <a href="http://www.xuejiehome.com/blread-1664.html" target="_blank" rel="external">http://www.xuejiehome.com/blread-1664.html</a><br>        步骤<br>            目标<br>                10.10.12.14(主)<br>10.10.12.15(从)<br>            1、主从安装mysql，版本一致<br>                mysql&gt;status;</p>
-<pre><code>                　MariaDB [test]&gt; status;
-</code></pre><hr>
-<p>mysql  Ver 15.1 Distrib 5.5.44-MariaDB, for Linux (x86_64) using readline 5.1</p>
-<p>Connection id:        4<br>Current database:    test<br>Current user:        root@localhost<br>SSL:            Not in use<br>Current pager:        stdout<br>Using outfile:        ‘’<br>Using delimiter:    ;<br>Server:            MariaDB<br>Server version:        5.5.44-MariaDB-log MariaDB Server<br>Protocol version:    10<br>Connection:        Localhost via UNIX socket<br>Server characterset:    utf8<br>Db     characterset:    utf8<br>Client characterset:    utf8<br>Conn.  characterset:    utf8<br>UNIX socket:        /var/lib/mysql/mysql.sock<br>Uptime:            18 min 15 sec</p>
-<h2 id="Threads-2-Questions-24-Slow-queries-0-Opens-1-Flush-tables-2-Open-tables-27-Queries-per-second-avg-0-021"><a href="#Threads-2-Questions-24-Slow-queries-0-Opens-1-Flush-tables-2-Open-tables-27-Queries-per-second-avg-0-021" class="headerlink" title="Threads: 2  Questions: 24  Slow queries: 0  Opens: 1  Flush tables: 2  Open tables: 27  Queries per second avg: 0.021"></a>Threads: 2  Questions: 24  Slow queries: 0  Opens: 1  Flush tables: 2  Open tables: 27  Queries per second avg: 0.021</h2><p>MariaDB [test]&gt;</p>
-<pre><code>2、修改master，slave服务器
-    master服务器配置：
-        sudo　　vi /etc/my.cnf
-            　[mysqld]
-</code></pre><p>datadir=/var/lib/mysql<br>socket=/var/lib/mysql/mysql.sock</p>
-<h1 id="Disabling-symbolic-links-is-recommended-to-prevent-assorted-security-risks"><a href="#Disabling-symbolic-links-is-recommended-to-prevent-assorted-security-risks" class="headerlink" title="Disabling symbolic-links is recommended to prevent assorted security risks"></a>Disabling symbolic-links is recommended to prevent assorted security risks</h1><p>symbolic-links=0</p>
-<h1 id="Settings-user-and-group-are-ignored-when-systemd-is-used"><a href="#Settings-user-and-group-are-ignored-when-systemd-is-used" class="headerlink" title="Settings user and group are ignored when systemd is used."></a>Settings user and group are ignored when systemd is used.</h1><h1 id="If-you-need-to-run-mysqld-under-a-different-user-or-group"><a href="#If-you-need-to-run-mysqld-under-a-different-user-or-group" class="headerlink" title="If you need to run mysqld under a different user or group,"></a>If you need to run mysqld under a different user or group,</h1><h1 id="customize-your-systemd-unit-file-for-mariadb-according-to-the"><a href="#customize-your-systemd-unit-file-for-mariadb-according-to-the" class="headerlink" title="customize your systemd unit file for mariadb according to the"></a>customize your systemd unit file for mariadb according to the</h1><h1 id="instructions-in-http-fedoraproject-org-wiki-Systemd"><a href="#instructions-in-http-fedoraproject-org-wiki-Systemd" class="headerlink" title="instructions in http://fedoraproject.org/wiki/Systemd"></a>instructions in <a href="http://fedoraproject.org/wiki/Systemd" target="_blank" rel="external">http://fedoraproject.org/wiki/Systemd</a></h1><p>log-bin=mysql-bin<br>server-id=14<br>binlog-ignore-db = mysql,information_schema</p>
-<p>[mysqld]<br>server-id=14     </p>
-<p>#设置服务器唯一的id，默认是1，一般取IP最后一段，我们设置ip最后一段，slave设置14<br>log-bin=mysql-bin</p>
-<h1 id="启用二进制日志"><a href="#启用二进制日志" class="headerlink" title="启用二进制日志"></a>启用二进制日志</h1><p>binlog-ignore-db = mysql,information_schema  </p>
-<p>#忽略写入binlog的库<br>                slave服务器配置：<br>                    sudo　　vi /etc/my.cnf<br>                        　[mysqld]<br>datadir=/var/lib/mysql<br>socket=/var/lib/mysql/mysql.sock</p>
-<h1 id="Disabling-symbolic-links-is-recommended-to-prevent-assorted-security-risks-1"><a href="#Disabling-symbolic-links-is-recommended-to-prevent-assorted-security-risks-1" class="headerlink" title="Disabling symbolic-links is recommended to prevent assorted security risks"></a>Disabling symbolic-links is recommended to prevent assorted security risks</h1><p>symbolic-links=0</p>
-<h1 id="Settings-user-and-group-are-ignored-when-systemd-is-used-1"><a href="#Settings-user-and-group-are-ignored-when-systemd-is-used-1" class="headerlink" title="Settings user and group are ignored when systemd is used."></a>Settings user and group are ignored when systemd is used.</h1><h1 id="If-you-need-to-run-mysqld-under-a-different-user-or-group-1"><a href="#If-you-need-to-run-mysqld-under-a-different-user-or-group-1" class="headerlink" title="If you need to run mysqld under a different user or group,"></a>If you need to run mysqld under a different user or group,</h1><h1 id="customize-your-systemd-unit-file-for-mariadb-according-to-the-1"><a href="#customize-your-systemd-unit-file-for-mariadb-according-to-the-1" class="headerlink" title="customize your systemd unit file for mariadb according to the"></a>customize your systemd unit file for mariadb according to the</h1><h1 id="instructions-in-http-fedoraproject-org-wiki-Systemd-1"><a href="#instructions-in-http-fedoraproject-org-wiki-Systemd-1" class="headerlink" title="instructions in http://fedoraproject.org/wiki/Systemd"></a>instructions in <a href="http://fedoraproject.org/wiki/Systemd" target="_blank" rel="external">http://fedoraproject.org/wiki/Systemd</a></h1><p>log-bin=mysql-bin<br>server-id=15<br>replicate-wild-ignore-table=test.%</p>
-<p>#replicate-do-db = test</p>
-<p>#slave-skip-errors = all</p>
-<pre><code>replicate-wild-ignore-table=test.%
-</code></pre><p>#　replicate-do-db = test     </p>
-<p>#上面２句都可以表示只同步test库(但是第一句更好，不要使用第２名)，　<br>＃如果同步所有的库，则不要加上这一句<br>slave-skip-errors = all   </p>
-<p>#忽略因复制出现的所有错误<br>            3、重启主从服务器mysql<br>                sudo systemctl restart mariadb.service<br>                sudo systemctl status mariadb.service<br>            4、在主服务器上建立帐户并授权slave<br>                GRANT REPLICATION SLAVE ON <em>.</em> to ‘sync’@’10.10.12.%’ identified by ‘123.com’;<br>                    注意，这里是　<br>10.10.12.%, 而不是<br>10.10.12.<em><br>我犯过这样的错误<br>                GRANT REPLICATION SLAVE ON </em>.* to ‘sync’@’10.10.12.15’ identified by ‘123.com’;<br>                注意：大家在设置权限的时候不要将密码设置过于简单！<br>            5、查看主数据库状态<br>                　show master status\G;<br>                    　MariaDB [(none)]&gt; show master status;<br>+——————+———-+————–+————————–+<br>| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB         |<br>+——————+———-+————–+————————–+<br>| mysql-bin.000002 |      707 |              | mysql,information_schema |<br>+——————+———-+————–+————————–+<br>1 row in set (0.00 sec)</p>
-<p>MariaDB [(none)]&gt;<br>                    　MariaDB [(none)]&gt; show master status\G;<br><strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong> 1. row <strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong><br>            File: mysql-bin.000002<br>        Position: 707<br>    Binlog_Do_DB:<br>Binlog_Ignore_DB: mysql,information_schema<br>1 row in set (0.01 sec)</p>
-<p>ERROR: No query specified</p>
-<p>MariaDB [(none)]&gt;<br>                记录下 File 及 Position 的值，在后面进行从服务器操作的时候需要用到。<br>            6、配置从数据库<br>                change master to<br>master_host=’10.10.12.14’,<br>master_user=’sync’,<br>master_password=’123.com’,<br>master_log_file’=’mysql-bin.000002’,<br>master_log_pos=707;<br>            　7、启动slave同步进程并<br>                MariaDB [(none)]&gt; start slave;<br>            查看状态<br>                　　MariaDB [(none)]&gt; show slave status\G;<br>                    　MariaDB [(none)]&gt; show slave status\G;<br><strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong> 1. row <strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong><br>               Slave_IO_State: Waiting for master to send event<br>                  Master_Host: 10.10.12.14<br>                  Master_User: sync<br>                  Master_Port: 3306<br>                Connect_Retry: 60<br>              Master_Log_File: mysql-bin.000002<br>          Read_Master_Log_Pos: 707<br>               Relay_Log_File: mariadb-relay-bin.000002<br>                Relay_Log_Pos: 838<br>        Relay_Master_Log_File: mysql-bin.000002<br>             Slave_IO_Running: Yes<br>            Slave_SQL_Running: Yes<br>              Replicate_Do_DB: test<br>                其中Slave_IO_Running 与 Slave_SQL_Running 的值都必须为YES，才表明状态正常。<br>                报错<br>                    主从同步出现一下错误：Slave_IO_Running: Connecting<br>                        导致lave_IO_Running 为connecting 的原因主要有以下 3 个方面：<br>                        1、网络不通<br>                        2、密码不对<br>                            解决<br>                                从服务器<br>                                    STOP SLAVE;                               #停止IO和SQL进程<br>                                    RESET SLAVE;<br>                                    STOP SLAVE;                               #停止IO和SQL进程<br>                                    6、配置从数据库<br>                                        change master to<br>master_host=’10.10.12.14’,<br>master_user=’sync’,<br>master_password=’123.com’,<br>master_log_file’=’mysql-bin.000002’,<br>master_log_pos=707;<br>                                    START SLAVE;                             #启动IO和SQL进程<br>                                    实操<br>                                        　MariaDB [(none)]&gt; reset slave;<br>ERROR 1198 (HY000): This operation cannot be performed with a running slave; run STOP SLAVE first<br>MariaDB [(none)]&gt; stop slave;<br>Query OK, 0 rows affected (0.00 sec)</p>
-<p>MariaDB [(none)]&gt; reset slave;<br>Query OK, 0 rows affected (0.00 sec)</p>
-<p>MariaDB [(none)]&gt; show slave status\G;<br>MariaDB [(none)]&gt; stop slave;<br>Query OK, 0 rows affected, 1 warning (0.00 sec)</p>
-<p>MariaDB [(none)]&gt; change master to<br>    -&gt; master_host=’10.10.13.100’,<br>    -&gt; master_user=’sync’,<br>    -&gt; master_password=’sync.com’,<br>    -&gt; master_log_file=’mysql-bin.000001’,<br>    -&gt; master_log_pos=927;<br>Query OK, 0 rows affected (0.01 sec)</p>
-<p>MariaDB [(none)]&gt; start slave;<br>Query OK, 0 rows affected (0.00 sec)</p>
-<p>MariaDB [(none)]&gt; show slave status\G;<br><strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong> 1. row <strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong><br>               Slave_IO_State: Waiting for master to send event<br>                  Master_Host: 10.10.13.100<br>                  Master_User: sync<br>                  Master_Port: 3306<br>                Connect_Retry: 60<br>              Master_Log_File: mysql-bin.000001<br>          Read_Master_Log_Pos: 927<br>               Relay_Log_File: mariadb-relay-bin.000002<br>                Relay_Log_Pos: 529<br>        Relay_Master_Log_File: mysql-bin.000001<br>             Slave_IO_Running: Yes<br>            Slave_SQL_Running: Yes<br>                        3、pos不对<br>            8、验证主从同步</p>
-
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/07/code-style/">
-  <time datetime="2016-11-07T09:35:46.000Z">
-    2016-11-07
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/07/code-style/">code style</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <h2 id="代码风格-所有的语言的代码风格汇总"><a href="#代码风格-所有的语言的代码风格汇总" class="headerlink" title="代码风格, 所有的语言的代码风格汇总"></a>代码风格, 所有的语言的代码风格汇总</h2><p>有的时候，真的是很困惑，我应该用什么代码风格.</p>
-<ol>
-<li><a href="https://github.com/sivan/javascript-style-guide/blob/master/es5/README.md" target="_blank" rel="external">Airbnb JavaScript Style Guide 中文版</a></li>
-<li><a href="https://github.com/airbnb/javascript" target="_blank" rel="external">Airbnb JavaScript Style Guide</a></li>
-<li><a href="https://www.python.org/dev/peps/pep-0008/" target="_blank" rel="external">Style Guide for Python Code</a></li>
-<li><a href="https://github.com/google/styleguide" target="_blank" rel="external">Style guides for Google-originated open-source projects</a></li>
-<li><a href="http://zh-google-styleguide.readthedocs.io/en/latest/" target="_blank" rel="external">Google 开源项目风格指南 (中文版)</a></li>
-<li><a href="https://github.com/zh-google-styleguide/zh-google-styleguide" target="_blank" rel="external">Google 开源项目风格指南 github (中文版)</a></li>
-<li><a href="http://bq69.com/blog/articles/script/868/google-javascript-style-guide.html" target="_blank" rel="external">Google JavaScript Style Guide(中文 版)</a></li>
-<li><a href="http://sideeffect.kr/popularconvention/" target="_blank" rel="external">analyzing code convention from github commits for Github data challenge</a>, <a href="https://github.com/outsideris/popularconvention/" target="_blank" rel="external">github地址</a></li>
-<li><a href="http://alloyteam.github.io/CodeGuide/#js-variable-naming" target="_blank" rel="external">Code Guide by @AlloyTeam</a></li>
-<li>盼望您的指定</li>
-</ol>
-
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/03/essay-20161103-a/">
-  <time datetime="2016-11-03T10:09:36.000Z">
-    2016-11-03
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/03/essay-20161103-a/">essay 20161103 a</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <h2 id="生产环境、测试环境、开发环境、"><a href="#生产环境、测试环境、开发环境、" class="headerlink" title="生产环境、测试环境、开发环境、"></a>生产环境、测试环境、开发环境、</h2><p><a href="https://my.oschina.net/sancuo/blog/214904" target="_blank" rel="external">https://my.oschina.net/sancuo/blog/214904</a></p>
-<p>开发环境 production environment;</p>
-<p>测试环境 testing environment;</p>
-<p>开发环境 development environment;</p>
-<pre><code>开发环境：开发环境是程序猿们专门用于开发的服务器，配置可以比较随意， 为了开发调试方便，一般打开全部错误报告。
-
-测试环境：一般是克隆一份生产环境的配置，一个程序在测试环境工作不正常，那么肯定不能把它发布到生产机上。
-
-生产环境：是值正式提供对外服务的，一般会关掉错误报告，打开错误日志。
-</code></pre><p>三个环境也可以说是系统开发的三个阶段：开发-&gt;测试-&gt;上线，其中生产环境也就是通常说的真实环境。</p>
-
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/03/tomtsang2/">
-  <time datetime="2016-11-03T03:11:51.000Z">
-    2016-11-03
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/03/tomtsang2/">tomtsang2</a></h1>
-  
-
-  </header>
-  
-  <div class="entry">
-    
-      <p>什么情况，明明我这个地方就是你想要的摘要嘛，</p>
-<p>搞事情！</p>
-<p>以上是摘要<br>
-    
-  </div>
-  <footer class="end-sep">
-    
-      
-        <div class="alignleft">
-          <a href="/2016/11/03/tomtsang2/#more" class="more-link">Read More</a>
-        </div>
-      
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-
-  
-    <article class="photo">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/01/tomtsang1/">
-  <time datetime="2016-11-01T08:38:42.000Z">
-    2016-11-01
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title"><a href="/2016/11/01/tomtsang1/">tomtsang53535ere</a></h1>
-  
-
-  </header>
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      
-        <img src="http://bruce.u.qiniudn.com/2013/11/27/reading/photos-0.jpg">
-      
-        <img src="http://bruce.u.qiniudn.com/2013/11/27/reading/photos-1.jpg">
-      
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="entry">
-    
-      <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+      <p>git系列之目录</p>
 
     
   </div>
@@ -873,10 +796,10 @@ MYSQL主从同步的管理经验介绍
 
   <nav id="pagination">
   
-    <a href="/page/2/" class="prev">Prev</a>
+    <a href="/page/2/" class="prev">上一页</a>
   
   
-    <a href="/page/4/" class="next">Next</a>
+    <a href="/page/4/" class="next">下一页</a>
   
   <div class="clearfix"></div>
 </nav>
@@ -885,7 +808,7 @@ MYSQL主从同步的管理经验介绍
   </div>
   <footer id="footer"><div class="copyright">
   
-  &copy; 2016 <a href="/">Tom Tsang</a>
+  &copy; 2017 <a href="/">Tom Tsang</a>
   
 </div>
 <div class="theme-copyright">

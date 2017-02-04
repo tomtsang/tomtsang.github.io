@@ -1,0 +1,912 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+  <meta name="description" content="Tom Tsang&apos;s Blogs">
+<meta property="og:type" content="website">
+<meta property="og:title" content="美好生活, 共享快乐">
+<meta property="og:url" content="http://tomtsang.github.io/page/5/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="Tom Tsang&apos;s Blogs">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="美好生活, 共享快乐">
+<meta name="twitter:description" content="Tom Tsang&apos;s Blogs">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content">
+
+
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/15/nginx-2txt,json文件 中文乱码.txt,json文件 中文乱码/">
+  <time datetime="2016-11-15T08:47:05.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/15/nginx-2txt,json文件 中文乱码.txt,json文件 中文乱码/">nginx txt,json文件 中文乱码</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="nginx-中-txt-json文件-中文乱码"><a href="#nginx-中-txt-json文件-中文乱码" class="headerlink" title="nginx 中 txt,json文件 中文乱码"></a>nginx 中 txt,json文件 中文乱码</h2><p>在 /etc/nginx/conf.d/default.conf 中找到 <code>location / {</code> ,然后加入</p>
+<pre><code>charset utf-8;
+charset_types text/html
+</code></pre><p>如：</p>
+<pre><code>server {
+    listen       8000;
+    server_name  localhost;
+
+    #default_type &apos;text/html&apos;;
+    #charset utf-8;
+    #charset koi8-r;
+    #access_log  /var/log/nginx/log/host.access.log  main;
+
+    location / {
+        charset utf-8;
+        charset_types text/html application/json;
+        add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;;
+        add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;
+        add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;
+</code></pre>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/15/nginx-1nginx 跨域访问/">
+  <time datetime="2016-11-15T08:44:04.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/15/nginx-1nginx 跨域访问/">nginx 跨域访问</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <ul>
+<li>nginx 解决跨域访问的问题</li>
+<li>跨域造成session丢失</li>
+</ul>
+<h2 id="nginx-解决跨域访问的问题。"><a href="#nginx-解决跨域访问的问题。" class="headerlink" title="nginx 解决跨域访问的问题。"></a>nginx 解决跨域访问的问题。</h2><p><a href="https://michielkalkman.com/snippets/nginx-cors-open-configuration.html" target="_blank" rel="external">https://michielkalkman.com/snippets/nginx-cors-open-configuration.html</a></p>
+<p><a href="http://enable-cors.org/server_nginx.html" target="_blank" rel="external">http://enable-cors.org/server_nginx.html</a></p>
+<ol>
+<li>所有网页都实现跨域</li>
+</ol>
+<p>把下面的代码，放到 ，配置文件 /etc/nginx/conf.d/default.conf 中的 location / { 内</p>
+<pre><code>add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;;
+add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;
+add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;
+</code></pre><ol>
+<li>部分url（下以 /ok 为例） 请求实现跨域访问</li>
+</ol>
+<p>把下面的代码，放到 ，配置文件 /etc/nginx/conf.d/default.conf 中 的 location /ok { 内</p>
+<pre><code>#
+# Wide-open CORS config for nginx
+#
+location / {
+     if ($request_method = &apos;OPTIONS&apos;) {
+        add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;;
+        #
+        # Om nom nom cookies
+        #
+        add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;
+        add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;
+        #
+        # Custom headers and headers various browsers *should* be OK with but aren&apos;t
+        #
+        add_header &apos;Access-Control-Allow-Headers&apos; &apos;DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type&apos;;
+        #
+        # Tell client that this pre-flight info is valid for 20 days
+        #
+        add_header &apos;Access-Control-Max-Age&apos; 1728000;
+        add_header &apos;Content-Type&apos; &apos;text/plain charset=UTF-8&apos;;
+        add_header &apos;Content-Length&apos; 0;
+        return 204;
+     }
+     if ($request_method = &apos;POST&apos;) {
+        add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;;
+        add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;
+        add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;
+        add_header &apos;Access-Control-Allow-Headers&apos; &apos;DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type&apos;;
+     }
+     if ($request_method = &apos;GET&apos;) {
+        add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;;
+        add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;
+        add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;
+        add_header &apos;Access-Control-Allow-Headers&apos; &apos;DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type&apos;;
+     }
+}
+</code></pre><h2 id="跨域造成session丢失"><a href="#跨域造成session丢失" class="headerlink" title="跨域造成session丢失"></a>跨域造成session丢失</h2><p><a href="https://segmentfault.com/q/1010000002905817" target="_blank" rel="external">https://segmentfault.com/q/1010000002905817</a></p>
+<p>重点参考下面这个地方：</p>
+<pre><code>这个配置在不少地方应该都能找到，不同的主要是两点：
+1。response.setHeader(&quot;Access-Control-Allow-Credentials&quot;,&quot;true&quot;); //是否支持cookie跨域
+2。response.setHeader(&quot;Access-Control-Allow-Origin&quot;, request.getHeader(&quot;Origin&quot;));
+
+首先，配置了allow-credentials之后，如果allow-origin设为*，跨域时会报错说因为允许credentials，origin不能设为通配*，那所以设为简单的某个domain也是可以的，这种写法应该就是达到了任意domain都可以的效果吧。
+
+然后angular部分也要设定个东西，举个栗子~
+</code></pre><p>解决方法：</p>
+<p>填加下面的代码到 服务端代码 如：limitup/route/index.js中。</p>
+<pre><code>app.all(&apos;*&apos;, function(req, res, next) {
+    res.header(&apos;Access-Control-Allow-Origin&apos;, req.headers.origin);
+    res.header(&apos;Access-Control-Allow-Methods&apos;, &apos;GET, POST&apos;);
+    res.header(&apos;Access-Control-Allow-Headers&apos;, &apos;Content-Type&apos;);
+    res.header(&apos;Access-Control-Allow-Credentials&apos;, &apos;true&apos;);
+    next();
+});
+</code></pre><h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/15/nginx/">
+  <time datetime="2016-11-15T08:44:02.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/15/nginx/">nginx</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>nginx 系列</p>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/15/mysql-0mysql系列之mariadb-install/">
+  <time datetime="2016-11-15T06:03:52.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/15/mysql-0mysql系列之mariadb-install/">mysql系列之mysql-install</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="主要参考："><a href="#主要参考：" class="headerlink" title="主要参考："></a>主要参考：</h2><p><a href="http://blog.csdn.net/renfufei/article/details/17616549" target="_blank" rel="external">http://blog.csdn.net/renfufei/article/details/17616549</a></p>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>说明: 首先必须能链接外网. 如果不能直接访问,那也可以设置代理,请参考: 在内网机器上设置yum代理<br>使用 yum 的权限要求是 root 用户,如果你不是,那么可以需要 在 shell命令之前加上 sudo, 或者 su root  切换到 super 管理员进行操作. 并可能需要输入密码.</p>
+<h3 id="1-添加-yum-数据源"><a href="#1-添加-yum-数据源" class="headerlink" title="1. 添加 yum 数据源"></a>1. 添加 yum 数据源</h3><blockquote>
+<h5 id="安装mariadb10-1"><a href="#安装mariadb10-1" class="headerlink" title="安装mariadb10.1"></a>安装mariadb10.1</h5><p>官方的<a href="https://mariadb.com/kb/zh-cn/installing-mariadb-with-yum/" target="_blank" rel="external">通过yum安装</a>教程</p>
+<p>根据不同的系统来下载repo吧，更多的<a href="https://downloads.mariadb.org/mariadb/repositories/#mirror=marty-anstey&amp;distro=CentOS&amp;distro_release=centos7-amd64--centos7&amp;version=10.1" target="_blank" rel="external">MariaDB.repo</a></p>
+</blockquote>
+<p>建议命名为 MariaDB.repo 类似的名字：</p>
+<pre><code>cd /etc/yum.repos.d/  
+vim /etc/yum.repos.d/MariaDB.repo  
+</code></pre><p>然后,写入文件内容:(建议使用 10.0)</p>
+<pre><code># MariaDB 10.0 CentOS repository list - created 2015-08-12 10:59 UTC  
+# http://mariadb.org/mariadb/repositories/  
+[mariadb]  
+name = MariaDB  
+baseurl = http://yum.mariadb.org/10.0/centos6-amd64  
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB  
+gpgcheck=1  
+</code></pre><p><em>这个baseurl可以通过浏览器打开，然后在 <a href="http://yum.mariadb.org/10.0/centos7-amd64/rpms/" target="_blank" rel="external">http://yum.mariadb.org/10.0/centos7-amd64/rpms/</a> 中<br>可以看到这里面有些什么 .rpm 文件。</em></p>
+<p>该文件的内容是参考官网,并从官网上生成的，设置安装源仓库的 具体的地址为:  <a href="https://downloads.mariadb.org/mariadb/repositories/" target="_blank" rel="external">https://downloads.mariadb.org/mariadb/repositories/</a><br>选择好操作系统版本之后既可以查看，其他操作系统的安装源也可以在此处查看并设置。<br>如果服务器不支持https协议，或者gpgkey 保错，确保没问题的话，可以将 gpgcheck=1 修改为 gpgcheck=0,则不进行校验.</p>
+<h3 id="2-安装数据库"><a href="#2-安装数据库" class="headerlink" title="2. 安装数据库"></a>2. 安装数据库</h3><pre><code>yum remove MariaDB-server MariaDB-client  
+yum -y install MariaDB-server MariaDB-client  
+</code></pre><p>如果要删除旧的数据库可以使用remove, 参数 -y 是确认，不用提示。此处，安装的是服务器和客户端，一般来说安装这两个就可以了。</p>
+<h3 id="3-启动数据库"><a href="#3-启动数据库" class="headerlink" title="3. 启动数据库"></a>3. 启动数据库</h3><p>如果不用进行其他的操作，则现在就可以直接启动数据库，并进行测试了。</p>
+<p>查看mysql状态;关闭数据库  </p>
+<pre><code># service mysql status  
+# service mysql stop  
+</code></pre><p>启动数据库  </p>
+<pre><code># service mysql start  
+</code></pre><h3 id="4-修改root密码"><a href="#4-修改root密码" class="headerlink" title="4. 修改root密码"></a>4. 修改root密码</h3><pre><code>#  修改root密码  
+mysqladmin -u root password &apos;root&apos;  
+</code></pre><p>因为安装好以后的root密码是空,所以需要设置; 如果是测试服务器,那么你可以直接使用root,不重要的密码很多时候可以设置为和用户名一致，以免忘记了又想不起来。<br>如果是重要的服务器，请使用复杂密码，例如邮箱，各种自由组合的规则的字符等。</p>
+<h3 id="5-登录数据库"><a href="#5-登录数据库" class="headerlink" title="5. 登录数据库"></a>5. 登录数据库</h3><pre><code>mysql -u root -p  
+</code></pre><p>如果是本机,那可以直接使用上面的命令登录，当然，需要输入密码. 如果是其他机器，那么可能需要如下的形式:</p>
+<pre><code>mysql -h 127.0.0.1 -P 3306 -u root -p  
+</code></pre><h3 id="6-简单SQL测试"><a href="#6-简单SQL测试" class="headerlink" title="6. 简单SQL测试"></a>6. 简单SQL测试</h3><pre><code>&gt;  
+-- 查看MySQL的状态
+status;  
+-- 显示支持的引擎
+show engines;  
+-- 显示所有数据库
+show databases;  
+-- 切换数据库上下文,即设置当前会话的默认数据库
+use test;  
+-- 显示本数据库所有的表
+show tables;  
+-- 创建一个表
+CREATETABLE t_test (  
+  id int(11) UNSIGNED NOTNULL AUTO_INCREMENT,  
+  userId char(36),  
+  lastLoginTime timestamp,  
+PRIMARYKEY (id)  
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
+-- 插入测试数据
+insertinto t_test(userId)  
+values
+(&apos;admin&apos;)  
+,(&apos;haha&apos;)  
+;  
+-- 简单查询
+select * from t_test;  
+select id,userId from t_test  where userId=&apos;admin&apos; ;  
+</code></pre><h3 id="7-修改数据存放目录"><a href="#7-修改数据存放目录" class="headerlink" title="7.  修改数据存放目录"></a>7.  修改数据存放目录</h3><p>mysql, MariaDB 的默认数据存放在 /var/lib/mysql/ 目录下,如果不想放到此处,或者是想要程序和数据分离，或者是磁盘原因,需要切换到其他路径,则可以通过修改 datadir系统变量来达成目的.</p>
+<pre><code># 停止数据库  
+service mysql stop
+# 创建目录,假设没有的话  
+mkdir /usr/local/ieternal/mysql_data  
+# 拷贝默认数据库到新的位置  
+# -a 命令是将文件属性一起拷贝,否则各种问题  
+cp -a /var/lib/mysql /usr/local/ieternal/mysql_data  
+# 备份原来的数据  
+cp -a /etc/my.cnf /etc/my.cnf_original  
+# 其实查看 /etc/my.cnf 文件可以发现  
+# MariaDB 的此文件之中只有一个包含语句  
+# 所以需要修改的配置文件为 /etc/my.cnf.d/server.cnf  
+cp /etc/my.cnf.d/server.cnf /etc/my.cnf.d/server.cnf_original  
+vim /etc/my.cnf.d/server.cnf    
+</code></pre><p>然后 按 i 进入编辑模式,可以插入相关内容.使用键盘的上下左右键可以移动光标, 编辑完成以后，按 ESC 退出编辑模式(进入命令模式), 然后输入命令:wq 保存并退出</p>
+<pre><code># 在文件的 mysqld 节下添加内容  
+[mysqld]  
+datadir=/usr/local/ieternal/mysql_data/mysql  
+socket=/var/lib/mysql/mysql.sock  
+#default-character-set=utf8  
+character_set_server=utf8  
+slow_query_log=on
+slow_query_log_file=/usr/local/ieternal/mysql_data/slow_query_log.log  
+long_query_time=2  
+</code></pre><p>其中,也只有 datadir 和 socket 比较重要; 而 default-character-set 是 mysql 自己认识的,而 mariadb5.5 就不认识,相当于变成了 character_set_server</p>
+<h5 id="7-1-创建慢查询日志文件"><a href="#7-1-创建慢查询日志文件" class="headerlink" title="7.1 创建慢查询日志文件"></a>7.1 创建慢查询日志文件</h5><p>既然上面指定了慢查询日志文件，我后来看了下MariaDB的err日志，发现MariaDB不会自己创建该文件，所以我们需要自己创建,并修改相应的文件权限(比如 MySQL 采用 mysql用户，可能我们使用 root用户创建的文件,此时要求慢查询日志文件对mysql用户可读可写就行。)</p>
+<pre><code>touch /usr/local/ieternal/mysql_data/slow_query_log.log  
+chmod 666 /usr/local/ieternal/mysql_data/slow_query_log.log  
+</code></pre><p>然后重新启动MySQL.</p>
+<pre><code>service mysql start  
+</code></pre><h2 id="综合命令"><a href="#综合命令" class="headerlink" title="综合命令"></a>综合命令</h2><p>方便大家ctrl+c, ctrl+v</p>
+<pre><code>sudo systemctl status mariadb.service
+sudo systemctl stop mariadb.service
+cd /data/
+ls
+sudo mkdir ./mariadb/mysql/ -p
+ls
+cd mariadb/mysql/
+ls
+sudo cp -a /var/lib/mysql /data/mariadb/
+ls
+cd ../
+ls
+cd mysql/
+ls
+sudo cp -a /etc/my.cnf /etc/my.cnf_original
+sudo cp /etc/my.cnf.d/server.cnf /etc/my.cnf.d/server.cnf_original
+sudo vim /etc/my.cnf.d/server.cnf
+sudo touch /data/mariadb/mysql/slow_query_log.log
+sudo chmod 666 /data/mariadb/mysql/slow_query_log.log
+sudo systemctl restart mariadb.service
+</code></pre><p>其中 vim /etc/my.cnf.d/server.cnf</p>
+<pre><code>#
+# These groups are read by MariaDB server.
+# Use it for options that only the server (but not clients) should see
+#
+# See the examples of server my.cnf files in /usr/share/mysql/
+#
+
+# this is read by the standalone daemon and embedded servers
+[server]
+
+# this is only for the mysqld standalone daemon
+[mysqld]
+datadir=/data/mariadb/mysql  
+socket=/var/lib/mysql/mysql.sock  
+#default-character-set=utf8  
+character_set_server=utf8  
+slow_query_log=on  
+slow_query_log_file=/data/mariadb/mysql/slow_query_log.log  
+long_query_time=2
+
+
+# this is only for embedded server
+[embedded]
+
+# This group is only read by MariaDB-5.5 servers.
+# If you use the same .cnf file for MariaDB of different versions,
+# use this group for options that older servers don&apos;t understand
+[mysqld-5.5]
+
+# These two groups are only read by MariaDB servers, not by MySQL.
+# If you use the same .cnf file for MySQL and MariaDB,
+# you can put MariaDB-only options here
+[mariadb]
+
+[mariadb-5.5]
+</code></pre><h2 id="卸载"><a href="#卸载" class="headerlink" title="卸载"></a>卸载</h2><pre><code>sudo yum remove MariaDB-server -y
+sudo yum remove MariaDB-client -y
+sudo yum remove MariaDB-common -y
+</code></pre><h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/15/linux-1/">
+  <time datetime="2016-11-15T04:53:44.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/15/linux-1/">linux系列之yum</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="yum安装的软件在哪-linux下如何查看某个软件-是否安装？安装路径在哪"><a href="#yum安装的软件在哪-linux下如何查看某个软件-是否安装？安装路径在哪" class="headerlink" title="yum安装的软件在哪? linux下如何查看某个软件 是否安装？安装路径在哪?"></a>yum安装的软件在哪? linux下如何查看某个软件 是否安装？安装路径在哪?</h2><p><a href="https://zhidao.baidu.com/question/752680403805026404.html" target="_blank" rel="external">linux下如何查看某个软件 是否安装？安装路径在哪</a></p>
+<p>使用<code>sudo rpm -qa</code>来查看通过 yum安装的软件</p>
+<pre><code>[tom@kube-node-11 ~]$ sudo rpm -qa | grep Maria
+MariaDB-client-10.1.19-1.el7.centos.x86_64
+MariaDB-common-10.1.19-1.el7.centos.x86_64
+MariaDB-Galera-server-10.0.28-1.el7.centos.x86_64
+MariaDB-shared-10.1.19-1.el7.centos.x86_64
+</code></pre><h2 id="linux-通过-yum-search-得到，在当前情况下，能安装哪些软件，哪些软件安装不了。"><a href="#linux-通过-yum-search-得到，在当前情况下，能安装哪些软件，哪些软件安装不了。" class="headerlink" title="linux 通过 yum search 得到，在当前情况下，能安装哪些软件，哪些软件安装不了。"></a>linux 通过 yum search 得到，在当前情况下，能安装哪些软件，哪些软件安装不了。</h2><p>如下面 这个地方，显示 MariaDB-Galera-server 找不到。</p>
+<pre><code>[cdn@test_240 ~]$ sudo yum install MariaDB-Galera-server MariaDB-client galera -y
+Loaded plugins: fastestmirror, langpacks
+Loading mirror speeds from cached hostfile
+ * base: mirrors.cn99.com
+ * extras: mirrors.cn99.com
+ * updates: mirrors.cn99.com
+No package MariaDB-Galera-server available.
+Package MariaDB-client-10.1.19-1.el7.centos.x86_64 already installed and latest version
+Package galera-25.3.18-1.rhel7.el7.centos.x86_64 already installed and latest version
+Nothing to do
+[cdn@test_240 ~]$
+</code></pre><p>那么，我们怎么办呢？<br>用<code>yum search</code>吧</p>
+<ol>
+<li><p>确保 MariaDB.repo 存在</p>
+<p> [cdn@test_240 ~]$ ll /etc/yum.repos.d/<br> [cdn@test_240 ~]$ cat /etc/yum.repos.d/MariaDB.repo</p>
+<h1 id="MariaDB-10-1-CentOS-repository-list-created-2016-11-15-02-38-UTC"><a href="#MariaDB-10-1-CentOS-repository-list-created-2016-11-15-02-38-UTC" class="headerlink" title="MariaDB 10.1 CentOS repository list - created 2016-11-15 02:38 UTC"></a>MariaDB 10.1 CentOS repository list - created 2016-11-15 02:38 UTC</h1><h1 id="http-downloads-mariadb-org-mariadb-repositories"><a href="#http-downloads-mariadb-org-mariadb-repositories" class="headerlink" title="http://downloads.mariadb.org/mariadb/repositories/"></a><a href="http://downloads.mariadb.org/mariadb/repositories/" target="_blank" rel="external">http://downloads.mariadb.org/mariadb/repositories/</a></h1><p> [mariadb]<br> name = MariaDB<br> baseurl = <a href="http://yum.mariadb.org/10.0/centos7-amd64" target="_blank" rel="external">http://yum.mariadb.org/10.0/centos7-amd64</a><br> gpgkey=<a href="https://yum.mariadb.org/RPM-GPG-KEY-MariaDB" target="_blank" rel="external">https://yum.mariadb.org/RPM-GPG-KEY-MariaDB</a><br> gpgcheck=1<br> [cdn@test_240 ~]$</p>
+</li>
+<li><p>确保 MariaDB.repo 生效</p>
+</li>
+</ol>
+<p>先查是否能ping到baseurl</p>
+<pre><code>[cdn@test_240 ~]$ cat /etc/yum.repos.d/MariaDB.repo
+# MariaDB 10.0 CentOS repository list - created 2016-11-16 02:27 UTC
+# http://downloads.mariadb.org/mariadb/repositories/
+[mariadb]
+name = MariaDB
+baseurl = http://yum.mariadb.org/10.0/centos7-amd64
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgcheck=1
+[cdn@test_240 ~]$ ping yum.mariabdb.org
+^C
+[cdn@test_240 ~]$ ping yum.mariadb.org
+PING yum.mariadb.org (142.4.217.28) 56(84) bytes of data.
+64 bytes from bb02.mariadb.net (142.4.217.28): icmp_seq=1 ttl=47 time=272 ms
+64 bytes from bb02.mariadb.net (142.4.217.28): icmp_seq=2 ttl=47 time=272 ms
+64 bytes from bb02.mariadb.net (142.4.217.28): icmp_seq=3 ttl=47 time=272 ms
+^C
+--- yum.mariadb.org ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2001ms
+rtt min/avg/max/mdev = 272.301/272.492/272.588/0.135 ms
+</code></pre><p>说明可以<code>ping yum.mariadb.org</code>。</p>
+<p>用 <code>yum search</code>查，有MariaDB.repo VS 没有MariaDB.repo情况下，得到的软件列表是否相同。</p>
+<p>先走一个 <code>sudo yum search MariaDB</code></p>
+<pre><code>[cdn@test_240 ~]$ sudo yum search MariaDB
+Loaded plugins: fastestmirror, langpacks
+Loading mirror speeds from cached hostfile
+ * base: mirrors.nwsuaf.edu.cn
+ * epel: ftp.cuhk.edu.hk
+ * extras: mirrors.cn99.com
+ * updates: mirrors.cn99.com
+=============================================================================================== N/S matched: MariaDB ===============================================================================================
+MariaDB-client.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-common.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-compat.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-connect-engine.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-cracklib-password-check.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-devel.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-gssapi-client.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-gssapi-server.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-oqgraph-engine.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-server.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-shared.x86_64 : MariaDB: a very fast and robust SQL database server
+MariaDB-test.x86_64 : MariaDB: a very fast and robust SQL database server
+mariadb-bench.x86_64 : MariaDB benchmark scripts and data
+mariadb-devel.i686 : Files for development of MariaDB/MySQL applications
+mariadb-devel.x86_64 : Files for development of MariaDB/MySQL applications
+mariadb-embedded.i686 : MariaDB as an embeddable library
+mariadb-embedded.x86_64 : MariaDB as an embeddable library
+mariadb-embedded-devel.i686 : Development files for MariaDB as an embeddable library
+mariadb-embedded-devel.x86_64 : Development files for MariaDB as an embeddable library
+mariadb-libs.i686 : The shared libraries required for MariaDB/MySQL clients
+mariadb-libs.x86_64 : The shared libraries required for MariaDB/MySQL clients
+mariadb-server.x86_64 : The MariaDB server and related files
+mariadb.x86_64 : A community developed branch of MySQL
+mariadb-test.x86_64 : The test suite distributed with MariaD
+percona-xtrabackup.x86_64 : Online backup for InnoDB/XtraDB in MySQL, Percona Server and MariaDB
+
+  Name and summary matches only, use &quot;search all&quot; for everything.
+[cdn@test_240 ~]$
+</code></pre><p>两2种方法（2种用其1就可以了）：</p>
+<ol>
+<li><p>方法1, 把<code>MariaDB.repo</code>移除。<br> 不<code>MariaDB.repo</code> 移除，再运行 <code>sudo yum search MariaDB</code>。<br> 把<code>MariaDB.repo</code> 移除，再运行 <code>sudo yum search MariaDB</code>。</p>
+</li>
+<li><p>方法2, 用<code>yum search --disablerepo=</code>。</p>
+<p> 先 <code>sudo yum search MariaDB</code>。<br> 再运行 <code>sudo yum search MariaDB --disablerepo=base,extras,updates,epel</code>。</p>
+</li>
+</ol>
+<p>对比结果。最后，可知，列表不同。说明本<code>MariaDB.repo</code> 已生效。</p>
+<p><em>所以，以后每次安装软件前，可以先用<code>yum search</code>一下，这样，确保我们想要安装的，就是实际安装的</em></p>
+<h2 id="yum-install-之前要做的事"><a href="#yum-install-之前要做的事" class="headerlink" title="yum install 之前要做的事"></a>yum install 之前要做的事</h2><ol>
+<li>sudo yum makecache</li>
+<li>sudo yum clean all</li>
+<li>sudo yum search XXX</li>
+</ol>
+<h2 id="end"><a href="#end" class="headerlink" title="end"></a>end</h2>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/15/mysql-6mysql系列之mariadb-cluster/">
+  <time datetime="2016-11-15T02:41:02.000Z">
+    2016-11-15
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/15/mysql-6mysql系列之mariadb-cluster/">mysql系列之mysql-cluster</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>mysql-cluster</p>
+<h2 id="主要参考"><a href="#主要参考" class="headerlink" title="主要参考"></a>主要参考</h2><p><a href="http://mariadb.org/" target="_blank" rel="external">http://mariadb.org/</a></p>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><ol>
+<li>centos7-amd64</li>
+<li>mariadb10.1（IP:10.10.13.110） + mariadb5.5(IP:192.168.31.240)</li>
+</ol>
+<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><h3 id="准备2台机器"><a href="#准备2台机器" class="headerlink" title="准备2台机器"></a>准备2台机器</h3><p>安装mariadb10.1</p>
+<p><a href="http://localhost:4000/2016/11/15/mysql-install/" target="_blank" rel="external">参考这里</a></p>
+<h3 id="把-mariadb5-5-的数据，导出后，导入到-mariadb10-1"><a href="#把-mariadb5-5-的数据，导出后，导入到-mariadb10-1" class="headerlink" title="把 mariadb5.5 的数据，导出后，导入到 mariadb10.1"></a>把 mariadb5.5 的数据，导出后，导入到 mariadb10.1</h3><h5 id="导出"><a href="#导出" class="headerlink" title="导出"></a>导出</h5><h5 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h5><p>mysql主从复制<br>    第一步，就要看这几个参考<br>依次看<br>        <a href="http://blog.csdn.net/gaowenhui2008/article/details/46698321" target="_blank" rel="external">http://blog.csdn.net/gaowenhui2008/article/details/46698321</a><br>        <a href="http://blog.csdn.net/hguisu/article/details/7325124" target="_blank" rel="external">http://blog.csdn.net/hguisu/article/details/7325124</a><br>        <a href="http://blog.jobbole.com/94595/" target="_blank" rel="external">http://blog.jobbole.com/94595/</a><br>        <a href="http://www.xuejiehome.com/blread-1664.html" target="_blank" rel="external">http://www.xuejiehome.com/blread-1664.html</a><br>    MYSQL主从同步的管理<br>        参考<br>            <a href="http://blog.csdn.net/gaowenhui2008/article/details/46698321" target="_blank" rel="external">http://blog.csdn.net/gaowenhui2008/article/details/46698321</a></p>
+<pre><code>    1.  停止MYSQL同步
+1.  停止MYSQL同步
+    STOP SLAVE IO_THREAD;    #停止IO进程
+    STOP SLAVE SQL_THREAD;    #停止SQL进程
+    STOP SLAVE;                               #停止IO和SQL进程
+2.  启动MYSQL同步
+    START SLAVE IO_THREAD;    #启动IO进程
+    START SLAVE SQL_THREAD;  #启动SQL进程
+    START SLAVE;                             #启动IO和SQL进程
+3.   重置MYSQL同步
+    RESET SLAVE;
+    用于让从属服务器忘记其在主服务器的二进制日志中的复制位置, 它会删除master.info和relay-log.info文件，以及所有的中继日志，并启动一个新的中继日志,当你不需要主从的时候可以在从上执行这个操作。不然以后还会同步，可能会覆盖掉你的数据库，我以前就遇到过这样傻叉的事情。哈哈！
+4.   查看MYSQL同步状态
+    SHOW SLAVE STATUS;
+    这个命令主要查看Slave_IO_Running、Slave_SQL_Running、Seconds_Behind_Master、Last_IO_Error、Last_SQL_Error这些值来把握复制的状态。
+5.  临时跳过MYSQL同步错误
+    经常会朋友mysql主从同步遇到错误的时候，比如一个主键冲突等，那么我就需要在确保那一行数据一致的情况下临时的跳过这个错误，那就需要使用SQL_SLAVE_SKIP_COUNTER = n命令了，n是表示跳过后面的n个事件,比如我跳过一个事件的操作如下：
+    STOP SLAVE;
+    SET GLOBAL SQL_SLAVE_SKIP_COUNTER=1;
+    START SLAVE;
+6.  从指定位置重新同步
+    有的时候主从同步有问题了以后，需要从log位置的下一个位置进行同步，相当于跳过那个错误，这时候也可以使用CHANGE MASTER命令来处理，只要找到对应的LOG位置就可以,比如：
+    CHANGE MASTER TO MASTER_HOST=&apos;10.1.1.75&apos;,MASTER_USER=&apos;replication&apos;,MASTER_PASSWORD=&apos;123456&apos;,MASTER_LOG_FILE=&apos;mysql-bin.000006&apos;, MASTER_LOG_POS=106;
+    START SLAVE;
+MYSQL主从同步的管理经验介绍
+    1.   不要乱使用SQL_SLAVE_SKIP_COUNTER命令。
+        这个命令跳过之后很可能会导致你的主从数据不一致，一定要先将指定的错误记录下来，然后再去检查数据是否一致，尤其是核心的业务数据。
+    2.   结合percona-toolkit工具pt-table-checksum定期查看数据是否一致
+        这个是DBA必须要定期做的事情，呵呵，有合适的工具何乐而不为呢？另外percona-toolkit还提供了对数据库不一致的解决方案，可以采用pt-table-sync，这个工具不会更改主的数据。还可以使用pt-heartbeat来查看从服务器的复制落后情况。
+        具体的请查看：http://blog.chinaunix.net/uid-20639775-id-3229211.html。
+    3.   使用replicate-wild-ignore-table选项而不要使用replicate-do-db或者replicate-ignore-db。
+        原因已经在上面做了说明。
+    4.   将主服务器的日志模式调整成mixed。
+    5.   每个表都加上主键，主键对数据库的同步会有影响尤其是居于ROW复制模式。
+　mysql主从复制
+</code></pre><p>情况１：主从mysql，之前都无数据<br>        参考<br>            <a href="http://blog.jobbole.com/94595/" target="_blank" rel="external">http://blog.jobbole.com/94595/</a><br>            <a href="http://www.xuejiehome.com/blread-1664.html" target="_blank" rel="external">http://www.xuejiehome.com/blread-1664.html</a><br>        步骤<br>            目标<br>                10.10.12.14(主)<br>10.10.12.15(从)<br>            1、主从安装mysql，版本一致<br>                mysql&gt;status;</p>
+<pre><code>                　MariaDB [test]&gt; status;
+</code></pre><hr>
+<p>mysql  Ver 15.1 Distrib 5.5.44-MariaDB, for Linux (x86_64) using readline 5.1</p>
+<p>Connection id:        4<br>Current database:    test<br>Current user:        root@localhost<br>SSL:            Not in use<br>Current pager:        stdout<br>Using outfile:        ‘’<br>Using delimiter:    ;<br>Server:            MariaDB<br>Server version:        5.5.44-MariaDB-log MariaDB Server<br>Protocol version:    10<br>Connection:        Localhost via UNIX socket<br>Server characterset:    utf8<br>Db     characterset:    utf8<br>Client characterset:    utf8<br>Conn.  characterset:    utf8<br>UNIX socket:        /var/lib/mysql/mysql.sock<br>Uptime:            18 min 15 sec</p>
+<h2 id="Threads-2-Questions-24-Slow-queries-0-Opens-1-Flush-tables-2-Open-tables-27-Queries-per-second-avg-0-021"><a href="#Threads-2-Questions-24-Slow-queries-0-Opens-1-Flush-tables-2-Open-tables-27-Queries-per-second-avg-0-021" class="headerlink" title="Threads: 2  Questions: 24  Slow queries: 0  Opens: 1  Flush tables: 2  Open tables: 27  Queries per second avg: 0.021"></a>Threads: 2  Questions: 24  Slow queries: 0  Opens: 1  Flush tables: 2  Open tables: 27  Queries per second avg: 0.021</h2><p>MariaDB [test]&gt;</p>
+<pre><code>2、修改master，slave服务器
+    master服务器配置：
+        sudo　　vi /etc/my.cnf
+            　[mysqld]
+</code></pre><p>datadir=/var/lib/mysql<br>socket=/var/lib/mysql/mysql.sock</p>
+<h1 id="Disabling-symbolic-links-is-recommended-to-prevent-assorted-security-risks"><a href="#Disabling-symbolic-links-is-recommended-to-prevent-assorted-security-risks" class="headerlink" title="Disabling symbolic-links is recommended to prevent assorted security risks"></a>Disabling symbolic-links is recommended to prevent assorted security risks</h1><p>symbolic-links=0</p>
+<h1 id="Settings-user-and-group-are-ignored-when-systemd-is-used"><a href="#Settings-user-and-group-are-ignored-when-systemd-is-used" class="headerlink" title="Settings user and group are ignored when systemd is used."></a>Settings user and group are ignored when systemd is used.</h1><h1 id="If-you-need-to-run-mysqld-under-a-different-user-or-group"><a href="#If-you-need-to-run-mysqld-under-a-different-user-or-group" class="headerlink" title="If you need to run mysqld under a different user or group,"></a>If you need to run mysqld under a different user or group,</h1><h1 id="customize-your-systemd-unit-file-for-mariadb-according-to-the"><a href="#customize-your-systemd-unit-file-for-mariadb-according-to-the" class="headerlink" title="customize your systemd unit file for mariadb according to the"></a>customize your systemd unit file for mariadb according to the</h1><h1 id="instructions-in-http-fedoraproject-org-wiki-Systemd"><a href="#instructions-in-http-fedoraproject-org-wiki-Systemd" class="headerlink" title="instructions in http://fedoraproject.org/wiki/Systemd"></a>instructions in <a href="http://fedoraproject.org/wiki/Systemd" target="_blank" rel="external">http://fedoraproject.org/wiki/Systemd</a></h1><p>log-bin=mysql-bin<br>server-id=14<br>binlog-ignore-db = mysql,information_schema</p>
+<p>[mysqld]<br>server-id=14     </p>
+<p>#设置服务器唯一的id，默认是1，一般取IP最后一段，我们设置ip最后一段，slave设置14<br>log-bin=mysql-bin</p>
+<h1 id="启用二进制日志"><a href="#启用二进制日志" class="headerlink" title="启用二进制日志"></a>启用二进制日志</h1><p>binlog-ignore-db = mysql,information_schema  </p>
+<p>#忽略写入binlog的库<br>                slave服务器配置：<br>                    sudo　　vi /etc/my.cnf<br>                        　[mysqld]<br>datadir=/var/lib/mysql<br>socket=/var/lib/mysql/mysql.sock</p>
+<h1 id="Disabling-symbolic-links-is-recommended-to-prevent-assorted-security-risks-1"><a href="#Disabling-symbolic-links-is-recommended-to-prevent-assorted-security-risks-1" class="headerlink" title="Disabling symbolic-links is recommended to prevent assorted security risks"></a>Disabling symbolic-links is recommended to prevent assorted security risks</h1><p>symbolic-links=0</p>
+<h1 id="Settings-user-and-group-are-ignored-when-systemd-is-used-1"><a href="#Settings-user-and-group-are-ignored-when-systemd-is-used-1" class="headerlink" title="Settings user and group are ignored when systemd is used."></a>Settings user and group are ignored when systemd is used.</h1><h1 id="If-you-need-to-run-mysqld-under-a-different-user-or-group-1"><a href="#If-you-need-to-run-mysqld-under-a-different-user-or-group-1" class="headerlink" title="If you need to run mysqld under a different user or group,"></a>If you need to run mysqld under a different user or group,</h1><h1 id="customize-your-systemd-unit-file-for-mariadb-according-to-the-1"><a href="#customize-your-systemd-unit-file-for-mariadb-according-to-the-1" class="headerlink" title="customize your systemd unit file for mariadb according to the"></a>customize your systemd unit file for mariadb according to the</h1><h1 id="instructions-in-http-fedoraproject-org-wiki-Systemd-1"><a href="#instructions-in-http-fedoraproject-org-wiki-Systemd-1" class="headerlink" title="instructions in http://fedoraproject.org/wiki/Systemd"></a>instructions in <a href="http://fedoraproject.org/wiki/Systemd" target="_blank" rel="external">http://fedoraproject.org/wiki/Systemd</a></h1><p>log-bin=mysql-bin<br>server-id=15<br>replicate-wild-ignore-table=test.%</p>
+<p>#replicate-do-db = test</p>
+<p>#slave-skip-errors = all</p>
+<pre><code>replicate-wild-ignore-table=test.%
+</code></pre><p>#　replicate-do-db = test     </p>
+<p>#上面２句都可以表示只同步test库(但是第一句更好，不要使用第２名)，　<br>＃如果同步所有的库，则不要加上这一句<br>slave-skip-errors = all   </p>
+<p>#忽略因复制出现的所有错误<br>            3、重启主从服务器mysql<br>                sudo systemctl restart mariadb.service<br>                sudo systemctl status mariadb.service<br>            4、在主服务器上建立帐户并授权slave<br>                GRANT REPLICATION SLAVE ON <em>.</em> to ‘sync’@’10.10.12.%’ identified by ‘123.com’;<br>                    注意，这里是　<br>10.10.12.%, 而不是<br>10.10.12.<em><br>我犯过这样的错误<br>                GRANT REPLICATION SLAVE ON </em>.* to ‘sync’@’10.10.12.15’ identified by ‘123.com’;<br>                注意：大家在设置权限的时候不要将密码设置过于简单！<br>            5、查看主数据库状态<br>                　show master status\G;<br>                    　MariaDB [(none)]&gt; show master status;<br>+——————+———-+————–+————————–+<br>| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB         |<br>+——————+———-+————–+————————–+<br>| mysql-bin.000002 |      707 |              | mysql,information_schema |<br>+——————+———-+————–+————————–+<br>1 row in set (0.00 sec)</p>
+<p>MariaDB [(none)]&gt;<br>                    　MariaDB [(none)]&gt; show master status\G;<br><strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong> 1. row <strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong><br>            File: mysql-bin.000002<br>        Position: 707<br>    Binlog_Do_DB:<br>Binlog_Ignore_DB: mysql,information_schema<br>1 row in set (0.01 sec)</p>
+<p>ERROR: No query specified</p>
+<p>MariaDB [(none)]&gt;<br>                记录下 File 及 Position 的值，在后面进行从服务器操作的时候需要用到。<br>            6、配置从数据库<br>                change master to<br>master_host=’10.10.12.14’,<br>master_user=’sync’,<br>master_password=’123.com’,<br>master_log_file’=’mysql-bin.000002’,<br>master_log_pos=707;<br>            　7、启动slave同步进程并<br>                MariaDB [(none)]&gt; start slave;<br>            查看状态<br>                　　MariaDB [(none)]&gt; show slave status\G;<br>                    　MariaDB [(none)]&gt; show slave status\G;<br><strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong> 1. row <strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong><br>               Slave_IO_State: Waiting for master to send event<br>                  Master_Host: 10.10.12.14<br>                  Master_User: sync<br>                  Master_Port: 3306<br>                Connect_Retry: 60<br>              Master_Log_File: mysql-bin.000002<br>          Read_Master_Log_Pos: 707<br>               Relay_Log_File: mariadb-relay-bin.000002<br>                Relay_Log_Pos: 838<br>        Relay_Master_Log_File: mysql-bin.000002<br>             Slave_IO_Running: Yes<br>            Slave_SQL_Running: Yes<br>              Replicate_Do_DB: test<br>                其中Slave_IO_Running 与 Slave_SQL_Running 的值都必须为YES，才表明状态正常。<br>                报错<br>                    主从同步出现一下错误：Slave_IO_Running: Connecting<br>                        导致lave_IO_Running 为connecting 的原因主要有以下 3 个方面：<br>                        1、网络不通<br>                        2、密码不对<br>                            解决<br>                                从服务器<br>                                    STOP SLAVE;                               #停止IO和SQL进程<br>                                    RESET SLAVE;<br>                                    STOP SLAVE;                               #停止IO和SQL进程<br>                                    6、配置从数据库<br>                                        change master to<br>master_host=’10.10.12.14’,<br>master_user=’sync’,<br>master_password=’123.com’,<br>master_log_file’=’mysql-bin.000002’,<br>master_log_pos=707;<br>                                    START SLAVE;                             #启动IO和SQL进程<br>                                    实操<br>                                        　MariaDB [(none)]&gt; reset slave;<br>ERROR 1198 (HY000): This operation cannot be performed with a running slave; run STOP SLAVE first<br>MariaDB [(none)]&gt; stop slave;<br>Query OK, 0 rows affected (0.00 sec)</p>
+<p>MariaDB [(none)]&gt; reset slave;<br>Query OK, 0 rows affected (0.00 sec)</p>
+<p>MariaDB [(none)]&gt; show slave status\G;<br>MariaDB [(none)]&gt; stop slave;<br>Query OK, 0 rows affected, 1 warning (0.00 sec)</p>
+<p>MariaDB [(none)]&gt; change master to<br>    -&gt; master_host=’10.10.13.100’,<br>    -&gt; master_user=’sync’,<br>    -&gt; master_password=’sync.com’,<br>    -&gt; master_log_file=’mysql-bin.000001’,<br>    -&gt; master_log_pos=927;<br>Query OK, 0 rows affected (0.01 sec)</p>
+<p>MariaDB [(none)]&gt; start slave;<br>Query OK, 0 rows affected (0.00 sec)</p>
+<p>MariaDB [(none)]&gt; show slave status\G;<br><strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong> 1. row <strong><strong><strong><strong><strong><strong><em>*</em></strong></strong></strong></strong></strong></strong><br>               Slave_IO_State: Waiting for master to send event<br>                  Master_Host: 10.10.13.100<br>                  Master_User: sync<br>                  Master_Port: 3306<br>                Connect_Retry: 60<br>              Master_Log_File: mysql-bin.000001<br>          Read_Master_Log_Pos: 927<br>               Relay_Log_File: mariadb-relay-bin.000002<br>                Relay_Log_Pos: 529<br>        Relay_Master_Log_File: mysql-bin.000001<br>             Slave_IO_Running: Yes<br>            Slave_SQL_Running: Yes<br>                        3、pos不对<br>            8、验证主从同步</p>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/07/code-style/">
+  <time datetime="2016-11-07T09:35:46.000Z">
+    2016-11-07
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/07/code-style/">code style</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="代码风格-所有的语言的代码风格汇总"><a href="#代码风格-所有的语言的代码风格汇总" class="headerlink" title="代码风格, 所有的语言的代码风格汇总"></a>代码风格, 所有的语言的代码风格汇总</h2><p>有的时候，真的是很困惑，我应该用什么代码风格.</p>
+<ol>
+<li><a href="https://github.com/sivan/javascript-style-guide/blob/master/es5/README.md" target="_blank" rel="external">Airbnb JavaScript Style Guide 中文版</a></li>
+<li><a href="https://github.com/airbnb/javascript" target="_blank" rel="external">Airbnb JavaScript Style Guide</a></li>
+<li><a href="https://www.python.org/dev/peps/pep-0008/" target="_blank" rel="external">Style Guide for Python Code</a></li>
+<li><a href="https://github.com/google/styleguide" target="_blank" rel="external">Style guides for Google-originated open-source projects</a></li>
+<li><a href="http://zh-google-styleguide.readthedocs.io/en/latest/" target="_blank" rel="external">Google 开源项目风格指南 (中文版)</a></li>
+<li><a href="https://github.com/zh-google-styleguide/zh-google-styleguide" target="_blank" rel="external">Google 开源项目风格指南 github (中文版)</a></li>
+<li><a href="http://bq69.com/blog/articles/script/868/google-javascript-style-guide.html" target="_blank" rel="external">Google JavaScript Style Guide(中文 版)</a></li>
+<li><a href="http://sideeffect.kr/popularconvention/" target="_blank" rel="external">analyzing code convention from github commits for Github data challenge</a>, <a href="https://github.com/outsideris/popularconvention/" target="_blank" rel="external">github地址</a></li>
+<li><a href="http://alloyteam.github.io/CodeGuide/#js-variable-naming" target="_blank" rel="external">Code Guide by @AlloyTeam</a></li>
+<li>盼望您的指定</li>
+</ol>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/03/essay-20161103-a/">
+  <time datetime="2016-11-03T10:09:36.000Z">
+    2016-11-03
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/03/essay-20161103-a/">essay 20161103 a</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="生产环境、测试环境、开发环境、"><a href="#生产环境、测试环境、开发环境、" class="headerlink" title="生产环境、测试环境、开发环境、"></a>生产环境、测试环境、开发环境、</h2><p><a href="https://my.oschina.net/sancuo/blog/214904" target="_blank" rel="external">https://my.oschina.net/sancuo/blog/214904</a></p>
+<p>开发环境 production environment;</p>
+<p>测试环境 testing environment;</p>
+<p>开发环境 development environment;</p>
+<pre><code>开发环境：开发环境是程序猿们专门用于开发的服务器，配置可以比较随意， 为了开发调试方便，一般打开全部错误报告。
+
+测试环境：一般是克隆一份生产环境的配置，一个程序在测试环境工作不正常，那么肯定不能把它发布到生产机上。
+
+生产环境：是值正式提供对外服务的，一般会关掉错误报告，打开错误日志。
+</code></pre><p>三个环境也可以说是系统开发的三个阶段：开发-&gt;测试-&gt;上线，其中生产环境也就是通常说的真实环境。</p>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/03/tomtsang2/">
+  <time datetime="2016-11-03T03:11:51.000Z">
+    2016-11-03
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/03/tomtsang2/">tomtsang2</a></h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>什么情况，明明我这个地方就是你想要的摘要嘛，</p>
+<p>搞事情！</p>
+<p>以上是摘要<br>
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+        <div class="alignleft">
+          <a href="/2016/11/03/tomtsang2/#more" class="more-link">阅读全文</a>
+        </div>
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+    <article class="photo">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/11/01/tomtsang1/">
+  <time datetime="2016-11-01T08:38:42.000Z">
+    2016-11-01
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title"><a href="/2016/11/01/tomtsang1/">tomtsang53535ere</a></h1>
+  
+
+  </header>
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      
+        <img src="http://bruce.u.qiniudn.com/2013/11/27/reading/photos-0.jpg">
+      
+        <img src="http://bruce.u.qiniudn.com/2013/11/27/reading/photos-1.jpg">
+      
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="entry">
+    
+      <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+
+    
+  </div>
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+  
+
+  <nav id="pagination">
+  
+    <a href="/page/4/" class="prev">上一页</a>
+  
+  
+  <div class="clearfix"></div>
+</nav>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2017 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

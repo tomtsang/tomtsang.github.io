@@ -1,0 +1,226 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>docker系列之安装（centos） | 美好生活, 共享快乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Tom Tsang">
+  
+  
+    <meta name="description" content="参考https://docs.docker.com/engine/installation/linux/centos/
+practice[tom@mysql1 ~]$ sudo tee /etc/yum.repos.d/docker.repo &amp;lt;&amp;lt;-&amp;apos;EOF&amp;apos;
+&amp;gt; [dockerrepo]
+&amp;gt; name=Docker Repository
+&amp;gt; ba">
+  
+  <meta name="description" content="参考https://docs.docker.com/engine/installation/linux/centos/
+practice[tom@mysql1 ~]$ sudo tee /etc/yum.repos.d/docker.repo &amp;lt;&amp;lt;-&amp;apos;EOF&amp;apos;
+&amp;gt; [dockerrepo]
+&amp;gt; name=Docker Repository
+&amp;gt; ba">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker系列之安装（centos）">
+<meta property="og:url" content="http://tomtsang.github.io/2016/12/12/docker-1/index.html">
+<meta property="og:site_name" content="美好生活, 共享快乐">
+<meta property="og:description" content="参考https://docs.docker.com/engine/installation/linux/centos/
+practice[tom@mysql1 ~]$ sudo tee /etc/yum.repos.d/docker.repo &amp;lt;&amp;lt;-&amp;apos;EOF&amp;apos;
+&amp;gt; [dockerrepo]
+&amp;gt; name=Docker Repository
+&amp;gt; ba">
+<meta property="og:updated_time" content="2016-12-14T07:19:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="docker系列之安装（centos）">
+<meta name="twitter:description" content="参考https://docs.docker.com/engine/installation/linux/centos/
+practice[tom@mysql1 ~]$ sudo tee /etc/yum.repos.d/docker.repo &amp;lt;&amp;lt;-&amp;apos;EOF&amp;apos;
+&amp;gt; [dockerrepo]
+&amp;gt; name=Docker Repository
+&amp;gt; ba">
+  
+    <link rel="alternate" href="/atom.xml" title="美好生活, 共享快乐" type="application/atom+xml">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">美好生活, 共享快乐</a></h1>
+    <p><a href="/">IT, 码农, 数据科学, 金融 ...</a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+        <li><a href="/atom.xml">RSS</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2016/12/12/docker-1/">
+  <time datetime="2016-12-12T03:05:21.000Z">
+    2016-12-12
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">docker系列之安装（centos）</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://docs.docker.com/engine/installation/linux/centos/" target="_blank" rel="external">https://docs.docker.com/engine/installation/linux/centos/</a></p>
+<h2 id="practice"><a href="#practice" class="headerlink" title="practice"></a>practice</h2><pre><code>[tom@mysql1 ~]$ sudo tee /etc/yum.repos.d/docker.repo &lt;&lt;-&apos;EOF&apos;
+&gt; [dockerrepo]
+&gt; name=Docker Repository
+&gt; baseurl=https://yum.dockerproject.org/repo/main/centos/7/
+&gt; enabled=1
+&gt; gpgcheck=1
+&gt; gpgkey=https://yum.dockerproject.org/gpg
+&gt; EOF
+[dockerrepo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/centos/7/
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+[tom@mysql1 ~]$ sudo yum install docker-engine -y
+...
+Installed:
+  docker-engine.x86_64 0:1.12.3-1.el7.centos                                                                                                          
+
+Dependency Installed:
+  docker-engine-selinux.noarch 0:1.12.3-1.el7.centos                                                                                                  
+
+Complete!
+[tom@mysql1 ~]$ sudo systemctl enable docker.service
+Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service to /usr/lib/systemd/system/docker.service.
+[tom@mysql1 ~]$ sudo systemctl start docker
+[tom@mysql1 ~]$ sudo docker run --rm hello-world
+Unable to find image &apos;hello-world:latest&apos; locally
+latest: Pulling from library/hello-world
+c04b14da8d14: Pull complete
+Digest: sha256:0256e8a36e2070f7bf2d0b0763dbabdd67798512411de4cdcf9431a1feb60fd9
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the &quot;hello-world&quot; image from the Docker Hub.
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker Hub account:
+ https://hub.docker.com
+
+For more examples and ideas, visit:
+ https://docs.docker.com/engine/userguide/
+
+[tom@mysql1 ~]$ sudo groupadd docker
+groupadd: group &apos;docker&apos; already exists
+[tom@mysql1 ~]$ sudo usermod -aG docker tom
+</code></pre><h4 id="ctrl-v"><a href="#ctrl-v" class="headerlink" title="ctrl + v"></a>ctrl + v</h4><pre><code>[tom@mysql1 ~]$ sudo tee /etc/yum.repos.d/docker.repo &lt;&lt;-&apos;EOF&apos;
+&gt; [dockerrepo]
+&gt; name=Docker Repository
+&gt; baseurl=https://yum.dockerproject.org/repo/main/centos/7/
+&gt; enabled=1
+&gt; gpgcheck=1
+&gt; gpgkey=https://yum.dockerproject.org/gpg
+&gt; EOF
+[dockerrepo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/centos/7/
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+[tom@mysql1 ~]$ sudo yum install docker-engine -y
+[tom@mysql1 ~]$ sudo systemctl enable docker.service
+[tom@mysql1 ~]$ sudo systemctl start docker
+[tom@mysql1 ~]$ sudo docker run --rm hello-world
+[tom@mysql1 ~]$ sudo groupadd docker
+[tom@mysql1 ~]$ sudo usermod -aG docker tom
+</code></pre>
+    
+  </div>
+  <footer>
+    
+      
+  <div class="categories">
+    <a class="categories-link" href="/categories/docker/">docker</a>
+  </div>
+
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/docker/">docker</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2017 <a href="/">Tom Tsang</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

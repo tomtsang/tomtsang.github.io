@@ -15,16 +15,16 @@ node0, 10.10.13.110, primarynode1, 10.10.15.240node2, 10.10.12.13(这一台暂�
 
 拉取 (panubo版)git 代码, 取 image
 
-运行一下
-mkdir ~/docker &amp;amp;&amp;amp; cd ~/docker &amp;am">
+三台机器, 各运行一下
+mkdir ~/docker &amp;amp;&amp;amp; cd ~/doc">
   
   <meta name="description" content="https://github.com/panubo/docker-mariadb-galera
 node0, 10.10.13.110, primarynode1, 10.10.15.240node2, 10.10.12.13(这一台暂时没用上)
 
 拉取 (panubo版)git 代码, 取 image
 
-运行一下
-mkdir ~/docker &amp;amp;&amp;amp; cd ~/docker &amp;am">
+三台机器, 各运行一下
+mkdir ~/docker &amp;amp;&amp;amp; cd ~/doc">
 <meta property="og:type" content="article">
 <meta property="og:title" content="docker之docker-mariadb-galera(panubo版)(2017-02)">
 <meta property="og:url" content="http://tomtsang.github.io/2017/02/04/docker-7/index.html">
@@ -34,9 +34,9 @@ node0, 10.10.13.110, primarynode1, 10.10.15.240node2, 10.10.12.13(这一台暂�
 
 拉取 (panubo版)git 代码, 取 image
 
-运行一下
-mkdir ~/docker &amp;amp;&amp;amp; cd ~/docker &amp;am">
-<meta property="og:updated_time" content="2017-02-06T02:29:30.000Z">
+三台机器, 各运行一下
+mkdir ~/docker &amp;amp;&amp;amp; cd ~/doc">
+<meta property="og:updated_time" content="2017-02-06T08:27:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker之docker-mariadb-galera(panubo版)(2017-02)">
 <meta name="twitter:description" content="https://github.com/panubo/docker-mariadb-galera
@@ -44,8 +44,8 @@ node0, 10.10.13.110, primarynode1, 10.10.15.240node2, 10.10.12.13(这一台暂�
 
 拉取 (panubo版)git 代码, 取 image
 
-运行一下
-mkdir ~/docker &amp;amp;&amp;amp; cd ~/docker &amp;am">
+三台机器, 各运行一下
+mkdir ~/docker &amp;amp;&amp;amp; cd ~/doc">
   
     <link rel="alternate" href="/atom.xml" title="tomtsang" type="application/atom+xml">
   
@@ -109,7 +109,7 @@ mkdir ~/docker &amp;amp;&amp;amp; cd ~/docker &amp;am">
 <ol>
 <li>拉取 (panubo版)git 代码, 取 image</li>
 </ol>
-<p>运行一下</p>
+<p>三台机器, 各运行一下</p>
 <pre><code>mkdir ~/docker &amp;&amp; cd ~/docker &amp;&amp; git clone https://github.com/panubo/docker-mariadb-galera &amp;&amp; cd docker-mariadb-galera/ &amp;&amp; docker pull panubo/mariadb-galera
 </code></pre><ol>
 <li>设置环境变量</li>
@@ -166,14 +166,15 @@ garbd
 </code></pre><ol>
 <li>运行container, 创建新的数据库目录下</li>
 </ol>
-<p>没有道理了哈, 下面这个成功了, 上面几个都没有成功..</p>
+<p>在 node0 上:</p>
+<pre><code>sudo mkdir -p /mnt/data/galera.service/mysql/mysql
+</code></pre><p>没有道理了哈, 下面这个成功了, 上面几个都没有成功..</p>
 <pre><code>docker run -d --net host --name galera   -e WSREP_NODE_ADDRESS=$WSREP_NODE_ADDRESS   -e WSREP_CLUSTER_ADDRESS=$WSREP_CLUSTER_ADDRESS   -e MYSQL_ROOT_PASSWORD=like1123  -p 3306:3306   -p 4567:4567/udp   -p 4567-4568:4567-4568   -p 4444:4444   -v /mnt/data/galera.service/mysql:/var/lib/mysql:Z   panubo/mariadb-galera     mysqld     --wsrep-new-cluster
 </code></pre><p>这里设置了 , mysql的root用户的密码为<code>like1123</code></p>
 <p>在node1上:</p>
-<pre><code>mkdir -p /mnt/data/galera.service/mysql/mysql
+<pre><code>sudo mkdir -p /mnt/data/galera.service/mysql/mysql
 
-docker run -d --net host --name galera \
--e WSREP_NODE_ADDRESS=$WSREP_NODE_ADDRESS \
+docker run -d --net host --name galera -e WSREP_NODE_ADDRESS=$WSREP_NODE_ADDRESS \
 -e WSREP_CLUSTER_ADDRESS=$WSREP_CLUSTER_ADDRESS \
 -p 3306:3306 \
 -p 4567:4567/udp \
@@ -200,8 +201,11 @@ sudo systemctl restart docker.service &amp;&amp; sudo systemctl status docker.se
 </code></pre><ol>
 <li>添加 node2 进集群</li>
 </ol>
-<p>TODO</p>
-<ol>
+<p>确保一下, 数据库的数据目录为<code>/data/mariadb/mysql</code></p>
+<p>方式与 node1 一样, 直接添加, 就可以了.</p>
+<p>在 node2 上:</p>
+<pre><code>docker run -d --net host --name galera -e WSREP_NODE_ADDRESS=$WSREP_NODE_ADDRESS -e WSREP_CLUSTER_ADDRESS=$WSREP_CLUSTER_ADDRESS -p 3306:3306 -p 4567:4567/udp -p 4567-4568:4567-4568 -p 4444:4444 -v /data/mariadb/mysql:/var/lib/mysql:Z panubo/mariadb-galera mysqld
+</code></pre><ol>
 <li>验收:</li>
 </ol>
 <p>验收1:</p>
@@ -235,6 +239,10 @@ MariaDB [(none)]&gt;
 CREATE DATABASE IF NOT EXISTS my_db default character set utf8 COLLATE utf8_general_ci;
 </code></pre><p>去 node1, 进入container, 检查, 是否有</p>
 <pre><code>show databases;
+</code></pre><p>或者直接这样:</p>
+<pre><code>container_sha1=c0c6fa26b49a # 这个是container sha1 字符串
+docker exec -ti $container_sha1 mysql -p -e &apos;CREATE DATABASE IF NOT EXISTS my_db default character set utf8 COLLATE utf8_general_ci;&apos;
+docker exec -ti $container_sha1 mysql -p -e &apos;show databases;&apos;
 </code></pre><p>ok, 现在说明, galera已经建立好了.</p>
 <ol>
 <li>怎么让其它机器访问 galera</li>

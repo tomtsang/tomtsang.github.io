@@ -13,24 +13,14 @@
     <meta name="description" content="https://github.com/panubo/docker-mariadb-galera
 node0, 10.10.12.17node1, 10.10.12.18node2, 10.10.13.10(这一台暂时没用上)
 
-设置环境变量
-
-在node0上:
-cat &amp;gt;&amp;gt; ~/.bashrc &amp;lt;&amp;lt; EOF
-
-WSREP_NODE_ADDRESS=10.10.12.17
-W">
+拉取 (panubo版)git 代码
+ mkdir ~/docker &amp;amp;&amp;amp; cd ~/docker &amp;amp;&amp;amp; git clone https:/">
   
   <meta name="description" content="https://github.com/panubo/docker-mariadb-galera
 node0, 10.10.12.17node1, 10.10.12.18node2, 10.10.13.10(这一台暂时没用上)
 
-设置环境变量
-
-在node0上:
-cat &amp;gt;&amp;gt; ~/.bashrc &amp;lt;&amp;lt; EOF
-
-WSREP_NODE_ADDRESS=10.10.12.17
-W">
+拉取 (panubo版)git 代码
+ mkdir ~/docker &amp;amp;&amp;amp; cd ~/docker &amp;amp;&amp;amp; git clone https:/">
 <meta property="og:type" content="article">
 <meta property="og:title" content="docker之docker-mariadb-galera(panubo版)">
 <meta property="og:url" content="http://tomtsang.github.io/2017/01/24/docker-3/index.html">
@@ -38,26 +28,16 @@ W">
 <meta property="og:description" content="https://github.com/panubo/docker-mariadb-galera
 node0, 10.10.12.17node1, 10.10.12.18node2, 10.10.13.10(这一台暂时没用上)
 
-设置环境变量
-
-在node0上:
-cat &amp;gt;&amp;gt; ~/.bashrc &amp;lt;&amp;lt; EOF
-
-WSREP_NODE_ADDRESS=10.10.12.17
-W">
-<meta property="og:updated_time" content="2017-02-04T05:26:36.000Z">
+拉取 (panubo版)git 代码
+ mkdir ~/docker &amp;amp;&amp;amp; cd ~/docker &amp;amp;&amp;amp; git clone https:/">
+<meta property="og:updated_time" content="2017-02-04T08:33:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker之docker-mariadb-galera(panubo版)">
 <meta name="twitter:description" content="https://github.com/panubo/docker-mariadb-galera
 node0, 10.10.12.17node1, 10.10.12.18node2, 10.10.13.10(这一台暂时没用上)
 
-设置环境变量
-
-在node0上:
-cat &amp;gt;&amp;gt; ~/.bashrc &amp;lt;&amp;lt; EOF
-
-WSREP_NODE_ADDRESS=10.10.12.17
-W">
+拉取 (panubo版)git 代码
+ mkdir ~/docker &amp;amp;&amp;amp; cd ~/docker &amp;amp;&amp;amp; git clone https:/">
   
     <link rel="alternate" href="/atom.xml" title="tomtsang" type="application/atom+xml">
   
@@ -119,7 +99,11 @@ W">
       <p><a href="https://github.com/panubo/docker-mariadb-galera" target="_blank" rel="external">https://github.com/panubo/docker-mariadb-galera</a></p>
 <p>node0, 10.10.12.17<br>node1, 10.10.12.18<br>node2, 10.10.13.10(这一台暂时没用上)</p>
 <ol>
-<li>设置环境变量</li>
+<li><p>拉取 (panubo版)git 代码</p>
+<p> mkdir ~/docker &amp;&amp; cd ~/docker &amp;&amp; git clone <a href="https://github.com/panubo/docker-mariadb-galera" target="_blank" rel="external">https://github.com/panubo/docker-mariadb-galera</a> &amp;&amp; cd docker-mariadb-galera/</p>
+</li>
+<li><p>设置环境变量</p>
+</li>
 </ol>
 <p>在node0上:</p>
 <pre><code>cat &gt;&gt; ~/.bashrc &lt;&lt; EOF
@@ -138,14 +122,18 @@ EOF
 
 source ~/.bashrc
 </code></pre><ol>
-<li><p>Running Garbd</p>
-<p> docker run -d –net host –name galera-garbd \<br>   -e WSREP_CLUSTER_ADDRESS=$WSREP_CLUSTER_ADDRESS \<br>   panubo/mariadb-galera \</p>
-<pre><code>garbd
-</code></pre></li>
-<li><p>运行containe</p>
-</li>
+<li>Running Garbd</li>
+</ol>
+<p>在 node0 上:</p>
+<pre><code>docker run -d --net host --name galera-garbd \
+-e WSREP_CLUSTER_ADDRESS=$WSREP_CLUSTER_ADDRESS \
+panubo/mariadb-galera \
+garbd
+</code></pre><ol>
+<li>运行container</li>
 </ol>
 <p>在node0上:</p>
+<p>创建 数据库的数据目录, 如果有了, 就不用创建了, 只要把下面的目录修改成 数据目录 就可以了.</p>
 <pre><code>mkdir -p /mnt/data/galera.service/mysql/mysql
 
 docker run -d --net host --name galera \

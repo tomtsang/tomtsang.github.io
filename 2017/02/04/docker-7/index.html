@@ -4,22 +4,48 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
   
-  <title>docker | tomtsang</title>
+  <title>docker之docker-mariadb-galera(panubo版)(2017-02) | tomtsang</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   
     <meta name="author" content="Tom Tsang">
   
   
-  <meta name="description" content="Tom Tsang&apos;s Blogs">
+    <meta name="description" content="https://github.com/panubo/docker-mariadb-galera
+node0, 10.10.13.110, primarynode1, 10.10.15.240node2, 10.10.12.13(这一台暂时没用上)
+
+拉取 (panubo版)git 代码, 取 image
+
+运行一下
+mkdir ~/docker &amp;amp;&amp;amp; cd ~/docker &amp;am">
+  
+  <meta name="description" content="https://github.com/panubo/docker-mariadb-galera
+node0, 10.10.13.110, primarynode1, 10.10.15.240node2, 10.10.12.13(这一台暂时没用上)
+
+拉取 (panubo版)git 代码, 取 image
+
+运行一下
+mkdir ~/docker &amp;amp;&amp;amp; cd ~/docker &amp;am">
 <meta property="og:type" content="article">
-<meta property="og:title" content="docker">
+<meta property="og:title" content="docker之docker-mariadb-galera(panubo版)(2017-02)">
 <meta property="og:url" content="http://tomtsang.github.io/2017/02/04/docker-7/index.html">
 <meta property="og:site_name" content="tomtsang">
-<meta property="og:description" content="Tom Tsang&apos;s Blogs">
-<meta property="og:updated_time" content="2017-02-04T05:34:13.000Z">
+<meta property="og:description" content="https://github.com/panubo/docker-mariadb-galera
+node0, 10.10.13.110, primarynode1, 10.10.15.240node2, 10.10.12.13(这一台暂时没用上)
+
+拉取 (panubo版)git 代码, 取 image
+
+运行一下
+mkdir ~/docker &amp;amp;&amp;amp; cd ~/docker &amp;am">
+<meta property="og:updated_time" content="2017-02-06T02:29:30.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="docker">
-<meta name="twitter:description" content="Tom Tsang&apos;s Blogs">
+<meta name="twitter:title" content="docker之docker-mariadb-galera(panubo版)(2017-02)">
+<meta name="twitter:description" content="https://github.com/panubo/docker-mariadb-galera
+node0, 10.10.13.110, primarynode1, 10.10.15.240node2, 10.10.12.13(这一台暂时没用上)
+
+拉取 (panubo版)git 代码, 取 image
+
+运行一下
+mkdir ~/docker &amp;amp;&amp;amp; cd ~/docker &amp;am">
   
     <link rel="alternate" href="/atom.xml" title="tomtsang" type="application/atom+xml">
   
@@ -71,20 +97,183 @@
     
     
   
-    <h1 class="title">docker</h1>
+    <h1 class="title">docker之docker-mariadb-galera(panubo版)(2017-02)</h1>
   
 
   </header>
   
   <div class="entry">
     
-      
+      <p><a href="https://github.com/panubo/docker-mariadb-galera" target="_blank" rel="external">https://github.com/panubo/docker-mariadb-galera</a></p>
+<p>node0, 10.10.13.110, primary<br>node1, 10.10.15.240<br>node2, 10.10.12.13(这一台暂时没用上)</p>
+<ol>
+<li>拉取 (panubo版)git 代码, 取 image</li>
+</ol>
+<p>运行一下</p>
+<pre><code>mkdir ~/docker &amp;&amp; cd ~/docker &amp;&amp; git clone https://github.com/panubo/docker-mariadb-galera &amp;&amp; cd docker-mariadb-galera/ &amp;&amp; docker pull panubo/mariadb-galera
+</code></pre><ol>
+<li>设置环境变量</li>
+</ol>
+<p>在node0上:</p>
+<pre><code>cat &gt;&gt; ~/.bashrc &lt;&lt; EOF
+
+WSREP_NODE_ADDRESS=10.10.13.110
+WSREP_CLUSTER_ADDRESS=gcomm://10.10.13.110:4567,10.10.12.13:4567,10.10.15.240:4567
+WSREP_CLUSTER_NAME=my_wsrep_cluster
+WSREP_NODE_NAME=mariadb-node-0
+EOF
+
+source ~/.bashrc
+</code></pre><p>在node1上:</p>
+<pre><code>cat &gt;&gt; ~/.bashrc &lt;&lt; EOF
+
+WSREP_NODE_ADDRESS=10.10.15.240
+WSREP_CLUSTER_ADDRESS=gcomm://10.10.13.110:4567,10.10.12.13:4567,10.10.15.240:4567
+WSREP_CLUSTER_NAME=my_wsrep_cluster
+WSREP_NODE_NAME=mariadb-node-1
+EOF
+
+source ~/.bashrc
+</code></pre><p>在node2上:</p>
+<pre><code>cat &gt;&gt; ~/.bashrc &lt;&lt; EOF
+
+WSREP_NODE_ADDRESS=10.10.12.13
+WSREP_CLUSTER_ADDRESS=gcomm://10.10.13.110:4567,10.10.12.13:4567,10.10.15.240:4567
+WSREP_CLUSTER_NAME=my_wsrep_cluster
+WSREP_NODE_NAME=mariadb-node-2
+EOF
+
+source ~/.bashrc
+</code></pre><ol>
+<li>打开端口</li>
+</ol>
+<p>在每一台机器上:</p>
+<pre><code>sudo firewall-cmd --permanent --add-port=3306/tcp;
+sudo firewall-cmd --permanent --add-port=4567/udp;
+sudo firewall-cmd --permanent --add-port=4567/tcp;
+sudo firewall-cmd --permanent --add-port=4568/tcp;
+sudo firewall-cmd --permanent --add-port=4444/tcp;
+sudo firewall-cmd --reload;
+sudo firewall-cmd --permanent --list-port;
+</code></pre><ol>
+<li>(这一步, 可以不做)Running Garbd</li>
+</ol>
+<p>在 node0 上:</p>
+<pre><code>docker run -d --net host --name galera-garbd \
+-e WSREP_CLUSTER_ADDRESS=$WSREP_CLUSTER_ADDRESS \
+panubo/mariadb-galera \
+garbd
+</code></pre><ol>
+<li>运行container, 创建新的数据库目录下</li>
+</ol>
+<p>没有道理了哈, 下面这个成功了, 上面几个都没有成功..</p>
+<pre><code>docker run -d --net host --name galera   -e WSREP_NODE_ADDRESS=$WSREP_NODE_ADDRESS   -e WSREP_CLUSTER_ADDRESS=$WSREP_CLUSTER_ADDRESS   -e MYSQL_ROOT_PASSWORD=like1123  -p 3306:3306   -p 4567:4567/udp   -p 4567-4568:4567-4568   -p 4444:4444   -v /mnt/data/galera.service/mysql:/var/lib/mysql:Z   panubo/mariadb-galera     mysqld     --wsrep-new-cluster
+</code></pre><p>这里设置了 , mysql的root用户的密码为<code>like1123</code></p>
+<p>在node1上:</p>
+<pre><code>mkdir -p /mnt/data/galera.service/mysql/mysql
+
+docker run -d --net host --name galera \
+-e WSREP_NODE_ADDRESS=$WSREP_NODE_ADDRESS \
+-e WSREP_CLUSTER_ADDRESS=$WSREP_CLUSTER_ADDRESS \
+-p 3306:3306 \
+-p 4567:4567/udp \
+-p 4567-4568:4567-4568 \
+-p 4444:4444 \
+-v /mnt/data/galera.service/mysql:/var/lib/mysql:Z \
+panubo/mariadb-galera \
+mysqld
+</code></pre><ol>
+<li>连接到 已有的数据库目录<code>/data/mariadb/mysql</code></li>
+</ol>
+<p>下面, 我们连接到 已有的数据库目录<code>/data/mariadb/mysql</code>:</p>
+<p>准备工作, 每台机, 关闭, 删除container, 重新启动 docker.service :</p>
+<pre><code>docker stop 3b8adb3825e1 &amp;&amp; docker rm 3b8adb3825e1
+sudo rm -rf /mnt/data/galera.service/mysql
+sudo systemctl restart docker.service &amp;&amp; sudo systemctl status docker.service
+</code></pre><p>现在开始:</p>
+<p>创建 数据库的数据目录, 如果有了, 就不用创建了, 只要把下面的目录修改成 数据目录 就可以了.</p>
+<p>在node0上:</p>
+<p>因为, 我们这里之前有过 数据库(但是, 不是docker下运行的), 数据库的数据目录为<code>/data/mariadb/mysql</code>, 所以这里直接用了</p>
+<pre><code>docker run -d --net host --name galera   -e WSREP_NODE_ADDRESS=$WSREP_NODE_ADDRESS   -e WSREP_CLUSTER_ADDRESS=$WSREP_CLUSTER_ADDRESS   -e MYSQL_ROOT_PASSWORD=like1123  -p 3306:3306   -p 4567:4567/udp   -p 4567-4568:4567-4568   -p 4444:4444   -v /data/mariadb/mysql:/var/lib/mysql:Z   panubo/mariadb-galera mysqld --wsrep-new-cluster
+</code></pre><p>在node1上:</p>
+<pre><code>docker run -d --net host --name galera -e WSREP_NODE_ADDRESS=$WSREP_NODE_ADDRESS -e WSREP_CLUSTER_ADDRESS=$WSREP_CLUSTER_ADDRESS -p 3306:3306 -p 4567:4567/udp -p 4567-4568:4567-4568 -p 4444:4444 -v /data/mariadb/mysql:/var/lib/mysql:Z panubo/mariadb-galera mysqld
+</code></pre><ol>
+<li>添加 node2 进集群</li>
+</ol>
+<p>TODO</p>
+<ol>
+<li>验收:</li>
+</ol>
+<p>验收1:</p>
+<p>在 node0, 运行 <code>docker exec -ti node11-container-sha1 mysql -p -e &#39;show status like &quot;wsrep_cluster_size&quot;&#39;</code>, 查看 集群的节点数.</p>
+<pre><code>[tom@mariadb-node-1 ~]$ docker ps
+CONTAINER ID        IMAGE                   COMMAND                  CREATED             STATUS              PORTS               NAMES
+c0c6fa26b49a        panubo/mariadb-galera   &quot;/galera-entrypoin...&quot;   41 hours ago        Up 7 hours                              galera
+[tom@mariadb-node-1 ~]$ docker exec -ti c0c6fa26b49a mysql -p -e &apos;show status like &quot;wsrep_cluster_size&quot;&apos;
+Enter password:
++--------------------+-------+
+| Variable_name      | Value |
++--------------------+-------+
+| wsrep_cluster_size | 2     |
++--------------------+-------+
+[tom@mariadb-node-1 ~]$
+</code></pre><p>验收2:</p>
+<p>去 node0, 进入container, 新建立一个库,</p>
+<pre><code>[tom@mariadb-node-0 ~]$ docker exec -it 1de01ad721ad /bin/bash
+root@mariadb-node-0:/# mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 5
+Server version: 10.1.21-MariaDB-1~jessie mariadb.org binary distribution
+
+Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.
+
+Type &apos;help;&apos; or &apos;\h&apos; for help. Type &apos;\c&apos; to clear the current input statement.
+
+MariaDB [(none)]&gt;
+
+CREATE DATABASE IF NOT EXISTS my_db default character set utf8 COLLATE utf8_general_ci;
+</code></pre><p>去 node1, 进入container, 检查, 是否有</p>
+<pre><code>show databases;
+</code></pre><p>ok, 现在说明, galera已经建立好了.</p>
+<ol>
+<li>怎么让其它机器访问 galera</li>
+</ol>
+<p>登陆其它机器</p>
+<p>mysql -h 10.10.12.17 -u root -pmysql_root_password</p>
+<p>这样, 就可以访问到 node0 上的mysql 啦.</p>
+<ol>
+<li>Q&amp;A</li>
+</ol>
+<p>Q: 把 node1 的container <code>docker restart</code> , 是否 mysql 正常<br>A: 正常</p>
+<p>Q: 把 node0 的container <code>docker restart</code> , 是否mysql 正常<br>A: container, 不正常. 重启后, 起不来了. 原因: 可能是因为, node0, 的安装过程中, 有<code>--wsrep-new-clusterr</code>参数, 重启, 则意味着, 在原来的文件夹上建立一个新的<code>--wsrep-new-clusterr</code>(相同的directory, 当然是不允许的), 所以报错.<br>如果不小心, 重启了 node0上的主container, 那怎么办?</p>
+<ul>
+<li>方法1(适用于, 不要数据的情况)</li>
+</ul>
+<p>先删除数据, 然后重新启动 docker.service, 就可以了.</p>
+<ul>
+<li>方法2(适用于, 已有数据, 且要保留数据的情况)</li>
+</ul>
+<p>TODO</p>
+<ol>
+<li>尝试 TODO</li>
+</ol>
+<p>Q: 把端口号, 分别设置成<code>node0:3306, node1:4406</code>, <code>node0:4406, node1:3306</code>, <code>node0:4406, node1:4406</code>, 会有什么效果<br>A: TODO</p>
+
     
   </div>
   <footer>
     
       
+  <div class="categories">
+    <a class="categories-link" href="/categories/docker/">docker</a>
+  </div>
+
       
+  <div class="tags">
+    <a class="tags-link" href="/tags/docker/">docker</a>
+  </div>
+
     
     <div class="clearfix"></div>
   </footer>

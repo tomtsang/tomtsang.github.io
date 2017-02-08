@@ -447,7 +447,7 @@ nameserver 8.8.8.8
 </code></pre><p>生成自签名证书</p>
 <pre><code>cd ~/;mkdir registry &amp;&amp; cd registry &amp;&amp; mkdir certs &amp;&amp; cd certs;openssl req -x509 -days 3650 -subj &apos;/CN=reg.zimug.com/&apos; -nodes -newkey rsa:2048 -keyout registry.key -out registry.crt;
 </code></pre><p>生成用户和密码</p>
-<pre><code>cd ~/registry&amp;&amp; mkdir auth;docker run --entrypoint htpasswd registry:2.2 -Bbn zimug zimug_password &gt; auth/htpasswd;
+<pre><code>cd ~/registry&amp;&amp; mkdir auth;docker run --entrypoint htpasswd registry:2 -Bbn zimug zimug_password &gt; auth/htpasswd;
 </code></pre><p>用户：zimug 密码：zimug_password 可随便填写自己想填写的</p>
 <p>启动registry server</p>
 <p>脚本 <code>start_registry.sh</code> 放在~/registry目录下</p>

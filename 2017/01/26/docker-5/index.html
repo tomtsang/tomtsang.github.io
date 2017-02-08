@@ -39,7 +39,7 @@ contextdocker版本大于1.6.0(docker -v)
 
 registry server , IP: 10.10.12.17
 registry client a(docker">
-<meta property="og:updated_time" content="2017-02-04T05:58:38.000Z">
+<meta property="og:updated_time" content="2017-02-08T10:18:29.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker之registry搭建">
 <meta name="twitter:description" content="referencehttp://www.zimug.com/317.html?utm_source=tuicool&amp;amp;utm_medium=referral
@@ -123,7 +123,7 @@ registry client a(docker">
 </code></pre><p>生成自签名证书</p>
 <pre><code>cd ~/;mkdir registry &amp;&amp; cd registry &amp;&amp; mkdir certs &amp;&amp; cd certs;openssl req -x509 -days 3650 -subj &apos;/CN=reg.zimug.com/&apos; -nodes -newkey rsa:2048 -keyout registry.key -out registry.crt;
 </code></pre><p>生成用户和密码</p>
-<pre><code>cd ~/registry&amp;&amp; mkdir auth;docker run --entrypoint htpasswd registry:2.2 -Bbn zimug zimug_password &gt; auth/htpasswd;
+<pre><code>cd ~/registry&amp;&amp; mkdir auth;docker run --entrypoint htpasswd registry:2 -Bbn zimug zimug_password &gt; auth/htpasswd;
 </code></pre><p>用户：zimug 密码：zimug_password 可随便填写自己想填写的</p>
 <p>启动registry server</p>
 <p>脚本 <code>start_registry.sh</code> 放在~/registry目录下</p>

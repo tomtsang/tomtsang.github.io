@@ -1,20 +1,93 @@
-<!DOCTYPE HTML>
-<html>
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
-  <title>mysql系列之集群 MariaDB-Galera-cluster 报错 | tomtsang</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   
-    <meta name="author" content="Tom Tsang">
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
   
   
-    <meta name="description" content="报错1, /etc/my.cnf.d/下 有一个 不应该存在的 .cnf错误原因：
-mysql 加载了 /etc/my.cnf.d/下的所有 *.cnf 文件，其中又有一个之前的不应该存在的 *.cnf。
-正确情况下，应该只有4个.cnf文件。    [spa@s11 ~]$ ls /etc/my.cnf.d/    client.cnf  mysql-clients.cnf  server.cn">
   
-  <meta name="description" content="报错1, /etc/my.cnf.d/下 有一个 不应该存在的 .cnf错误原因：
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="mysql,cluster," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="报错1, /etc/my.cnf.d/下 有一个 不应该存在的 .cnf错误原因：
 mysql 加载了 /etc/my.cnf.d/下的所有 *.cnf 文件，其中又有一个之前的不应该存在的 *.cnf。
 正确情况下，应该只有4个.cnf文件。    [spa@s11 ~]$ ls /etc/my.cnf.d/    client.cnf  mysql-clients.cnf  server.cn">
 <meta property="og:type" content="article">
@@ -30,65 +103,324 @@ mysql 加载了 /etc/my.cnf.d/下的所有 *.cnf 文件，其中又有一个之�
 <meta name="twitter:description" content="报错1, /etc/my.cnf.d/下 有一个 不应该存在的 .cnf错误原因：
 mysql 加载了 /etc/my.cnf.d/下的所有 *.cnf 文件，其中又有一个之前的不应该存在的 *.cnf。
 正确情况下，应该只有4个.cnf文件。    [spa@s11 ~]$ ls /etc/my.cnf.d/    client.cnf  mysql-clients.cnf  server.cn">
-  
-    <link rel="alternate" href="/atom.xml" title="tomtsang" type="application/atom+xml">
-  
-  
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  
-  <link rel="stylesheet" href="/css/style.css">
-  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  
-  
 
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://tomtsang.github.io/2016/11/17/mysql-5mysql系列之集群 MariaDB-Galera-cluster 报错/"/>
+
+
+
+
+
+  <title> mysql系列之集群 MariaDB-Galera-cluster 报错 | tomtsang </title>
 </head>
 
-<body>
-  <div class="wrapper">
-    <header id="header">
-  <div class="title">
-    <h1><a href="/">tomtsang</a></h1>
-    <p><a href="/">AI,BIGDATA,CODE,DATA,E,FINTECH ...</a></p>
-  </div>
-  <nav class="nav">
-    <ul>
-      
-        <li><a href="/">Home</a></li>
-      
-        <li><a href="/archives">Archives</a></li>
-      
-        <li><a href="/reading">Reading</a></li>
-      
-        <li><a href="/about">About</a></li>
-      
-      
-        <li><a href="/atom.xml">RSS</a></li>
-      
-    </ul>
-    <div class="clearfix"></div>
-  </nav>
-  <div class="clearfix"></div>
-</header>
-    <div class="content"><article class="post">
-  <header>
-    
-      <div class="icon"></div>
-      <a href="/2016/11/17/mysql-5mysql系列之集群 MariaDB-Galera-cluster 报错/">
-  <time datetime="2016-11-17T08:45:39.000Z">
-    2016-11-17
-  </time>
-</a>
-    
-    
-  
-    <h1 class="title">mysql系列之集群 MariaDB-Galera-cluster 报错</h1>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
   
 
-  </header>
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?a64f4d6f03263e55ef37aad3b6e85a36";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
   
-  <div class="entry">
+  
     
-      <h2 id="报错1-etc-my-cnf-d-下-有一个-不应该存在的-cnf"><a href="#报错1-etc-my-cnf-d-下-有一个-不应该存在的-cnf" class="headerlink" title="报错1, /etc/my.cnf.d/下 有一个 不应该存在的 .cnf"></a>报错1, /etc/my.cnf.d/下 有一个 不应该存在的 .cnf</h2><p>错误原因：</p>
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">tomtsang</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">AI,BIGDATA,CODE,DATA,E,FINTECH ...</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-something">
+          <a href="/something" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            有料
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://tomtsang.github.io/2016/11/17/mysql-5mysql系列之集群 MariaDB-Galera-cluster 报错/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Tom Tsang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="tomtsang">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="tomtsang" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                mysql系列之集群 MariaDB-Galera-cluster 报错
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-17T16:45:39+08:00">
+                2016-11-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mysql/" itemprop="url" rel="index">
+                    <span itemprop="name">mysql</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/11/17/mysql-5mysql系列之集群 MariaDB-Galera-cluster 报错/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/17/mysql-5mysql系列之集群 MariaDB-Galera-cluster 报错/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="报错1-etc-my-cnf-d-下-有一个-不应该存在的-cnf"><a href="#报错1-etc-my-cnf-d-下-有一个-不应该存在的-cnf" class="headerlink" title="报错1, /etc/my.cnf.d/下 有一个 不应该存在的 .cnf"></a>报错1, /etc/my.cnf.d/下 有一个 不应该存在的 .cnf</h2><p>错误原因：</p>
 <p>mysql 加载了 /etc/my.cnf.d/下的所有 <code>*.cnf</code> 文件，其中又有一个之前的不应该存在的 <code>*.cnf</code>。</p>
 <p>正确情况下，应该只有4个<code>.cnf</code>文件。<br>    [spa@s11 ~]$ ls /etc/my.cnf.d/<br>    client.cnf  mysql-clients.cnf  server.cnf  tokudb.cnf<br>    [spa@s11 ~]$</p>
 <p>错误情况：</p>
@@ -603,53 +935,355 @@ Enter password:
 [tom@kube-node-13 my.cnf.d]$
 </code></pre><p>终于是成功了!<br>终于是成功了!<br>终于是成功了!</p>
 
-    
-  </div>
-  <footer>
-    
       
-  <div class="categories">
-    <a class="categories-link" href="/categories/mysql/">mysql</a>
-  </div>
+    </div>
+
+    <div>
+      
+        
 
       
-  <div class="tags">
-    <a class="tags-link" href="/tags/cluster/">cluster</a>, <a class="tags-link" href="/tags/mysql/">mysql</a>
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mysql/" rel="tag"># mysql</a>
+          
+            <a href="/tags/cluster/" rel="tag"># cluster</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/17/markdown/" rel="next" title="markdown">
+                <i class="fa fa-chevron-left"></i> markdown
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/17/mysql-4mysql系列之集群 MariaDB Galera Cluster 部署/" rel="prev" title="mysql系列之集群 MariaDB Galera Cluster 部署">
+                mysql系列之集群 MariaDB Galera Cluster 部署 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
     
-    <div class="clearfix"></div>
-  </footer>
-</article>
-
-</div>
+      <div class="ds-thread" data-thread-key="2016/11/17/mysql-5mysql系列之集群 MariaDB-Galera-cluster 报错/"
+           data-title="mysql系列之集群 MariaDB-Galera-cluster 报错" data-url="http://tomtsang.github.io/2016/11/17/mysql-5mysql系列之集群 MariaDB-Galera-cluster 报错/">
+      </div>
+    
   </div>
-  <footer id="footer"><div class="copyright">
+
+
+        </div>
+        
+          
   
-  &copy; 2017 <a href="/">Tom Tsang</a>
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Tom Tsang" />
+          <p class="site-author-name" itemprop="name">Tom Tsang</p>
+          <p class="site-description motion-element" itemprop="description">Tom Tsang's Blogs</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">53</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#报错1-etc-my-cnf-d-下-有一个-不应该存在的-cnf"><span class="nav-number">1.</span> <span class="nav-text">报错1, /etc/my.cnf.d/下 有一个 不应该存在的 .cnf</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
   
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tom Tsang</span>
 </div>
-<div class="theme-copyright">
-  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
-   | 
-  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
 </div>
-<div class="clearfix"></div></footer>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
-<script src="/js/scale.fix.js"></script>
-<script src="/js/jquery.imagesloaded.min.js"></script>
-<script src="/js/gallery.js"></script>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
 
 
+        
 
+        
+      </div>
+    </footer>
 
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
 <script type="text/javascript">
-  (function($){
-    $('.fancybox').fancybox();
-  })(jQuery);
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
 </script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"tomtsang"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
 
 </body>
 </html>

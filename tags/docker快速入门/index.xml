@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docker快速入门 on roc</title>
+    <link>https://imroc.io/tags/docker%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/</link>
+    <description>Recent content in Docker快速入门 on roc</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <managingEditor>roc@imroc.io (roc)</managingEditor>
+    <webMaster>roc@imroc.io (roc)</webMaster>
+    <lastBuildDate>Wed, 20 Dec 2017 13:12:35 +0800</lastBuildDate>
+    
+	<atom:link href="https://imroc.io/tags/docker%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Docker快速入门（五）docker-compose安装与基础用法</title>
+      <link>https://imroc.io/posts/docker/quick-start-for-docker-5/</link>
+      <pubDate>Wed, 20 Dec 2017 13:12:35 +0800</pubDate>
+      <author>roc@imroc.io (roc)</author>
+      <guid>https://imroc.io/posts/docker/quick-start-for-docker-5/</guid>
+      <description>简介 docker-compose 可以用来定义和运行复杂应用的Docker工具，比如你的web应用需要用到好几个容器，mysql、redis和你自己的应用容器，它们之间</description>
+    </item>
+    
+    <item>
+      <title>Docker快速入门（四）常用命令与技巧</title>
+      <link>https://imroc.io/posts/docker/quick-start-for-docker-4/</link>
+      <pubDate>Wed, 20 Dec 2017 09:05:17 +0800</pubDate>
+      <author>roc@imroc.io (roc)</author>
+      <guid>https://imroc.io/posts/docker/quick-start-for-docker-4/</guid>
+      <description>列出机器上的镜像 docker images 拉取镜像 docker pull openjdk # 等同于 docker pull openjdk:latest docker pull openjdk:jre-slim # 指定了tag docker pull hub.imroc.io:5000/imroc/myapp:1.2 # 拉取私有仓库的镜像 上传镜像 docker push imroc/myapp:1atest # 上传到Docker Hub公有仓</description>
+    </item>
+    
+    <item>
+      <title>Docker快速入门（三）在国内如何快速安装Docker与镜像加速器配置</title>
+      <link>https://imroc.io/posts/docker/quick-start-for-docker-3/</link>
+      <pubDate>Tue, 19 Dec 2017 16:27:07 +0800</pubDate>
+      <author>roc@imroc.io (roc)</author>
+      <guid>https://imroc.io/posts/docker/quick-start-for-docker-3/</guid>
+      <description>前言 使用docker最常用的系统莫过于ubuntu和centos了，一般有两种方式，一种是直接用系统自带的源安装，另一种是官方的源安装。前者</description>
+    </item>
+    
+    <item>
+      <title>Docker快速入门（二）容器、镜像与镜像仓库</title>
+      <link>https://imroc.io/posts/docker/quick-start-for-docker-2/</link>
+      <pubDate>Tue, 19 Dec 2017 11:00:42 +0800</pubDate>
+      <author>roc@imroc.io (roc)</author>
+      <guid>https://imroc.io/posts/docker/quick-start-for-docker-2/</guid>
+      <description>镜像与容器的关系 镜像就是把你程序以及依赖的运行时打包在一起的一个东东，运行一个镜像就成了容器。镜像与容器的关系有点类似程序与进程的关系，比如</description>
+    </item>
+    
+    <item>
+      <title>Docker快速入门（一）认识Docker</title>
+      <link>https://imroc.io/posts/docker/quick-start-for-docker-1/</link>
+      <pubDate>Mon, 18 Dec 2017 15:36:35 +0800</pubDate>
+      <author>roc@imroc.io (roc)</author>
+      <guid>https://imroc.io/posts/docker/quick-start-for-docker-1/</guid>
+      <description>前言 Docker现在可以说是火的一塌糊涂，做技术的几乎都听过这个名词，只是有些小伙伴还没理解Docker到底是个什么东西，能够用来做些什么，</description>
+    </item>
+    
+  </channel>
+</rss>
